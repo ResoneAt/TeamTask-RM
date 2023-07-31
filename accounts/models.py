@@ -93,8 +93,21 @@ class GmessageModel(BaseModel):
     board = models.ForeignKey(BoardModel , on_delete=models.CASCADE)
     
     class Meta:
-        verbose_name, verbose_name_plural = _("Message"), _("Messages")
+        verbose_name, verbose_name_plural = _("GMessage"), _("GMessages")
         db_table = 'Gmessage'
+
+class PvmessageModel(BaseModel):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
+    text = models.TextField(help_text='Please Write Your Message')
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name, verbose_name_plural = _("Message"), _("Messages")
+        db_table = 'Pvmessage'
+
+    
+
 
 
 
