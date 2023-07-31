@@ -27,9 +27,9 @@ class ListModel(models.Model):
 
 class CardModel(BaseModel):
     title = models.CharField(verbose_name=_("Title"),max_length=150,
-                            help_text=_("Enter Card title"))
-    description = models.TextField(verbose_name=_("Descripion"),
-                                   help_text=_("Enter card's describtion"),null=True,blank=True)
+                             help_text=_("Enter Card title"))
+    description = models.TextField(verbose_name=_("Description"),
+                                   help_text=_("Enter card's description"),null=True,blank=True)
     
     start_date = models.DateTimeField(verbose_name=_("Start Time"),auto_now=True)
     due_date = models.DateTimeField(verbose_name=_("Due Time"),auto_now=True)
@@ -58,7 +58,7 @@ class SubTaskModel(models.Model):
     title = models.CharField(verbose_name=_('Title'),
                              max_length=250,
                              help_text=_('Please enter your sub task title'))
-    card = models.ForeignKey(CardModel, on_delete=models.DO_NOTHING)
+    card = models.ForeignKey(CardModel, on_delete=models.CASCADE)
     status = models.BooleanField(verbose_name=_('Status'),
                                  default=False,
                                  help_text=_('Sub Task status'))
