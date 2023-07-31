@@ -20,6 +20,9 @@ class ListModel(BaseModel):
     background_color = models.CharField(
         max_length=10,choices=COLOR_CHOICES, null=True, blank=True)
     
+    class Meta:
+        verbose_name, verbose_name_plural = _('List'), _('Lists')
+        db_table = 'List'
 
 class CardModel(BaseModel):
     title = models.CharField(verbose_name=_("Title"),max_length=150,
@@ -45,4 +48,7 @@ class CardModel(BaseModel):
     
     background_img = models.ImageField(upload_to='tasks', null=True, blank=True)
     
+    class Meta:
+        verbose_name, verbose_name_plural = _('Card'), _('Cards')
+        db_table = 'Card'
     
