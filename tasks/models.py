@@ -24,6 +24,7 @@ class ListModel(BaseModel):
         verbose_name, verbose_name_plural = _('List'), _('Lists')
         db_table = 'List'
 
+
 class CardModel(BaseModel):
     title = models.CharField(verbose_name=_("Title"),max_length=150,
                             help_text=_("Enter Card title"))
@@ -52,3 +53,16 @@ class CardModel(BaseModel):
         verbose_name, verbose_name_plural = _('Card'), _('Cards')
         db_table = 'Card'
     
+class SubTaskModel(models.Model):
+    title = models.CharField(verbose_name=_('Title'),
+                             max_length=250,
+                             help_text=_('Please enter your sub task title'))
+    card = models.ForeignKey('Card', on_delete=models.DO_NOTHING)
+    status = models.BooleanField(verbose_name=_('Status'),
+                                 default=False,
+                                 help_text=_('Sub Task status'))
+
+    class Meta:
+        verbose_name, verbose_name_plural = _('SubTask'), _('SubTasks')
+        db_table = 'SubTask'
+
