@@ -73,3 +73,7 @@ class CardCommentModel(models.Model):
                             help_text=_('comment on card'))
     card = models.ForeignKey(CardModel, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    class Meta:
+        verbose_name, verbose_name_plural = _('Comment'), _('Comments')
+        db_table = 'CardComment'
