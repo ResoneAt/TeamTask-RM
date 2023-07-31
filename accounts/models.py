@@ -1,17 +1,34 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from .manager import MyUserManager
-# Create your models here.
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=250, unique=True, null=False, blank=False)
-    email = models.EmailField(unique=True, null=False, blank=False)
-    full_name = models.CharField(max_length=250, null=True, blank=True)
-    bio = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to='user', null=True, blank=True)
+    username = models.CharField(verbose_name=_('Username'),
+                                max_length=250, unique=True,
+                                null=False, blank=False,
+                                help_text=_('Please enter your username'))
+    email = models.EmailField(verbose_name=_('Email'),
+                              unique=True,
+                              null=False, blank=False,
+                              help_text=_('Please enter your email'))
+    full_name = models.CharField(verbose_name=_('Full name'),
+                                 max_length=250,
+                                 null=True, blank=True,
+                                 help_text=_('Please enter your full name'))
+    bio = models.TextField(verbose_name=_('Bio'),
+                           null=True, blank=True,
+                           help_text=_('Please write about yourself'))
+    image = models.ImageField(verbose_name=_('Image'),
+                              upload_to='user',
+                              null=True, blank=True,
+                              help_text=_('Please upload your image.'))
 
-    job_title = models.CharField(max_length=250)
+    job_title = models.CharField(verbose_name=_('Job title'),
+                                 max_length=250,
+                                 null=True, blank=True,
+                                 help_text=_('Please enter your job title'))
     developer = 1
     digital_marketing = 2
     business = 3
@@ -22,38 +39,47 @@ class User(AbstractBaseUser):
                           (business, 'Business'),
                           (education, 'Education'),
                           (personal_planning, 'Personal_planning'))
-    work_field = models.IntegerField(choices=work_field_choices, null=True, blank=True)
+    work_field = models.IntegerField(verbose_name=_('Work field'),
+                                     choices=work_field_choices,
+                                     null=True, blank=True,
+                                     help_text=_('Please enter your work field'))
 
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(verbose_name=_('Is Admin'),
+                                   default=False)
 
-    created_at = models.DateTimeField(auto_now_add=True, auto_created=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(verbose_name=_('Created at'),
+                                      auto_now_add=True,
+                                      auto_created=True)
+    updated_at = models.DateTimeField(verbose_name=_('Updated at'),
+                                      auto_now=True)
 
-    is_deleted = models.BooleanField(default=False)
-    deleted_at = models.DateTimeField(null=True, blank=True)
+    is_deleted = models.BooleanField(verbose_name=_('Is Deleted'),
+                                     default=False)
+    deleted_at = models.DateTimeField(verbose_name=_('Deleted at'),
+                                      null=True,
+                                      blank=True,
+                                      editable=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [username]
 
     objects = MyUserManager()
 
+    class Meta:
+        verbose_name, verbose_name_plural = _('User'), _('Users')
+        db_table = 'User'
+
     def __str__(self):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
         return True
 
     def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
         return True
 
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
         return self.is_admin
 
 
