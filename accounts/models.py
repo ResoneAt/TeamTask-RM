@@ -106,12 +106,14 @@ class PvmessageModel(BaseModel):
         verbose_name, verbose_name_plural = _("Message"), _("Messages")
         db_table = 'Pvmessage'
 
+class NotificationModel(BaseModel):
+    body = models.TextField(null=True, blank=True)
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    card = models.ForeignKey(CardModel, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name, verbose_name_plural = _("Notification"), _("Notifications")
+
     
-
-
-
-
-
-
 
 
