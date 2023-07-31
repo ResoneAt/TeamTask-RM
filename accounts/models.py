@@ -1,5 +1,8 @@
+from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+
+from core.models import BaseModel
 from .manager import MyUserManager
 from django.utils.translation import gettext_lazy as _
 
@@ -81,5 +84,36 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+
+class GmessageModel(BaseModel):
+    from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='sender')
+    text = models.TextField(help_text='Please Write Your Message')
+    board = models.ForeignKey(BoardModel , on_delete=models.CASCADE)
+    
+    class Meta:
+        verbose_name, verbose_name_plural = _("GMessage"), _("GMessages")
+        db_table = 'Gmessage'
+
+class PvmessageModel(BaseModel):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
+    text = models.TextField(help_text='Please Write Your Message')
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name, verbose_name_plural = _("Message"), _("Messages")
+        db_table = 'Pvmessage'
+
+class NotificationModel(BaseModel):
+    body = models.TextField(null=True, blank=True)
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    card = models.ForeignKey(CardModel, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name, verbose_name_plural = _("Notification"), _("Notifications")
+
+    
 
 
