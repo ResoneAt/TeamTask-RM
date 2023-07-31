@@ -52,7 +52,8 @@ class CardModel(BaseModel):
     class Meta:
         verbose_name, verbose_name_plural = _('Card'), _('Cards')
         db_table = 'Card'
-    
+
+
 class SubTaskModel(models.Model):
     title = models.CharField(verbose_name=_('Title'),
                              max_length=250,
