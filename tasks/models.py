@@ -98,12 +98,23 @@ class LabelModel(models.Model):
         verbose_name, verbose_name_plural = _('Label'), _('Labels')
         db_table = 'Label'
 
-class BoardModel(models.Model):
+class WorkSpaceModel(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
-    workspace = models.ForeignKey(WorkSpace, on_delete=models.CASCADE,
-                                  related_name='boards')
     title = models.CharField(verbose_name=_("Title"),max_length=100,
                              help_text=_("Enter WorkSpace title"))
+    category = models.CharField(max_length=50,blank=True,null=True)
+    background = models.ImageField(upload_to='tasks', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    
+class BoardModel(models.Model):
+    owner = models.ForeignKey('User', on_delete=models.CASCADE)
+    workspace = models.ForeignKey(WorkSpaceModel, on_delete=models.CASCADE,
+                                  related_name='boards')
+    title = models.CharField(verbose_name=_("Title"),max_length=100,
+                             help_text=_("Enter Board title"))
     
     category = models.CharField(max_length=50,blank=True,null=True)
     VISIBILITY_CHOICES = [
@@ -117,7 +128,9 @@ class BoardModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-    
+
     class Meta:
         verbose_name, verbose_name_plural = _('Board'), _('Boards')
         db_table = 'Board'
+
+    
