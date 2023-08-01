@@ -1,13 +1,12 @@
-from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.shortcuts import reverse
-from core.models import BaseModel
+from core.models import BaseModel, SoftDeleteModel
 from .manager import MyUserManager
 from django.utils.translation import gettext_lazy as _
 
 
-class User(AbstractBaseUser, BaseModel):
+class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
     username = models.CharField(verbose_name=_('Username'),
                                 max_length=250, unique=True,
                                 null=False, blank=False,
