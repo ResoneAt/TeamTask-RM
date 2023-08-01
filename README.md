@@ -11,7 +11,7 @@ TeamTask is a web-based planning application built with Django framework and dja
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
-- [Team](#Team)
+- [Team](#team)
 - [Acknowledgements](#acknowledgements)
 
 ## Getting Started
