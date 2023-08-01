@@ -57,7 +57,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Team
 
-- Mahsa Rahimi Khan ![Profile Picture of John Doe](https://example.com/MahsaRah99.jpg) ([GitHub Profile](https://github.com/MahsaRah99))
+- Mahsa Rahimi ([GitHub Profile](https://github.com/MahsaRah99))
 - Mohamad Goodarzi ([GitHub Profile](https://github.com/mrgdeveloper1401))
 - Mojtaba Anbahoun ([GitHub Profile](https://github.com/Mojtaba-anbahoun))
 - Mahdi Hassanpour ([GitHub Profile](https://github.com/Mahdi-Hassanpour78))
@@ -69,7 +69,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 We would like to thank the following individuals and organizations for their contributions to Resonegram:
     
     Django
-    Django-material-lite
+    Django Restframwork
     Google
     GitHub
     SepehrBazyar
