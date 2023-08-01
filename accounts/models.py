@@ -7,7 +7,7 @@ from .manager import MyUserManager
 from django.utils.translation import gettext_lazy as _
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, BaseModel):
     username = models.CharField(verbose_name=_('Username'),
                                 max_length=250, unique=True,
                                 null=False, blank=False,
@@ -50,18 +50,8 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(verbose_name=_('Is Admin'),
                                    default=False)
 
-    created_at = models.DateTimeField(verbose_name=_('Created at'),
-                                      auto_now_add=True,
-                                      auto_created=True)
     updated_at = models.DateTimeField(verbose_name=_('Updated at'),
                                       auto_now=True)
-
-    is_deleted = models.BooleanField(verbose_name=_('Is Deleted'),
-                                     default=False)
-    deleted_at = models.DateTimeField(verbose_name=_('Deleted at'),
-                                      null=True,
-                                      blank=True,
-                                      editable=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [username]
