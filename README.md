@@ -11,6 +11,7 @@ TeamTask is a web-based planning application built with Django framework and dja
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
+- [Team](#Team)
 - [Acknowledgements](#acknowledgements)
 
 ## Getting Started
@@ -53,6 +54,15 @@ If you would like to contribute to Resonegram, please read the CONTRIBUTING.md f
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Team
+
+- Mahsa Rahimi Khan ([GitHub Profile](https://github.com/MahsaRah99))
+- Mohamad Goodarzi ([GitHub Profile](https://github.com/mohammad goodarzi))
+- Mojtaba Anbahoun ([GitHub Profile](https://github.com/Mojtaba-anbahoun))
+- Mahdi Hassanpour ([GitHub Profile](https://github.com/Mahdi-Hassanpour78))
+- Ramin Eslami ([GitHub Profile](https://github.com/ResoneAt))
+
 
 ## Acknowledgements
 
