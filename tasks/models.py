@@ -27,9 +27,9 @@ class ListModel(models.Model):
 
 class CardModel(BaseModel):
     title = models.CharField(verbose_name=_("Title"),max_length=150,
-                            help_text=_("Enter Card title"))
-    description = models.TextField(verbose_name=_("Descripion"),
-                                   help_text=_("Enter card's describtion"),null=True,blank=True)
+                             help_text=_("Enter Card title"))
+    description = models.TextField(verbose_name=_("Description"),
+                                   help_text=_("Enter card's description"),null=True,blank=True)
     
     start_date = models.DateTimeField(verbose_name=_("Start Time"),auto_now=True)
     due_date = models.DateTimeField(verbose_name=_("Due Time"),auto_now=True)
@@ -58,7 +58,7 @@ class SubTaskModel(models.Model):
     title = models.CharField(verbose_name=_('Title'),
                              max_length=250,
                              help_text=_('Please enter your sub task title'))
-    card = models.ForeignKey(CardModel, on_delete=models.DO_NOTHING)
+    card = models.ForeignKey(CardModel, on_delete=models.CASCADE)
     status = models.BooleanField(verbose_name=_('Status'),
                                  default=False,
                                  help_text=_('Sub Task status'))
@@ -77,3 +77,60 @@ class CardCommentModel(models.Model):
     class Meta:
         verbose_name, verbose_name_plural = _('Comment'), _('Comments')
         db_table = 'CardComment'
+
+
+class LabelModel(models.Model):
+    title = title = models.CharField(verbose_name=_("Title"),max_length=50,
+                                     help_text=_("Enter Label title"))
+    COLOR_CHOICES = [
+        ('red',    'Red'),
+        ('blue',   'Blue'),
+        ('green',  'Green'),
+        ('orange', 'Orange'),
+        ('purple', 'Purple'),
+        ('yellow', 'Yellow'),
+    ]
+    background_color = models.CharField(max_length=10,choices=COLOR_CHOICES,
+                                         null=True, blank=True)
+    card = models.ForeignKey(CardModel, on_delete=models.CASCADE, related_name='labels')
+    
+    class Meta:
+        verbose_name, verbose_name_plural = _('Label'), _('Labels')
+        db_table = 'Label'
+
+class WorkSpaceModel(models.Model):
+    owner = models.ForeignKey('User', on_delete=models.CASCADE)
+    title = models.CharField(verbose_name=_("Title"),max_length=100,
+                             help_text=_("Enter WorkSpace title"))
+    category = models.CharField(max_length=50,blank=True,null=True)
+    background = models.ImageField(upload_to='tasks', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    
+class BoardModel(models.Model):
+    owner = models.ForeignKey('User', on_delete=models.CASCADE)
+    workspace = models.ForeignKey(WorkSpaceModel, on_delete=models.CASCADE,
+                                  related_name='boards')
+    title = models.CharField(verbose_name=_("Title"),max_length=100,
+                             help_text=_("Enter Board title"))
+    
+    category = models.CharField(max_length=50,blank=True,null=True)
+    VISIBILITY_CHOICES = [
+        ('public',   'Public'),
+        ('privet',   'Privet'),
+        ('workspace','Workspace')
+    ]
+    visibility = models.CharField(max_length=20,choices=VISIBILITY_CHOICES,
+                                  default='workspace')
+    background = models.ImageField(upload_to='tasks', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    class Meta:
+        verbose_name, verbose_name_plural = _('Board'), _('Boards')
+        db_table = 'Board'
+
+    
