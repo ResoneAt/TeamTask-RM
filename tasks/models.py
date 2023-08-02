@@ -308,7 +308,7 @@ class GMessageModel(BaseModel, SoftDeleteModel):
                                   on_delete=models.DO_NOTHING,
                                   related_name='g_sender')
     text = models.TextField(help_text='Please Write Your Message')
-    board = models.ForeignKey('BoardModel',
+    board = models.ForeignKey(BoardModel,
                               on_delete=models.DO_NOTHING)
 
     class Meta:
