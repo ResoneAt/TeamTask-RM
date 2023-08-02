@@ -135,7 +135,7 @@ class BoardModel(models.Model):
         db_table = 'Board'
 
 
-class CMembershipModel(models.Model):
+class CMembershipModel(BaseModel):
     user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
     card_parent = models.ForeignKey(CardModel, on_delete=models.PROTECT)
 
@@ -145,7 +145,7 @@ class CMembershipModel(models.Model):
         db_table = 'card_membership'
 
 
-class BMembershipModel(models.Model):
+class BMembershipModel(BaseModel):
     user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
     board_parent = models.ForeignKey(BoardModel, on_delete=models.PROTECT)
     permission = models.CharField(max_length=255)
@@ -156,7 +156,7 @@ class BMembershipModel(models.Model):
         db_table = 'board_membership'
 
 
-class WSMembershipModel(models.Model):
+class WSMembershipModel(BaseModel):
     user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
     workspace_parent = models.ForeignKey(WorkSpaceModel, on_delete=models.PROTECT)
     permission = models.CharField(max_length=255)
