@@ -146,6 +146,18 @@ class CardCommentModel(BaseModel):
     class Meta:
         verbose_name, verbose_name_plural = _('Comment'), _('Comments')
         db_table = 'CardComment'
+        
+    def __str__(self) -> str:
+        return f'Comment by {self.user} on {self.card.title}'
+    
+    def edit_comment(self, body):
+        try:
+            self.text = body
+            self.save()
+            return True
+        except Exception as e:
+            print(f"Error editing comment: {e}")
+            return False
 
 
 class LabelModel(models.Model):
