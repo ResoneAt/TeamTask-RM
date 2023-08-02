@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import BaseModel
+from core.models import BaseModel,SoftDeleteModel
 from django.utils.translation import gettext_lazy as _
 from accounts.models import User
 # Create your models here.
@@ -25,7 +25,7 @@ class ListModel(models.Model):
         db_table = 'List'
 
 
-class CardModel(BaseModel):
+class CardModel(BaseModel,SoftDeleteModel):
     title = models.CharField(verbose_name=_("Title"),max_length=150,
                              help_text=_("Enter Card title"))
     description = models.TextField(verbose_name=_("Description"),
@@ -68,7 +68,7 @@ class SubTaskModel(models.Model):
         db_table = 'SubTask'
 
 
-class CardCommentModel(models.Model):
+class CardCommentModel(BaseModel):
     body = models.TextField(verbose_name=_('Body'),
                             help_text=_('comment on card'))
     card = models.ForeignKey(CardModel, on_delete=models.CASCADE)
