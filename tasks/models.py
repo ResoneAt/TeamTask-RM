@@ -303,6 +303,28 @@ class BoardModel(BaseModel, SoftDeleteModel):
         return self.title
 
 
+class GMessageModel(BaseModel, SoftDeleteModel):
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING,
+                                  related_name='g_sender')
+    text = models.TextField(help_text='Please Write Your Message')
+    board = models.ForeignKey('BoardModel',
+                              on_delete=models.DO_NOTHING)
+
+    class Meta:
+        verbose_name, verbose_name_plural = _("GMessage"), _("GMessages")
+        db_table = 'GroupMessage'
+
+    def send_message(self):
+        pass
+
+    def seen_message(self):
+        pass
+
+    def __str__(self) -> str:
+        return f'{self.from_user} : {self.text}'
+
+
 class CMembershipModel(BaseModel):
     user = models.ForeignKey(User,
                              on_delete=models.DO_NOTHING)

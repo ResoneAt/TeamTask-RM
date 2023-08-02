@@ -49,6 +49,9 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
     is_admin = models.BooleanField(verbose_name=_('Is Admin'),
                                    default=False)
 
+    is_active = models.BooleanField(verbose_name=_('Is Active'),
+                                    default=True)
+
     updated_at = models.DateTimeField(verbose_name=_('Updated at'),
                                       auto_now=True)
 
@@ -105,31 +108,9 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
         return self.email
 
 
-class GMessageModel(BaseModel, SoftDeleteModel):
-    from_user = models.ForeignKey(User,
-                                  on_delete=models.DO_NOTHING,
-                                  related_name='sender')
-    text = models.TextField(help_text='Please Write Your Message')
-    board = models.ForeignKey('BoardModel',
-                              on_delete=models.DO_NOTHING)
-    
-    class Meta:
-        verbose_name, verbose_name_plural = _("GMessage"), _("GMessages")
-        db_table = 'GroupMessage'
-    
-    def send_message(self):
-        pass
-
-    def seen_message(self):
-        pass
-    
-    def __str__(self) -> str:
-        return f'{self.from_user} : {self.text}'
-
-
 class PvMessageModel(BaseModel, SoftDeleteModel):
     from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
-                                  related_name='sender')
+                                  related_name='pv_sender')
     to_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
                                 related_name='receiver')
     text = models.TextField(help_text='Please Write Your Message')
@@ -153,7 +134,6 @@ class NotificationModel(BaseModel, SoftDeleteModel):
     body = models.TextField()
     to_user = models.ForeignKey(User,
                                 on_delete=models.DO_NOTHING)
-    card = models.ForeignKey('CardModel', on_delete=models.DO_NOTHING)
 
     class Meta:
         verbose_name, verbose_name_plural = _("Notification"), _("Notifications")
