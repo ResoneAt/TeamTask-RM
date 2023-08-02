@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .forms import UserCreationForm, UserChangeForm
-from .models import User
+from .models import User, NotificationModel
 from django.contrib.auth.models import Group
 
 
+@admin.register(User)
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UserChangeForm
@@ -39,6 +40,17 @@ class UserAdmin(BaseUserAdmin):
     # inlines = [UserImageInline]
 
 
-admin.site.register(User, UserAdmin)
-admin.site.unregister(Group)
+class PvMessageAdmin(admin.ModelAdmin):
+    search_fields = ['from_user', 'to_user']
+    list_display = ['from_user', 'to_user', 'body'[:20]]
+    list_filter = ['from_user', 'to_user']
 
+
+@admin.register(NotificationModel)
+class NotificationAdmin(admin.ModelAdmin):
+    search_fields = ['to_user']
+    list_display = ['to_user', 'body'[:20]]
+    list_filter = ['to_user']
+
+
+admin.site.unregister(Group)
