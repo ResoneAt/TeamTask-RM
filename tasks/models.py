@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 
-class ListModel(models.Model):
+class ListModel(BaseModel, SoftDeleteModel):
     title = models.CharField(verbose_name=_("Title"),
                              max_length=100,
                              help_text=_("Enter List title"))
@@ -79,7 +79,7 @@ class CardModel(BaseModel, SoftDeleteModel):
     list = models.ForeignKey(ListModel,
                              on_delete=models.DO_NOTHING,
                              related_name='cards')
-    
+
     STATUS_CHOICES = [
      ('todo', 'Todo'),
      ('doing', 'Doing'),
@@ -92,7 +92,7 @@ class CardModel(BaseModel, SoftDeleteModel):
     
     background_img = models.ImageField(upload_to='tasks',
                                        null=True, blank=True)
-    
+
     class Meta:
         verbose_name, verbose_name_plural = _('Card'), _('Cards')
         db_table = 'Card'
