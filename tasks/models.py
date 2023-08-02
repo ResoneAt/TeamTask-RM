@@ -2,6 +2,7 @@ from django.db import models
 from core.models import BaseModel,SoftDeleteModel
 from django.utils.translation import gettext_lazy as _
 from accounts.models import User
+from django.urls import reverse
 # Create your models here.
 
 class ListModel(models.Model):
@@ -160,8 +161,8 @@ class CardCommentModel(BaseModel):
 
 
 class LabelModel(models.Model):
-    title = title = models.CharField(verbose_name=_("Title"),max_length=50,
-                                     help_text=_("Enter Label title"))
+    title = models.CharField(verbose_name=_("Title"),max_length=50,
+                             help_text=_("Enter Label title"))
     COLOR_CHOICES = [
         ('red',    'Red'),
         ('blue',   'Blue'),
@@ -177,6 +178,9 @@ class LabelModel(models.Model):
     class Meta:
         verbose_name, verbose_name_plural = _('Label'), _('Labels')
         db_table = 'Label'
+    
+    def get_absolute_url(self):
+        return reverse('label_detail', args=[str(self.id)])
 
 class WorkSpaceModel(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -187,6 +191,9 @@ class WorkSpaceModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('workspace_detail', args=[str(self.id)])
 
     
 class BoardModel(models.Model):
@@ -212,7 +219,9 @@ class BoardModel(models.Model):
     class Meta:
         verbose_name, verbose_name_plural = _('Board'), _('Boards')
         db_table = 'Board'
-
+    def get_absolute_url(self):
+        return reverse('board_detail', args=[str(self.id)])
+    
 class CMembershipModel(BaseModel):
     user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
     card_parent = models.ForeignKey(CardModel, on_delete=models.PROTECT)
