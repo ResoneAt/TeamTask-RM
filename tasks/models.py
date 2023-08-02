@@ -195,6 +195,9 @@ class LabelModel(models.Model):
         if background_color is not None:
             self.background_color = background_color
         self.save()
+    
+    def __str__(self):
+        return self.title
 
 class WorkSpaceModel(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -217,6 +220,9 @@ class WorkSpaceModel(models.Model):
         if background is not None:
             self.background = background
         self.save()
+
+    def __str__(self):
+        return self.title
     
 class BoardModel(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -254,6 +260,9 @@ class BoardModel(models.Model):
         if background is not None:
             self.background = background
         self.save()
+    
+    def __str__(self):
+        return self.title
     
 class CMembershipModel(BaseModel):
     user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
