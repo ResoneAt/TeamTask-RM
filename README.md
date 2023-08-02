@@ -21,11 +21,11 @@ This section should provide instructions on how to get started with the project.
 
 ### ERD
 
-  <img src="TeamTask-ERD.png" alt="عنوان تصویر">
+  <img src="TeamTask-ERD.png" alt="TeamTask-ERD">
 
 ### Prerequisites
 
-Before installing Resonegram, make sure you have the following requirements:
+Before installing TeamTask, make sure you have the following requirements:
 
     Python 3.8.x or higher
     Django 3.2.x or higher
@@ -34,7 +34,7 @@ Before installing Resonegram, make sure you have the following requirements:
 
 ### Installation
 
-To install Resonegram, follow these steps:
+To install TeamTask, follow these steps:
 
     1. Clone the repository to your local machine
     2. Create a virtual environment and activate it
@@ -45,11 +45,11 @@ To install Resonegram, follow these steps:
 
 ## Usage
 
-Once you have installed Resonegram, you can access it through your web browser at http://localhost:8000. From there, you can       sign up for an account, create posts, leave comments, like posts, and chat with other users.
+Once you have installed TeamTask, you can access it through your web browser at http://localhost:8000. From there, you can       sign up for an account, create posts, leave comments, like posts, and chat with other users.
 
 ## Contributing
 
-If you would like to contribute to Resonegram, please read the CONTRIBUTING.md file for guidelines on how to do so.
+If you would like to contribute to TeamTask, please read the CONTRIBUTING.md file for guidelines on how to do so.
 
 ## License
 
@@ -66,7 +66,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgements
 
-We would like to thank the following individuals and organizations for their contributions to Resonegram:
+We would like to thank the following individuals and organizations for their contributions to TeamTask:
     
     Django
     Django Restframwork
