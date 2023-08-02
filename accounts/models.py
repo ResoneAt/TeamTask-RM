@@ -56,7 +56,7 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
                                       auto_now=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = [username]
+    REQUIRED_FIELDS = ['username']
 
     objects = MyUserManager()
 
