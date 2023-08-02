@@ -1,7 +1,9 @@
 from django.db import models
-from core.models import BaseModel
+from core.models import BaseModel,SoftDeleteModel
 from django.utils.translation import gettext_lazy as _
 from accounts.models import User
+from django.urls import reverse
+from django.utils import timezone
 # Create your models here.
 
 class ListModel(models.Model):
@@ -23,17 +25,45 @@ class ListModel(models.Model):
     class Meta:
         verbose_name, verbose_name_plural = _('List'), _('Lists')
         db_table = 'List'
+        
+    def __str__(self) -> str:
+        return f'{self.title}'
+    
+    def cards_count(self):
+        return self.cards.count() 
+    
+    def get_ordered_cards(self):
+        return self.cards.order_by('status', 'due_date')
+    
+    def get_completed_cards(self):
+        return self.cards.filter(status='done')
+
+    def get_incomplete_cards(self):
+        return self.cards.exclude(status='done')
+
+    def edit_list(self, title=None, background_color=None):
+        try:
+            if title is not None:
+                self.title = title
+            if background_color is not None:
+                self.background_color = background_color
+            self.save()
+            return True
+        except Exception as e:
+            print(f"Error editing list: {e}")
+            return False
 
 
-class CardModel(BaseModel):
+
+class CardModel(BaseModel,SoftDeleteModel):
     title = models.CharField(verbose_name=_("Title"),max_length=150,
                              help_text=_("Enter Card title"))
     description = models.TextField(verbose_name=_("Description"),
                                    help_text=_("Enter card's description"),null=True,blank=True)
     
-    start_date = models.DateTimeField(verbose_name=_("Start Time"),auto_now=True)
-    due_date = models.DateTimeField(verbose_name=_("Due Time"),auto_now=True)
-    reminder_time = models.DateTimeField(verbose_name=_("Reminder Time"),auto_now=True)
+    start_date = models.DateTimeField(verbose_name=_("Start Time"),auto_now=True, null=True, blank=True)
+    due_date = models.DateTimeField(verbose_name=_("Due Time"),auto_now=True, null=True, blank=True)
+    reminder_time = models.DateTimeField(verbose_name=_("Reminder Time"),auto_now=True, null=True, blank=True)
     has_reminder = models.BooleanField(default=False)
     
     list = models.ForeignKey(ListModel, on_delete=models.CASCADE, related_name='cards')
@@ -52,6 +82,46 @@ class CardModel(BaseModel):
     class Meta:
         verbose_name, verbose_name_plural = _('Card'), _('Cards')
         db_table = 'Card'
+        
+    def __str__(self) -> str:
+        return f'{self.title}'
+    
+    def get_absolut_url(self):
+        return reverse('tasks:card_detail', args=(self.pk)) 
+       
+    def get_comments(self):
+        return CardCommentModel.objects.filter(card=self)
+    
+    def move_card_to_new_list(self, new_list_id):
+        try:
+            new_list = ListModel.objects.get(id=new_list_id)
+        except ListModel.DoesNotExist:
+            raise ValueError('Invalid list ID')
+        self.list.cards.remove(self)  # remove the card from the current list
+        self.list = new_list  # set the new list for the card
+        self.save() 
+
+    def edit_card(self, title=None, description=None, status=None,
+                  due_date=None, reminder_time=None, has_reminder=None):
+
+        try:
+            if title is not None:
+                self.title = title
+            if description is not None:
+                self.description = description
+            if status is not None:
+                self.status = status
+            if due_date is not None:
+                self.due_date = due_date
+            if has_reminder is not None:
+                self.has_reminder = has_reminder
+                if reminder_time is not None:
+                    self.reminder_time = reminder_time
+            self.save()
+            return True
+        except Exception as e:
+            print(f"Error editing card: {e}")
+            return False
 
 
 class SubTaskModel(models.Model):
@@ -68,7 +138,7 @@ class SubTaskModel(models.Model):
         db_table = 'SubTask'
 
 
-class CardCommentModel(models.Model):
+class CardCommentModel(BaseModel):
     body = models.TextField(verbose_name=_('Body'),
                             help_text=_('comment on card'))
     card = models.ForeignKey(CardModel, on_delete=models.CASCADE)
@@ -77,11 +147,23 @@ class CardCommentModel(models.Model):
     class Meta:
         verbose_name, verbose_name_plural = _('Comment'), _('Comments')
         db_table = 'CardComment'
+        
+    def __str__(self) -> str:
+        return f'Comment by {self.user} on {self.card.title}'
+    
+    def edit_comment(self, body):
+        try:
+            self.text = body
+            self.save()
+            return True
+        except Exception as e:
+            print(f"Error editing comment: {e}")
+            return False
 
 
 class LabelModel(models.Model):
-    title = title = models.CharField(verbose_name=_("Title"),max_length=50,
-                                     help_text=_("Enter Label title"))
+    title = models.CharField(verbose_name=_("Title"),max_length=50,
+                             help_text=_("Enter Label title"))
     COLOR_CHOICES = [
         ('red',    'Red'),
         ('blue',   'Blue'),
@@ -97,6 +179,25 @@ class LabelModel(models.Model):
     class Meta:
         verbose_name, verbose_name_plural = _('Label'), _('Labels')
         db_table = 'Label'
+    
+    def get_absolute_url(self):
+        return reverse('label_detail', args=[str(self.id)])
+    
+    def check_emergency(self):
+        if self.card.due_date - timezone.now() < timezone.timedelta(hours=12):
+            self.title = 'Emergency to do'
+            self.background_color = 'red'
+            self.save()
+    
+    def edit_label(self, title=None, background_color=None):
+        if title is not None:
+            self.title = title
+        if background_color is not None:
+            self.background_color = background_color
+        self.save()
+    
+    def __str__(self):
+        return self.title
 
 class WorkSpaceModel(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -108,6 +209,20 @@ class WorkSpaceModel(models.Model):
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
+    def get_absolute_url(self):
+        return reverse('workspace_detail', args=[str(self.id)])
+
+    def edit_workspace(self, title=None, category=None, background=None):
+        if title is not None:
+            self.title = title
+        if category is not None:
+            self.category = category
+        if background is not None:
+            self.background = background
+        self.save()
+
+    def __str__(self):
+        return self.title
     
 class BoardModel(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -132,5 +247,50 @@ class BoardModel(models.Model):
     class Meta:
         verbose_name, verbose_name_plural = _('Board'), _('Boards')
         db_table = 'Board'
-
+    def get_absolute_url(self):
+        return reverse('board_detail', args=[str(self.id)])
     
+    def edit_board(self, title=None, category=None, visibility=None, background=None):
+        if title is not None:
+            self.title = title
+        if category is not None:
+            self.category = category
+        if visibility is not None:
+            self.visibility = visibility
+        if background is not None:
+            self.background = background
+        self.save()
+    
+    def __str__(self):
+        return self.title
+    
+class CMembershipModel(BaseModel):
+    user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
+    card_parent = models.ForeignKey(CardModel, on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = 'Membership in Card'
+        verbose_name_plural = 'Card Memberships'
+        db_table = 'card_membership'
+
+
+class BMembershipModel(BaseModel):
+    user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
+    board_parent = models.ForeignKey(BoardModel, on_delete=models.PROTECT)
+    permission = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = 'Membership in Board'
+        verbose_name_plural = 'Board Memberships'
+        db_table = 'board_membership'
+
+
+class WSMembershipModel(BaseModel):
+    user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
+    workspace_parent = models.ForeignKey(WorkSpaceModel, on_delete=models.PROTECT)
+    permission = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = 'Membership in Workspace'
+        verbose_name_plural = 'Workspace Memberships'
+        db_table = 'workspace_membership'
