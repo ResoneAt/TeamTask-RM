@@ -106,9 +106,11 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
 
 
 class GMessageModel(BaseModel):
-    from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='sender')
+    from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
+                                related_name='sender')
     text = models.TextField(help_text='Please Write Your Message')
-    board = models.ForeignKey('BoardModel' , on_delete=models.CASCADE)
+    board = models.ForeignKey('BoardModel' ,
+                              on_delete=models.CASCADE)
     
     class Meta:
         verbose_name, verbose_name_plural = _("GMessage"), _("GMessages")
@@ -116,8 +118,10 @@ class GMessageModel(BaseModel):
 
 
 class PvMessageModel(BaseModel):
-    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE,
+                                related_name='sender')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE,
+                                related_name='receiver')
     text = models.TextField(help_text='Please Write Your Message')
     is_read = models.BooleanField(default=False)
 
