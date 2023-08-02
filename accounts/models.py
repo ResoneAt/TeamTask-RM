@@ -112,7 +112,7 @@ class GMessageModel(BaseModel):
     
     class Meta:
         verbose_name, verbose_name_plural = _("GMessage"), _("GMessages")
-        db_table = 'Gmessage'
+        db_table = 'GroupMessage'
 
 
 class PvMessageModel(BaseModel):
@@ -123,7 +123,7 @@ class PvMessageModel(BaseModel):
 
     class Meta:
         verbose_name, verbose_name_plural = _("Message"), _("Messages")
-        db_table = 'Pvmessage'
+        db_table = 'PrivateMessage'
 
 
 class NotificationModel(BaseModel):
@@ -133,7 +133,7 @@ class NotificationModel(BaseModel):
 
     class Meta:
         verbose_name, verbose_name_plural = _("Notification"), _("Notifications")
-
+        db_table = 'Notification'
     
 
 
