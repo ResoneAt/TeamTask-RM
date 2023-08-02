@@ -106,34 +106,60 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
 
 
 class GMessageModel(BaseModel):
-    from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='sender')
+    from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
+                                related_name='sender')
     text = models.TextField(help_text='Please Write Your Message')
-    board = models.ForeignKey('BoardModel' , on_delete=models.CASCADE)
+    board = models.ForeignKey('BoardModel' ,
+                              on_delete=models.CASCADE)
     
     class Meta:
         verbose_name, verbose_name_plural = _("GMessage"), _("GMessages")
-        db_table = 'Gmessage'
+        db_table = 'GroupMessage'
+    
+    def send_message(self):
+        pass
+
+    def seen_message(self):
+        pass
+    
+    def __str__(self) -> str:
+        return f'{self.from_user} to {self.to_user} : {self.text}'
 
 
 class PvMessageModel(BaseModel):
-    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE,
+                                related_name='sender')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE,
+                                related_name='receiver')
     text = models.TextField(help_text='Please Write Your Message')
     is_read = models.BooleanField(default=False)
 
     class Meta:
         verbose_name, verbose_name_plural = _("Message"), _("Messages")
-        db_table = 'Pvmessage'
+        db_table = 'PrivateMessage'
+
+    def send_message(self):
+        pass
+
+    def seen_message(self):
+        pass
+
+    def __str__(self) -> str:
+        return f'{self.from_user} to {self.to_user} : {self.text}'
 
 
 class NotificationModel(BaseModel):
-    body = models.TextField(null=True, blank=True)
+    body = models.TextField(null=True, 
+                            blank=True)
     to_user = models.ForeignKey(User, on_delete=models.CASCADE)
     card = models.ForeignKey('CardModel', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name, verbose_name_plural = _("Notification"), _("Notifications")
+        db_table = 'Notification'
 
+    def __str__(self) -> str:
+        return f'{self.body} to user {self.user.username}'
     
 
 
