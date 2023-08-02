@@ -188,6 +188,13 @@ class LabelModel(models.Model):
             self.title = 'Emergency to do'
             self.background_color = 'red'
             self.save()
+    
+    def edit_label(self, title=None, background_color=None):
+        if title is not None:
+            self.title = title
+        if background_color is not None:
+            self.background_color = background_color
+        self.save()
 
 class WorkSpaceModel(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -202,6 +209,14 @@ class WorkSpaceModel(models.Model):
     def get_absolute_url(self):
         return reverse('workspace_detail', args=[str(self.id)])
 
+    def edit_workspace(self, title=None, category=None, background=None):
+        if title is not None:
+            self.title = title
+        if category is not None:
+            self.category = category
+        if background is not None:
+            self.background = background
+        self.save()
     
 class BoardModel(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -228,6 +243,17 @@ class BoardModel(models.Model):
         db_table = 'Board'
     def get_absolute_url(self):
         return reverse('board_detail', args=[str(self.id)])
+    
+    def edit_board(self, title=None, category=None, visibility=None, background=None):
+        if title is not None:
+            self.title = title
+        if category is not None:
+            self.category = category
+        if visibility is not None:
+            self.visibility = visibility
+        if background is not None:
+            self.background = background
+        self.save()
     
 class CMembershipModel(BaseModel):
     user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
