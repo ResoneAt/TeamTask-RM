@@ -153,7 +153,6 @@ class NotificationModel(BaseModel, SoftDeleteModel):
     body = models.TextField()
     to_user = models.ForeignKey(User,
                                 on_delete=models.DO_NOTHING)
-    card = models.ForeignKey('CardModel', on_delete=models.DO_NOTHING)
 
     class Meta:
         verbose_name, verbose_name_plural = _("Notification"), _("Notifications")
