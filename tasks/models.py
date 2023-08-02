@@ -2,6 +2,7 @@ from django.db import models
 from core.models import BaseModel
 from django.utils.translation import gettext_lazy as _
 from accounts.models import User
+
 # Create your models here.
 
 class ListModel(models.Model):
@@ -133,4 +134,34 @@ class BoardModel(models.Model):
         verbose_name, verbose_name_plural = _('Board'), _('Boards')
         db_table = 'Board'
 
-    
+
+class CMembershipModel(models.Model):
+    user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
+    card_parent = models.ForeignKey(CardModel, on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = 'Membership in Card'
+        verbose_name_plural = 'Card Memberships'
+        db_table = 'card_membership'
+
+
+class BMembershipModel(models.Model):
+    user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
+    board_parent = models.ForeignKey(BoardModel, on_delete=models.PROTECT)
+    permission = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = 'Membership in Board'
+        verbose_name_plural = 'Board Memberships'
+        db_table = 'board_membership'
+
+
+class WSMembershipModel(models.Model):
+    user_parent = models.ForeignKey(User, on_delete=models.PROTECT)
+    workspace_parent = models.ForeignKey(WorkSpaceModel, on_delete=models.PROTECT)
+    permission = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = 'Membership in Workspace'
+        verbose_name_plural = 'Workspace Memberships'
+        db_table = 'workspace_membership'
