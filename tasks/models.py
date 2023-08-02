@@ -3,6 +3,7 @@ from core.models import BaseModel,SoftDeleteModel
 from django.utils.translation import gettext_lazy as _
 from accounts.models import User
 from django.urls import reverse
+from django.utils import timezone
 # Create your models here.
 
 class ListModel(models.Model):
@@ -181,6 +182,12 @@ class LabelModel(models.Model):
     
     def get_absolute_url(self):
         return reverse('label_detail', args=[str(self.id)])
+    
+    def check_emergency(self):
+        if self.card.due_date - timezone.now() < timezone.timedelta(hours=12):
+            self.title = 'Emergency to do'
+            self.background_color = 'red'
+            self.save()
 
 class WorkSpaceModel(models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
