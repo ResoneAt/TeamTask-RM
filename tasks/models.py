@@ -314,6 +314,9 @@ class CMembershipModel(BaseModel):
         verbose_name_plural = 'Card Memberships'
         db_table = 'CardMembership'
 
+    def __str__(self):
+        return f'{self.user} - {self.card}'
+    
 
 class BMembershipModel(BaseModel):
     user = models.ForeignKey(User,
@@ -327,6 +330,9 @@ class BMembershipModel(BaseModel):
         verbose_name_plural = 'Board Memberships'
         db_table = 'BoardMembership'
 
+    def __str__(self):
+        return f'{self.user} - {self.board}'
+    
 
 class WSMembershipModel(BaseModel):
     user = models.ForeignKey(User,
@@ -339,3 +345,7 @@ class WSMembershipModel(BaseModel):
         verbose_name = 'Membership in Workspace'
         verbose_name_plural = 'Workspace Memberships'
         db_table = 'WorkspaceMembership'
+
+    def __str__(self):
+        return f'{self.user} - {self.workspace}'
+    
