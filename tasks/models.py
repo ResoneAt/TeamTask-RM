@@ -2,6 +2,7 @@ from django.db import models
 from core.models import BaseModel,SoftDeleteModel
 from django.utils.translation import gettext_lazy as _
 from accounts.models import User
+from django.urls import reverse
 # Create your models here.
 
 class ListModel(models.Model):
@@ -23,6 +24,34 @@ class ListModel(models.Model):
     class Meta:
         verbose_name, verbose_name_plural = _('List'), _('Lists')
         db_table = 'List'
+        
+    def __str__(self) -> str:
+        return f'{self.title}'
+    
+    def cards_count(self):
+        return self.cards.count() 
+    
+    def get_ordered_cards(self):
+        return self.cards.order_by('status', 'due_date')
+    
+    def get_completed_cards(self):
+        return self.cards.filter(status='done')
+
+    def get_incomplete_cards(self):
+        return self.cards.exclude(status='done')
+
+    def edit_list(self, title=None, background_color=None):
+        try:
+            if title is not None:
+                self.title = title
+            if background_color is not None:
+                self.background_color = background_color
+            self.save()
+            return True
+        except Exception as e:
+            print(f"Error editing list: {e}")
+            return False
+
 
 
 class CardModel(BaseModel,SoftDeleteModel):
@@ -31,9 +60,9 @@ class CardModel(BaseModel,SoftDeleteModel):
     description = models.TextField(verbose_name=_("Description"),
                                    help_text=_("Enter card's description"),null=True,blank=True)
     
-    start_date = models.DateTimeField(verbose_name=_("Start Time"),auto_now=True)
-    due_date = models.DateTimeField(verbose_name=_("Due Time"),auto_now=True)
-    reminder_time = models.DateTimeField(verbose_name=_("Reminder Time"),auto_now=True)
+    start_date = models.DateTimeField(verbose_name=_("Start Time"),auto_now=True, null=True, blank=True)
+    due_date = models.DateTimeField(verbose_name=_("Due Time"),auto_now=True, null=True, blank=True)
+    reminder_time = models.DateTimeField(verbose_name=_("Reminder Time"),auto_now=True, null=True, blank=True)
     has_reminder = models.BooleanField(default=False)
     
     list = models.ForeignKey(ListModel, on_delete=models.CASCADE, related_name='cards')
@@ -52,7 +81,6 @@ class CardModel(BaseModel,SoftDeleteModel):
     class Meta:
         verbose_name, verbose_name_plural = _('Card'), _('Cards')
         db_table = 'Card'
-
 
 class SubTaskModel(models.Model):
     title = models.CharField(verbose_name=_('Title'),
