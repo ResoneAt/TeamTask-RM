@@ -1,7 +1,7 @@
 from django.contrib import admin
 from . models import BMembershipModel, WSMembershipModel, CMembershipModel,\
                      LabelModel, WorkSpaceModel, BoardModel,\
-                     SubTaskModel, GMessageModel
+                     SubTaskModel, ListModel,CardModel, CardCommentModel
 
 
 @admin.register(WorkSpaceModel)
@@ -27,12 +27,34 @@ class LabelAdmin(admin.ModelAdmin):
 
 class SubTaskInline(admin.TabularInline):
     model = SubTaskModel
-
-
-@admin.register(GMessageModel)
-class GMessageAdmin(admin.ModelAdmin):
-    search_fields = ['from_user', 'board']
-    list_display = ['from_user', 'board', 'text'[:20]]
-    list_filter = ['from_user', 'board']
-
+    
+    
+class CommentCardInline(admin.TabularInline):
+    model = CardCommentModel
+    fk_name = 'comment_card'
+    extra = 1
+    
+    
+@admin.register(ListModel)
+class ListAdmin(admin.ModelAdmin):
+    list_display = ('title', 'board')
+    list_filter = ('title', 'board')
+    search_fields = ('title',)
+    ordering = ('created_at',)
+ 
+    
+@admin.register(CardModel)
+class CardAdmin(admin.ModelAdmin):
+    list_display = ('title', 'list','status')
+    list_filter = ('title', 'status')
+    search_fields = ('title','description')
+    ordering = ('created_at',)
+    inlines = (CommentCardInline,)
+    
+   
+@admin.register(CardCommentModel)
+class CardCommentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'card')
+    list_filter = ('user', 'card')
+    search_fields = ('body',)
 
