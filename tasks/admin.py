@@ -31,7 +31,6 @@ class SubTaskInline(admin.TabularInline):
     
 class CommentCardInline(admin.TabularInline):
     model = CardCommentModel
-    fk_name = 'comment_card'
     extra = 1
     
     
