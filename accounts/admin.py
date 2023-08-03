@@ -39,10 +39,11 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = []
     # inlines = [UserImageInline]
 
+
 @admin.register(PvMessageModel)
 class PvMessageAdmin(admin.ModelAdmin):
     search_fields = ['from_user', 'to_user']
-    list_display = ['from_user', 'to_user', 'body'[:20]]
+    list_display = ['from_user', 'to_user', 'text'[:20]]
     list_filter = ['from_user', 'to_user']
 
 
