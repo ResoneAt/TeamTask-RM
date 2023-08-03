@@ -1,7 +1,7 @@
 from django.contrib import admin
 from . models import BMembershipModel, WSMembershipModel, CMembershipModel,\
                      LabelModel, WorkSpaceModel, BoardModel,\
-                     SubTaskModel
+                     SubTaskModel, GMessageModel
 
 
 @admin.register(WorkSpaceModel)
@@ -27,3 +27,12 @@ class LabelAdmin(admin.ModelAdmin):
 
 class SubTaskInline(admin.TabularInline):
     model = SubTaskModel
+
+
+@admin.register(GMessageModel)
+class GMessageAdmin(admin.ModelAdmin):
+    search_fields = ['from_user', 'board']
+    list_display = ['from_user', 'board', 'text'[:20]]
+    list_filter = ['from_user', 'board']
+
+

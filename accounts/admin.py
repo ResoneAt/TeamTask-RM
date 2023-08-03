@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .forms import UserCreationForm, UserChangeForm
-from .models import User, NotificationModel
+from .models import User, NotificationModel , PvMessageModel
 from django.contrib.auth.models import Group
 
 
@@ -39,7 +39,7 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = []
     # inlines = [UserImageInline]
 
-
+@admin.register(PvMessageModel)
 class PvMessageAdmin(admin.ModelAdmin):
     search_fields = ['from_user', 'to_user']
     list_display = ['from_user', 'to_user', 'body'[:20]]
