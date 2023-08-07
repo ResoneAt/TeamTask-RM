@@ -48,7 +48,7 @@ class CardAdmin(admin.ModelAdmin):
     list_filter = ('title', 'status')
     search_fields = ('title','description')
     ordering = ('created_at',)
-    inlines = (CommentCardInline, SubTaskInline)
+    inlines = (CommentCardInline,SubTaskInline)
     
    
 @admin.register(CardCommentModel)
