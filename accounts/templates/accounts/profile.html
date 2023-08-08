@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>signup</title>
+{% endblock  %}
+
+{% block signup_content %}
+    <h2>profile</h2>
+    <form class='form' acton=''>
+        {{ form }}
+        <a href={% url 'accounts:edit_user' request.user.id %}>edit profile</a>
+    </form>
+
+{% endblock  %}
