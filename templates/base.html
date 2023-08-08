@@ -10,7 +10,9 @@
     {% include 'include/navbar.html' %}
     {% include 'include/messeges.html' %}
     
+    
     <div class='container'>
+        {% block content %} {% endblock %}
         {% block profile_content %}{% endblock  %}
         {% block edit_profile_content %}{% endblock  %}
     <div>
