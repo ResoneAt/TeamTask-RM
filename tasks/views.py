@@ -53,4 +53,20 @@ class CreateWorkSpaceView(LoginRequiredMixin,View):
             workspace.save()
             return redirect(workspace.get_absolute_url())
         return render(request,self.template_name,{'form':form})
+
+class EditWorkSpaceView(LoginRequiredMixin,View):
+    template_name = 'edit_workspace'
+
+    def get(self,request,workspace_id):
+        workspace = WorkSpaceModel.objects.get(pk=workspace_id,owner=request.user)
+        form = WorkSpaceForm(isinstance=workspace)
+        return render(request,self.template_name,{'form':form,'workspace':workspace})
+
+    def post(self,request,workspace_id):
+        workspace = WorkSpaceModel.objects.get(pk=workspace_id, owner=request.user)
+        form = WorkSpaceForm(request.POST,request.FILES,isinstance=workspace)
+        if form.is_valid():
+            form.save()
+            return redirect(workspace.get_absolute_url())
+        return render(request,self.template_name,{'form':form,'workspace':workspace})
         
