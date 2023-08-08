@@ -88,3 +88,10 @@ class CreateBoardView(LoginRequiredMixin,View):
             board.save()
             return redirect(board.get_absolute_url())
         return render(request,self.template_name,{'form':form,'workspace':workspace})
+
+class ShowWorkSpaceView(View):
+    template_name = 'show_workspace.html'
+
+    def get(self,request,workspace_id):
+        workspace = get_object_or_404(WorkSpaceModel,pk=workspace_id)
+        return render(request,self.template_name,{'workspace':workspace})
