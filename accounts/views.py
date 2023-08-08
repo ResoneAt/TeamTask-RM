@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -44,4 +45,19 @@ class NotificationListView(LoginRequiredMixin, View):
 
     def get(self, request):
         notifications = self.notifications_instance
-        return render(request, '', {'notifications': notifications})
+        return render(request, self.template_name, context={'notifications': notifications})
+
+
+class MessageListView(View):
+    template_name = 'accounts/messages_list.html'
+
+    def setup(self, request, *args, **kwargs):
+        self.messages_instance = get_list_or_404(PvMessageModel,
+                                          Q(from_user=request.user) |
+                                                Q(to_user=request.user))
+        return super().setup(request, args, kwargs)
+
+    def get(self, request):
+        messages = self.messages_instance
+        return render(request, self.template_name, context={messages})
+
