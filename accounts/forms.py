@@ -4,6 +4,21 @@ from django.core.exceptions import ValidationError
 from .models import User
 
 
+
+class UserRegistrationForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder': 'username'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control','placeholder': 'Email'}))
+    password1 = forms.CharField(label='password',widget=forms.PasswordInput(attrs={'class':'form-control','placeholder': 'your password'}))
+    password2 = forms.CharField(label='confirm password', widget=forms.PasswordInput(attrs={'class':'form-control','placeholder': 'your password'}))
+
+
+class UserLoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder': 'username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder': 'your password'}))
+
+
+
+
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
