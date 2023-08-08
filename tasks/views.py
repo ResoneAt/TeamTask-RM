@@ -1,8 +1,8 @@
 from django.shortcuts import render,get_object_or_404, redirect
 from django.views import View
-from .models import CardModel, ListModel
+from .models import CardModel, ListModel,WorkSpaceModel,BoardModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardEditForm  
+from .forms import CardEditForm ,WorkSpaceForm
 
 # Create your views here.
 class ShowMyCards(LoginRequiredMixin,View):
@@ -38,4 +38,19 @@ class CardEditView(LoginRequiredMixin,View):
         return render(request, self.template_name, {'form':form, 'mycard':mycard})
 
     
+class CreateWorkSpaceView(LoginRequiredMixin,View):
+    template_name = 'create_workspace.html'
 
+    def get(self,request):
+        form = WorkSpaceForm()
+        return render(request,self.template_name,{'form':form})
+    
+    def post(self,request):
+        form = WorkSpaceForm(request.POST,request.FILES)
+        if form.is_valid():
+            workspace = form.save(commit=False)
+            workspace.owner = request.user
+            workspace.save()
+            return redirect(workspace.get_absolute_url())
+        return render(request,self.template_name,{'form':form})
+        
