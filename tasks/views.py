@@ -2,7 +2,7 @@ from django.shortcuts import render,get_object_or_404, redirect
 from django.views import View
 from .models import CardModel, ListModel,WorkSpaceModel,BoardModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardEditForm ,WorkSpaceForm
+from .forms import CardEditForm ,WorkSpaceForm ,BoardForm
 
 # Create your views here.
 class ShowMyCards(LoginRequiredMixin,View):
@@ -69,4 +69,22 @@ class EditWorkSpaceView(LoginRequiredMixin,View):
             form.save()
             return redirect(workspace.get_absolute_url())
         return render(request,self.template_name,{'form':form,'workspace':workspace})
-        
+
+class CreateBoardView(LoginRequiredMixin,View):
+    template_name = 'create_board.html'
+
+    def get(self,request,workspace_id):
+        workspace = WorkSpaceModel.objects.get(pk=workspace_id,owner=request.user)
+        form = BoardForm()
+        return render(request,self.template_name,{'form':form,'workspace':workspace})
+
+    def post(self,request,workspace_id):
+        workspace = WorkSpaceModel.objects.get(pk=workspace_id, owner=request.user)
+        form = BoardForm(request.POST,request.FILES)
+        if form.is_valid():
+            board = form.save(commit=False)
+            board.owner = request.user
+            board.workspace = workspace
+            board.save()
+            return redirect(board.get_absolute_url())
+        return render(request,self.template_name,{'form':form,'workspace':workspace})
