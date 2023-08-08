@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
 from accounts.models import User, NotificationModel, PvMessageModel
+<<<<<<< HEAD
 from .forms import UserRegistrationForm ,UserLoginForm
 from django.contrib.auth import authenticate
 
@@ -67,22 +68,32 @@ class UserLogoutView(LoginRequiredMixin, View):
         logout(request)
         messages.success(request, 'you logged out successfully', 'success')
         return redirect('home:home')
+=======
+from .forms import ProfileForm
+>>>>>>> fdc29809955e3cab539d1f6fa3c2de37c1128acd
 
 
-
-class ProfileView(View):
-    templated_name = 'account/profile.html'
+class ProfileView(LoginRequiredMixin, View):
+    form_class = ProfileForm
+    templated_name = 'accounts/profile.html'
     def get(self, request, user_id):
-        user = get_object_or_404(User, pk=user_id, is_active=True)
-        return render(request, self.templated_name, {'user': user})
-
+        form = get_object_or_404(User, pk=user_id, is_active=True)
+        return render(request, self.templated_name, {'form': form})
 
 class EditProfileView(LoginRequiredMixin,View):
-    form_class = ''
+    form_class = ProfileForm
     templated_name = 'accounts/edit_profile.html'
-    def get(self, request):
-        form = self.form_class(isinstance=request.user,
-        initial ={'email': request.user.email})
+    def dispatch(self, request, *args, **kwargs):
+        form = get_object_or_404(User, pk=kwargs['user_id'], is_active=true)
+        if not user.id == request.user.id:
+            messages.error(request, 'you can not do this action', 'danger')
+            return render(request, self.templated_name, {'form': form})
+        return super().dispatch(request, *args, **kwargs)
+    
+
+    def get(self, request, user_id):
+        edit_form = User.objects.get(pk=user_id)
+        form = self.form_class(instance=edit_form)
         return render(request, self.templated_name, {'form': form})
     def post(self, request):
         pass
@@ -93,9 +104,9 @@ class LogoutView(LoginRequiredMixin,View):
         if request.user.is_authentication:
             logout(request)
             messages.success(request, 'you successfly logout profile', 'success')
-            return redirect('home:home')
-        messages.success(request, 'you must login account', 'warning')
-        return redirect('home:home')
+            # return redirect('home:home')
+        # messages.success(request, 'you must login account', 'warning')
+        # return redirect('home:home')
 
 
 class NotificationListView(LoginRequiredMixin, View):

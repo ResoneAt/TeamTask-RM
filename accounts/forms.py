@@ -89,3 +89,20 @@ class UserChangeForm(forms.ModelForm):
         model = User
         fields = ["email", "password", "is_active", "is_admin"]
 
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = '__all__'
+        # widgets = {
+        #     'email': forms.EmailInput(attrs={'class': 'form-control'})
+        # }
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('full_name', 'bio', 'image', 'job_title')
+        # widgets = {
+        #     'email': forms.EmailInput(attrs={'class': 'form-control'})
+        # }
