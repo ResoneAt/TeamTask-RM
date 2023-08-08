@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
-from django.contrib.auth import logout
+from django.contrib.auth import logout , login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
@@ -61,6 +61,12 @@ class UserLoginView(View):
             messages.error(request, 'username or password is wrong', 'warning')
         return render(request, self.template_name, {'form':form})
     
+
+class UserLogoutView(LoginRequiredMixin, View):
+    def get(self, request):
+        logout(request)
+        messages.success(request, 'you logged out successfully', 'success')
+        return redirect('home:home')
 
 
 
