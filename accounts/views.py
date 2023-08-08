@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
-from accounts.models import User
+from accounts.models import User, NotificationModel, PvMessageModel
 
 
 
@@ -33,3 +33,15 @@ class LogoutView(LoginRequiredMixin,View):
             return redirect('home:home')
         messages.success(request, 'you must login account', 'warning')
         return redirect('home:home')
+
+
+class NotificationListView(LoginRequiredMixin, View):
+    template_name = 'accounts/notifications.html'
+
+    def setup(self, request, *args, **kwargs):
+        self.notifications_instance = get_list_or_404(NotificationModel, to_user=request.user)
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request):
+        notifications = self.notifications_instance
+        return render(request, '', {'notifications': notifications})
