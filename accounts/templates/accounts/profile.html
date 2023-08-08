@@ -8,7 +8,7 @@
     <h2>profile</h2>
     <form class='form' acton=''>
         {{ form }}
-        <a href={% url 'accounts:edit_user' request.user.id %}>edit profile</a>
+        <a href={% url 'accounts:edit_user' user.id %} class='btn btn-primary'>edit profile</a>
     </form>
 
 {% endblock  %}

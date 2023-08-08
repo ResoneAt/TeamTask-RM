@@ -18,8 +18,17 @@ class ProfileView(LoginRequiredMixin, View):
 class EditProfileView(LoginRequiredMixin,View):
     form_class = ProfileForm
     templated_name = 'accounts/edit_profile.html'
+    def dispatch(self, request, *args, **kwargs):
+        form = get_object_or_404(User, pk=kwargs['user_id'], is_active=true)
+        if not user.id == request.user.id:
+            messages.error(request, 'you can not do this action', 'danger')
+            return render(request, self.templated_name, {'form': form})
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self, request, user_id):
-        form = get_object_or_404(User, pk=user_id)
+        edit_form = User.objects.get(pk=user_id)
+        form = self.form_class(instance=edit_form)
         return render(request, self.templated_name, {'form': form})
     def post(self, request):
         pass

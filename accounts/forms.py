@@ -67,3 +67,12 @@ class ProfileForm(forms.ModelForm):
         # widgets = {
         #     'email': forms.EmailInput(attrs={'class': 'form-control'})
         # }
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('full_name', 'bio', 'image', 'job_title')
+        # widgets = {
+        #     'email': forms.EmailInput(attrs={'class': 'form-control'})
+        # }
