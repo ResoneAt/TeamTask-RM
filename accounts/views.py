@@ -110,7 +110,7 @@ class MessageListView(View):
 
 
 class SendMessageView(View):
-    form_class = SendMessageForm()
+    form_class = SendMessageForm
     template_name = 'accounts/send_message.html'
 
     def setup(self, request, *args, **kwargs):
