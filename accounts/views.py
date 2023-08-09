@@ -34,8 +34,6 @@ class UserRegisterView(View):
             messages.success(request, 'you registred successfully', 'success')
             return redirect('home:home')
         return render(request, self.template_name, {'form':form})
-    
-
 
 class UserLoginView(View):
     from_class = UserLoginForm
