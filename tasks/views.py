@@ -33,7 +33,7 @@ class CardEditView(LoginRequiredMixin,View):
 
     def post(self, request,*args, **kwargs):
         mycard = self.card_instance
-        form = self.form_class(request.POST, instance=mycard)
+        form = self.form_class(request.POST,request.FILES, instance=mycard)
 
         if form.is_valid():
             form.save()
