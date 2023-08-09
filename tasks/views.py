@@ -21,15 +21,18 @@ class ShowMyCards(LoginRequiredMixin,View):
 class CardEditView(LoginRequiredMixin,View):
     template_name = 'card_edit.html'  
     form_class = CardEditForm
+    
+    def setup(self, request, *args, **kwargs):
+        self.card_instance = get_object_or_404(CardModel, pk=kwargs['card_id'])
+        return super().setup(request, *args, **kwargs)
 
-    def get(self, request, card_id):
-        mycard = get_object_or_404(CardModel, id=card_id, user=request.user)
+    def get(self, request, *args, **kwargs):
+        mycard = self.card_instance
         form = self.form_class(instance=mycard)
-
         return render(request, self.template_name, {'form':form, 'mycard':mycard})
 
-    def post(self, request, card_id):
-        mycard = get_object_or_404(CardModel, id=card_id, user=request.user)
+    def post(self, request,*args, **kwargs):
+        mycard = self.card_instance
 
         form = self.form_class(request.POST, instance=mycard)
 
