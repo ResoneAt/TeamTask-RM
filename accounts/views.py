@@ -137,6 +137,3 @@ class SendMessageView(View):
         messages.error(request,'you can not send message')
         return redirect('accounts:send_message', user_id)
 
-
-
-

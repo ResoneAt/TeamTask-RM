@@ -15,7 +15,7 @@
         <p>job :{{ form.job_title }}</p>
         <p>work : {{ form.work_field }}</p>
         <p>joined : {{ form.created_at }}</p>
-        {% comment %} <a href={% url 'accounts:edit_user' user.id %} class='btn btn-primary'>edit profile</a> {% endcomment %}
+        <a href={% url 'accounts:edit_user' user.id %} class='btn btn-primary'>edit profile</a>
     </form>
 
 {% endblock  %}
