@@ -73,10 +73,9 @@ class ProfileView(LoginRequiredMixin, View):
 
 class LogoutView(LoginRequiredMixin,View):
     def get(self, request):
-        if request.user.is_authentication:
-            logout(request)
-            messages.success(request, 'you successfly logout profile', 'success')
-            # return redirect('home:home')
+        logout(request)
+        messages.success(request, 'you successfly logout profile', 'success')
+        return redirect('home:home')
         # messages.success(request, 'you must login account', 'warning')
         # return redirect('home:home')
 
