@@ -4,7 +4,6 @@ from .models import CardModel, ListModel,WorkSpaceModel,BoardModel
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CardEditForm ,WorkSpaceForm ,BoardForm
 
-# Create your views here.
 class ShowMyCards(LoginRequiredMixin,View):
     template_name = 'show_my_cards.html'
     
