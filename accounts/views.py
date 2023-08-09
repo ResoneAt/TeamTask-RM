@@ -5,7 +5,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
 from accounts.models import User, NotificationModel, PvMessageModel
-<<<<<<< HEAD
 from .forms import UserRegistrationForm ,UserLoginForm
 from django.contrib.auth import authenticate
 
@@ -37,6 +36,7 @@ class UserRegisterView(View):
         return render(request, self.template_name, {'form':form})
     
 
+
 class UserLoginView(View):
     from_class = UserLoginForm
     template_name = 'accounts/login.html'
@@ -62,38 +62,10 @@ class UserLoginView(View):
             messages.error(request, 'username or password is wrong', 'warning')
         return render(request, self.template_name, {'form':form})
     
-
-class UserLogoutView(LoginRequiredMixin, View):
-    def get(self, request):
-        logout(request)
-        messages.success(request, 'you logged out successfully', 'success')
-        return redirect('home:home')
-=======
-from .forms import ProfileForm
->>>>>>> fdc29809955e3cab539d1f6fa3c2de37c1128acd
-
-
 class ProfileView(LoginRequiredMixin, View):
-    form_class = ProfileForm
     templated_name = 'accounts/profile.html'
     def get(self, request, user_id):
         form = get_object_or_404(User, pk=user_id, is_active=True)
-        return render(request, self.templated_name, {'form': form})
-
-class EditProfileView(LoginRequiredMixin,View):
-    form_class = ProfileForm
-    templated_name = 'accounts/edit_profile.html'
-    def dispatch(self, request, *args, **kwargs):
-        form = get_object_or_404(User, pk=kwargs['user_id'], is_active=true)
-        if not user.id == request.user.id:
-            messages.error(request, 'you can not do this action', 'danger')
-            return render(request, self.templated_name, {'form': form})
-        return super().dispatch(request, *args, **kwargs)
-    
-
-    def get(self, request, user_id):
-        edit_form = User.objects.get(pk=user_id)
-        form = self.form_class(instance=edit_form)
         return render(request, self.templated_name, {'form': form})
     def post(self, request):
         pass
