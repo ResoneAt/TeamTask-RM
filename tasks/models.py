@@ -111,27 +111,29 @@ class CardModel(BaseModel, SoftDeleteModel):
             new_list = ListModel.objects.get(id=new_list_id)
         except ListModel.DoesNotExist:
             raise ValueError('Invalid list ID')
-        self.list.cards.remove(self)  # remove the card from the current list
-        self.list = new_list  # set the new list for the card
+        self.list.cards.remove(self) 
+        self.list = new_list  
         self.save() 
 
     def edit_card(self, title=None, description=None, status=None,
                   due_date=None, reminder_time=None, has_reminder=None):
-
         try:
+            updates = {}
+            
             if title is not None:
-                self.title = title
+                updates['title'] = title
             if description is not None:
-                self.description = description
+                updates['description'] = description
             if status is not None:
-                self.status = status
+                updates['status'] = status
             if due_date is not None:
-                self.due_date = due_date
+                updates['due_date'] = due_date
             if has_reminder is not None:
-                self.has_reminder = has_reminder
+                updates['has_reminder'] = has_reminder
                 if reminder_time is not None:
-                    self.reminder_time = reminder_time
-            self.save()
+                    updates['reminder_time'] = reminder_time
+
+            CardModel.objects.filter(pk=self.pk).update(**updates)
             return True
         except Exception as e:
             print(f"Error editing card: {e}")
