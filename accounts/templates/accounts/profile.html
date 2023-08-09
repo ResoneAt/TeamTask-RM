@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>signup</title>
+{% endblock  %}
+
+{% block signup_content %}
+    <h2>profile</h2>
+    <form class='form' acton=''>
+        <p>image : {{ form.image }}</p>
+        <p>username : {{ form.username | lower }}</p>
+        <p>email : {{ form.email }}</p>
+        <p>full name : {{ form.full_name}}</p>
+        <p>bio : {{ form.bio}}</p>
+        <p>job :{{ form.job_title }}</p>
+        <p>work : {{ form.work_field }}</p>
+        <p>joined : {{ form.created_at }}</p>
+        <a href={% url 'accounts:edit_user' user.id %} class='btn btn-primary'>edit profile</a>
+    </form>
+
+{% endblock  %}

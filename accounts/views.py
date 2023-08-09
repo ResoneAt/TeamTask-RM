@@ -35,8 +35,6 @@ class UserRegisterView(View):
             return redirect('home:home')
         return render(request, self.template_name, {'form':form})
 
-
-
 class UserLoginView(View):
     from_class = UserLoginForm
     template_name = 'accounts/login.html'
@@ -67,6 +65,11 @@ class ProfileView(LoginRequiredMixin, View):
     def get(self, request, user_id):
         form = get_object_or_404(User, pk=user_id, is_active=True)
         return render(request, self.templated_name, {'form': form})
+
+
+class EditUserView(LoginRequiredMixin,View):
+    def get(self, request, user_id):
+        pass
     def post(self, request):
         pass
 class LogoutView(LoginRequiredMixin,View):
