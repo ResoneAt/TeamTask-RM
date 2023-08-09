@@ -10,10 +10,13 @@
     {% include 'include/navbar.html' %}
     {% include 'include/messeges.html' %}
     
+    
     <div class='container'>
+        {% block content %} {% endblock %}
         {% block profile_content %}{% endblock  %}
         {% block edit_profile_content %}{% endblock  %}
         {% block signup_content %}{% endblock  %}
+        {% block home_content %}{% endblock  %}
     <div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
