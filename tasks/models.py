@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from accounts.models import User
 from django.urls import reverse
 from django.utils import timezone
+from django.db.models import Q
 
 
 class ListModel(BaseModel, SoftDeleteModel):
@@ -37,12 +38,6 @@ class ListModel(BaseModel, SoftDeleteModel):
     
     def get_ordered_cards(self):
         return self.cards.order_by('status', 'due_date')
-
-    def get_completed_cards(self):
-        return self.cards.filter(status='done')
-
-    def get_incomplete_cards(self):
-        return self.cards.exclude(status='done')
 
     def edit_list(self, title=None, background_color=None):
         try:
@@ -105,7 +100,15 @@ class CardModel(BaseModel, SoftDeleteModel):
 
     def get_comments(self):
         return CardCommentModel.objects.filter(card=self)
-
+    
+    @staticmethod
+    def get_completed_cards(user):
+        return CardModel.objects.filter(status='done',user=user)
+    
+    @staticmethod
+    def get_incomplete_cards(user):
+        return CardModel.objects.filter(Q(status='doing',user=user) | Q(status='todo',user=user))
+    
     def move_card_to_new_list(self, new_list_id):
         try:
             new_list = ListModel.objects.get(id=new_list_id)
