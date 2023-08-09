@@ -97,3 +97,10 @@ class ShowWorkSpaceView(View):
     def get(self,request,workspace_id):
         workspace = get_object_or_404(WorkSpaceModel,pk=workspace_id)
         return render(request,self.template_name,{'workspace':workspace})
+
+class ShowBoardView(LoginRequiredMixin,View):
+    template_name = 'show_board.html'
+
+    def get(self,request,board_id):
+        board = BoardModel.objects.get(pk=board_id,owner=request.user)
+        return render(request,self.template_name,{'board':board})

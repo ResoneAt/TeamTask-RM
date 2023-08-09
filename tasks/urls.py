@@ -9,4 +9,5 @@ urlpatterns = [
     path('workspace/<int:workspace_id>/edit/',views.EditWorkSpaceView.as_view(),name='edit_workspace'),
     path('workspace/<int:workspace_id>/board/create/',views.CreateBoardView.as_view(),name='create_board'),
     path('workspace/<int:workspace_id>/',views.ShowWorkSpaceView.as_view(),name='show_workspace'),
+    path('board/<int:board_id>/',views.ShowBoardView.as_view(),name='show_board'),
 ]
