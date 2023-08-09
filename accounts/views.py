@@ -66,6 +66,38 @@ class MessageListView(View):
         return super().setup(request, args, kwargs)
 
     def get(self, request):
-        messages = self.messages_instance
-        return render(request, self.template_name, context={messages})
+        messages_ = self.messages_instance
+        return render(request, self.template_name, context={messages_})
+
+
+class SendMessageView(View):
+    form_class = SendMessageForm()
+    template_name = 'accounts/send_message.html'
+
+    def setup(self, request, *args, **kwargs):
+        self.messages_instance = PvMessageModel.objects.select_related('from_user', 'to_user').filter(
+                            Q(from_user=request.user, to_user=kwargs['user_id']) |
+                            Q(to_user=request.user, from_user=kwargs['user_id']))
+        return super().setup(request, args, kwargs)
+
+    def get(self, request, user_id):
+        messages_ = self.messages_instance
+        form = self.form_class()
+        context = {'messages': messages_,
+                   'form': form}
+        return render(request, self.template_name, context)
+
+    def post(self, request, user_id):
+        form = self.form_class(request.POST)
+        user = get_object_or_404(User, pk=user_id)
+        if form.is_valid():
+            form.save(commit=False)
+            form.from_user, form.to_user = request.user, user
+            form.save()
+            return redirect('accounts:send_message', user_id)
+        messages.error(request,'you can not send message')
+        return redirect('accounts:send_message', user_id)
+
+
+
 
