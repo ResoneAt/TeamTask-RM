@@ -39,18 +39,6 @@ class ListModel(BaseModel, SoftDeleteModel):
     def get_ordered_cards(self):
         return self.cards.order_by('status', 'due_date')
 
-    def edit_list(self, title=None, background_color=None):
-        try:
-            if title is not None:
-                self.title = title
-            if background_color is not None:
-                self.background_color = background_color
-            self.save()
-            return True
-        except Exception as e:
-            print(f"Error editing list: {e}")
-            return False
-
 
 class CardModel(BaseModel, SoftDeleteModel):
     title = models.CharField(verbose_name=_("Title"),
