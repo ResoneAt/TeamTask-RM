@@ -7,14 +7,17 @@ from .forms import CardEditForm ,WorkSpaceForm ,BoardForm
 class ShowMyCards(LoginRequiredMixin,View):
     template_name = 'show_my_cards.html'
     
-    def get(self, request, *args, **kwargs):
-        # cards = CardModel.objects.filter(user=request.user) 
-        # return render(request, self.template_name, context={'cards': cards})
-        lists = ListModel.objects.filter(user=request.user).prefetch_related('cards')
-        return render(request, self.template_name, {'lists': lists})
+    def get(self, request):
         
-
-
+        complete_cards = CardModel.get_completed_cards(request.user)
+        incomplete_cards = CardModel.get_incomplete_cards(request.user)
+        context = {
+            'complete_cards' : complete_cards ,
+             'incomplete_cards' : incomplete_cards  
+        }
+        return render(request, self.template_name, context)
+   
+    
 class CardEditView(LoginRequiredMixin,View):
     template_name = 'card_edit.html'  
     form_class = CardEditForm
