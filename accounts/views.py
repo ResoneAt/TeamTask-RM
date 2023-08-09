@@ -5,10 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
 from accounts.models import User, NotificationModel, PvMessageModel
-from .forms import UserRegistrationForm ,UserLoginForm
+from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm
 from django.contrib.auth import authenticate
-
-
 
 
 class UserRegisterView(View):

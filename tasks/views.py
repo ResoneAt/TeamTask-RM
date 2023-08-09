@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404, redirect
 from django.views import View
-from .models import CardModel, ListModel,WorkSpaceModel,BoardModel
+from .models import CardModel,WorkSpaceModel,BoardModel
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CardEditForm ,WorkSpaceForm ,BoardForm
 
@@ -21,16 +21,18 @@ class ShowMyCards(LoginRequiredMixin,View):
 class CardEditView(LoginRequiredMixin,View):
     template_name = 'card_edit.html'  
     form_class = CardEditForm
+    
+    def setup(self, request, *args, **kwargs):
+        self.card_instance = get_object_or_404(CardModel, pk=kwargs['card_id'])
+        return super().setup(request, *args, **kwargs)
 
-    def get(self, request, card_id):
-        mycard = get_object_or_404(CardModel, id=card_id, user=request.user)
+    def get(self, request, *args, **kwargs):
+        mycard = self.card_instance
         form = self.form_class(instance=mycard)
-
         return render(request, self.template_name, {'form':form, 'mycard':mycard})
 
-    def post(self, request, card_id):
-        mycard = get_object_or_404(CardModel, id=card_id, user=request.user)
-
+    def post(self, request,*args, **kwargs):
+        mycard = self.card_instance
         form = self.form_class(request.POST, instance=mycard)
 
         if form.is_valid():
@@ -39,7 +41,7 @@ class CardEditView(LoginRequiredMixin,View):
 
         return render(request, self.template_name, {'form':form, 'mycard':mycard})
 
-    
+
 class CreateWorkSpaceView(LoginRequiredMixin,View):
     template_name = 'create_workspace.html'
 
@@ -97,3 +99,10 @@ class ShowWorkSpaceView(View):
     def get(self,request,workspace_id):
         workspace = get_object_or_404(WorkSpaceModel,pk=workspace_id)
         return render(request,self.template_name,{'workspace':workspace})
+
+class ShowBoardView(LoginRequiredMixin,View):
+    template_name = 'show_board.html'
+
+    def get(self,request,board_id):
+        board = BoardModel.objects.get(pk=board_id,owner=request.user)
+        return render(request,self.template_name,{'board':board})
