@@ -1,5 +1,5 @@
 from django import forms
-from .models import WorkSpaceModel,BoardModel
+from .models import CardModel,WorkSpaceModel,BoardModel
 
 
 class WorkSpaceForm(forms.ModelForm):
@@ -22,3 +22,12 @@ class BoardForm(forms.ModelForm):
             'visibility':'Visibility',
             'background':'Background'
         }
+class CardEditForm(forms.ModelForm):
+    class Meta:
+        model = CardModel
+        exclude = ('list',)
+        widgets = {
+            # other attributes??
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
+
