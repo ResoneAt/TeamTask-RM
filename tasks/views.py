@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404, redirect
 from django.views import View
-from .models import CardModel, ListModel,WorkSpaceModel,BoardModel
+from .models import CardModel,WorkSpaceModel,BoardModel
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CardEditForm ,WorkSpaceForm ,BoardForm
 
@@ -33,7 +33,6 @@ class CardEditView(LoginRequiredMixin,View):
 
     def post(self, request,*args, **kwargs):
         mycard = self.card_instance
-
         form = self.form_class(request.POST, instance=mycard)
 
         if form.is_valid():
