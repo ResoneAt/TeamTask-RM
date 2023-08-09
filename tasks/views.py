@@ -39,7 +39,7 @@ class CardEditView(LoginRequiredMixin,View):
 
         return render(request, self.template_name, {'form':form, 'mycard':mycard})
 
-    
+
 class CreateWorkSpaceView(LoginRequiredMixin,View):
     template_name = 'create_workspace.html'
 
