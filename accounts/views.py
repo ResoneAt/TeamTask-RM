@@ -92,10 +92,11 @@ class EditProfileView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
 
 
-class LogoutView(LoginRequiredMixin,View):
+class LogoutView(LoginRequiredMixin, View):
+
     def get(self, request):
         logout(request)
-        messages.success(request, 'you successfly logout profile', 'success')
+        messages.success(request, 'you successfully logout profile', 'success')
         return redirect('home:home')
 
 
@@ -103,7 +104,7 @@ class NotificationListView(LoginRequiredMixin, View):
     template_name = 'accounts/notifications.html'
 
     def setup(self, request, *args, **kwargs):
-        self.notifications_instance = get_list_or_404(NotificationModel, to_user=request.user)
+        self.notifications_instance = NotificationModel.objects.filter(to_user=request.user)
         return super().setup(request, *args, **kwargs)
 
     def get(self, request):
