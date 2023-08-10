@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
 from accounts.models import User, NotificationModel, PvMessageModel
-from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm
+from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditProfileForm
 from django.contrib.auth import authenticate
 
 
@@ -65,16 +65,31 @@ class ProfileView(LoginRequiredMixin, View):
     templated_name = 'accounts/profile.html'
 
     def get(self, request, user_id):
-        user = get_object_or_404(User, pk=user_id, is_active=True)
+        user = get_object_or_404(User, pk=user_id)
         return render(request, self.templated_name, {'user': user})
 
 
-class EditUserView(LoginRequiredMixin, View):
-    def get(self, request, user_id):
-        pass
+class EditProfileView(LoginRequiredMixin, View):
+    form_class = EditProfileForm
+    template_name = 'accounts/edit_profile.html'
 
-    def post(self, request):
-        pass
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.id != kwargs['user_id']:
+            messages.error(request, 'you can not access to  this profile!', 'danger')
+            return redirect('accounts:profile')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, user_id):
+        form = self.form_class(instance=request.user)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, user_id):
+        form = self.form_class(request.POST, request.File, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'profile edited successfully')
+            return redirect('accounts:profile')
+        return render(request, self.template_name, {'form': form})
 
 
 class LogoutView(LoginRequiredMixin,View):
@@ -82,8 +97,6 @@ class LogoutView(LoginRequiredMixin,View):
         logout(request)
         messages.success(request, 'you successfly logout profile', 'success')
         return redirect('home:home')
-        # messages.success(request, 'you must login account', 'warning')
-        # return redirect('home:home')
 
 
 class NotificationListView(LoginRequiredMixin, View):
