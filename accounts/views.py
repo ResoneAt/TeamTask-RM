@@ -9,7 +9,7 @@ from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditPro
 from django.contrib.auth import authenticate
 
 
-class UserRegisterView(View):
+class SignUpView(View):
     form_class = UserRegistrationForm
     template_name = 'accounts/register.html'
 
@@ -35,7 +35,7 @@ class UserRegisterView(View):
         return render(request, self.template_name, {'form': form})
 
 
-class UserLoginView(View):
+class LoginView(View):
     from_class = UserLoginForm
     template_name = 'accounts/login.html'
 
