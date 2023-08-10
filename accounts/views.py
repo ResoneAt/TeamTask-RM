@@ -45,33 +45,38 @@ class UserLoginView(View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
-        form = self.from_class
-        return render(request, self.template_name, {'form':form})
+        form = self.from_class()
+        return render(request, self.template_name, {'form': form})
     
     def post(self, request):
         form = self.from_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             user = authenticate(request, username=cd['username'], password=cd['password'])
-            if user is not None:
+            if user:
                 login(request, user)
                 messages.success(request, 'you logged in successfully', 'success')
                 return redirect('home:home')
             messages.error(request, 'username or password is wrong', 'warning')
-        return render(request, self.template_name, {'form':form})
-    
+        return render(request, self.template_name, {'form': form})
+
+
 class ProfileView(LoginRequiredMixin, View):
     templated_name = 'accounts/profile.html'
+
     def get(self, request, user_id):
-        form = get_object_or_404(User, pk=user_id, is_active=True)
-        return render(request, self.templated_name, {'form': form})
+        user = get_object_or_404(User, pk=user_id, is_active=True)
+        return render(request, self.templated_name, {'user': user})
 
 
-class EditUserView(LoginRequiredMixin,View):
+class EditUserView(LoginRequiredMixin, View):
     def get(self, request, user_id):
         pass
+
     def post(self, request):
         pass
+
+
 class LogoutView(LoginRequiredMixin,View):
     def get(self, request):
         logout(request)
