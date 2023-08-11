@@ -1,3 +1,4 @@
+from itertools import count
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import logout , login
@@ -116,9 +117,13 @@ class MessageListView(View):
     template_name = 'accounts/messages_list.html'
 
     def setup(self, request, *args, **kwargs):
-        self.messages_instance = get_list_or_404(PvMessageModel,
-                                          Q(from_user=request.user) |
-                                                Q(to_user=request.user))
+        self.messages_instance_1 = (PvMessageModel.objects.
+                                    select_related('from_user').
+                                    values('from_user', 'to_user').
+                                    filter(Q(from_user=request.user) |
+                                           Q(to_user=request.user)).
+                                    annotate(unread_count=count(is_read=False)).
+                                    order_by('from_user', 'to_user', 'created_at'))
         return super().setup(request, args, kwargs)
 
     def get(self, request):
@@ -131,9 +136,11 @@ class SendMessageView(View):
     template_name = 'accounts/send_message.html'
 
     def setup(self, request, *args, **kwargs):
-        self.messages_instance = PvMessageModel.objects.select_related('from_user', 'to_user').filter(
-                            Q(from_user=request.user, to_user=kwargs['user_id']) |
-                            Q(to_user=request.user, from_user=kwargs['user_id']))
+        self.user = get_object_or_404(User, pk=kwargs['user_id'])
+        self.messages_instance = (PvMessageModel.objects.select_related('to_user')
+                                  .filter(Q(from_user=request.user, to_user=self.user) |
+                                          Q(from_user=self.user, to_user=request.user))
+                                  .order_by('created_at'))
         return super().setup(request, args, kwargs)
 
     def get(self, request, user_id):
