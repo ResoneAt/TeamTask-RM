@@ -62,6 +62,14 @@ class LoginView(View):
         return render(request, self.template_name, {'form': form})
 
 
+class LogoutView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        logout(request)
+        messages.success(request, 'you successfully logout profile', 'success')
+        return redirect('home:home')
+
+
 class ProfileView(LoginRequiredMixin, View):
     templated_name = 'accounts/profile.html'
 
@@ -91,14 +99,6 @@ class EditProfileView(LoginRequiredMixin, View):
             messages.success(request, 'profile edited successfully')
             return redirect('accounts:profile')
         return render(request, self.template_name, {'form': form})
-
-
-class LogoutView(LoginRequiredMixin, View):
-
-    def get(self, request):
-        logout(request)
-        messages.success(request, 'you successfully logout profile', 'success')
-        return redirect('home:home')
 
 
 class NotificationListView(LoginRequiredMixin, View):
@@ -163,3 +163,30 @@ class SendMessageView(View):
         messages.error(request,'you can not send message')
         return redirect('accounts:send_message', user_id)
 
+
+class DeleteAccountView(LoginRequiredMixin, View):
+    ...
+
+
+class EditMessageView(LoginRequiredMixin, View):
+    ...
+
+
+class DeleteMessageView(LoginRequiredMixin, View):
+    ...
+
+
+class UserPasswordResetView(LoginRequiredMixin, View):
+    ...
+
+
+class UserPasswordResetDoneView(LoginRequiredMixin, View):
+    ...
+
+
+class UserPasswordResetConfirmView(LoginRequiredMixin, View):
+    ...
+
+
+class UserPasswordResetCompleteView(LoginRequiredMixin, View):
+    ...
