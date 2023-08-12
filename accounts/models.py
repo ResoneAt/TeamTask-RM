@@ -75,7 +75,7 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
         return self.is_admin
 
     def seen_pv_message(self, from_user):
-        messages = PvMessageModel.objects.filter(from_user=from_user,
+        messages = MessageModel.objects.filter(from_user=from_user,
                                                  to_user=self,
                                                  is_read=False)
         messages.update(is_read=True)
@@ -108,7 +108,7 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
         return self.email
 
 
-class PvMessageModel(BaseModel, SoftDeleteModel):
+class MessageModel(BaseModel, SoftDeleteModel):
     from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
                                   related_name='pv_sender')
     to_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,

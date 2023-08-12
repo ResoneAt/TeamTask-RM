@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from accounts.models import User
 from django.urls import reverse
 from django.utils import timezone
+from django.db.models import Q
 
 
 class ListModel(BaseModel, SoftDeleteModel):
@@ -37,24 +38,6 @@ class ListModel(BaseModel, SoftDeleteModel):
     
     def get_ordered_cards(self):
         return self.cards.order_by('status', 'due_date')
-
-    def get_completed_cards(self):
-        return self.cards.filter(status='done')
-
-    def get_incomplete_cards(self):
-        return self.cards.exclude(status='done')
-
-    def edit_list(self, title=None, background_color=None):
-        try:
-            if title is not None:
-                self.title = title
-            if background_color is not None:
-                self.background_color = background_color
-            self.save()
-            return True
-        except Exception as e:
-            print(f"Error editing list: {e}")
-            return False
 
 
 class CardModel(BaseModel, SoftDeleteModel):
@@ -105,37 +88,25 @@ class CardModel(BaseModel, SoftDeleteModel):
 
     def get_comments(self):
         return CardCommentModel.objects.filter(card=self)
-
+    
+    @staticmethod
+    def get_completed_cards(user):
+        return CardModel.objects.filter(status='done',
+                                        user=user)
+    
+    @staticmethod
+    def get_incomplete_cards(user):
+        return CardModel.objects.filter(Q(status='doing', user=user) |
+                                        Q(status='todo', user=user))
+    
     def move_card_to_new_list(self, new_list_id):
         try:
             new_list = ListModel.objects.get(id=new_list_id)
         except ListModel.DoesNotExist:
             raise ValueError('Invalid list ID')
-        self.list.cards.remove(self)  # remove the card from the current list
-        self.list = new_list  # set the new list for the card
+        self.list.cards.remove(self) 
+        self.list = new_list  
         self.save() 
-
-    def edit_card(self, title=None, description=None, status=None,
-                  due_date=None, reminder_time=None, has_reminder=None):
-
-        try:
-            if title is not None:
-                self.title = title
-            if description is not None:
-                self.description = description
-            if status is not None:
-                self.status = status
-            if due_date is not None:
-                self.due_date = due_date
-            if has_reminder is not None:
-                self.has_reminder = has_reminder
-                if reminder_time is not None:
-                    self.reminder_time = reminder_time
-            self.save()
-            return True
-        except Exception as e:
-            print(f"Error editing card: {e}")
-            return False
 
 
 class SubTaskModel(models.Model):
