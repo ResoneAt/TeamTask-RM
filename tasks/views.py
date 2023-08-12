@@ -7,7 +7,7 @@ from .forms import CardEditForm, WorkSpaceForm, BoardForm
 
 
 class MyCardsView(LoginRequiredMixin, View):
-    template_name = 'show_my_cards.html'
+    template_name = 'tasks/my_cards.html'
     
     def get(self, request):
         
@@ -22,7 +22,7 @@ class MyCardsView(LoginRequiredMixin, View):
     
 class CardEditView(LoginRequiredMixin, View):
     card_instance: object
-    template_name = 'card_edit.html'
+    template_name = 'tasks/card_edit.html'
     form_class = CardEditForm
 
     def setup(self, request, *args, **kwargs):
@@ -47,7 +47,7 @@ class CardEditView(LoginRequiredMixin, View):
 
 
 class WorkSpaceView(View):
-    template_name = 'show_workspace.html'
+    template_name = 'tasks/workspace.html'
 
     def get(self, request, workspace_id):
         workspace = get_object_or_404(WorkSpaceModel, pk=workspace_id)
@@ -55,7 +55,7 @@ class WorkSpaceView(View):
 
 
 class WorkSpaceCreateView(LoginRequiredMixin, View):
-    template_name = 'create_workspace.html'
+    template_name = 'tasks/create_workspace.html'
     form_class = WorkSpaceForm
 
     def get(self, request):
@@ -75,7 +75,7 @@ class WorkSpaceCreateView(LoginRequiredMixin, View):
 
 class WorkSpaceEditView(LoginRequiredMixin, View):
     workspace_instance: object
-    template_name = 'edit_workspace'
+    template_name = 'tasks/edit_workspace.html'
     form_class = WorkSpaceForm
 
     def setup(self, request, *args, **kwargs):
@@ -99,7 +99,7 @@ class WorkSpaceEditView(LoginRequiredMixin, View):
 
 
 class BoardView(LoginRequiredMixin, View):
-    template_name = 'show_board.html'
+    template_name = 'tasks/board.html'
 
     def get(self, request, board_id):
         board = get_object_or_404(BoardModel, pk=board_id)
@@ -108,7 +108,7 @@ class BoardView(LoginRequiredMixin, View):
 
 class BoardCreateView(LoginRequiredMixin, View):
     workspace_instance: object
-    template_name = 'create_board.html'
+    template_name = 'tasks/create_board.html'
 
     def setup(self, request, *args, **kwargs):
         self.workspace_instance = get_object_or_404(WorkSpaceModel,
