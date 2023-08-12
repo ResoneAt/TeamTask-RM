@@ -9,12 +9,14 @@ urlpatterns = [
     path('workspace/<int:workspace_id>/', views.WorkSpaceView.as_view(), name='workspace_detail'),
     path('workspace/edit/<int:workspace_id>/', views.WorkSpaceEditView.as_view(), name='workspace_edit'),
     path('workspace/delete/<int:workspace_id>/', views.WorkSpaceDeleteView.as_view(), name='workspace_delete'),
+    path('workspace/<int:workspace_id>/members/', views.BoardMembersView.as_view(), name='board_members'),
 
     # board
     path('workspace/<int:workspace_id>/board/create/', views.BoardCreateView.as_view(), name='board_create'),
     path('board/<int:board_id>/', views.BoardView.as_view(), name='board_detail'),
     path('board/edit/<int:board_id>/', views.BoardEditView.as_view(), name='board_edit'),
     path('board/delete/<int:board_id>/', views.BoardDeleteView.as_view(), name='board_delete'),
+    path('board/<int:board_id>/members/', views.BoardMembersView.as_view(), name='board_members'),
 
     # list
     path('board/<int:board_id>/list/create/', views.ListCreateView.as_view(), name='list_create'),
@@ -38,12 +40,33 @@ urlpatterns = [
     path('card/<int:card_id>/sub-card/create/', views.SubCardDeleteView.as_view(), name='sub_card_delete'),
 
     # workspace membership
-    path(),
+    path('workspace/<int:workspace_id>/add-member/<int:user_id>/',
+         views.AddMemberToWorkspaceView.as_view(),
+         name='add_member_to_workspace'),
+    path('workspace/<int:workspace_id>/remove-member/<int:user_id>/',
+         views.RemoveMemberFromWorkspaceView.as_view(),
+         name='remove_member_from_workspace'),
+    path('workspace/<int:workspace_id>/change-member-permission/<int:user_id>/',
+         views.ChangeWorkspaceMembershipPermissionView.as_view(),
+         name='change_workspace_membership_permission'),
 
     # board membership
-    path(),
+    path('board/<int:board_id>/add-member/<int:user_id>/',
+         views.AddMemberToBoardView.as_view(),
+         name='add_member_to_board'),
+    path('board/<int:board_id>/remove-member/<int:user_id>/',
+         views.RemoveMemberFromBoardView.as_view(),
+         name='remove_member_from_board'),
+    path('board/<int:board_id>/change-member-permission/<int:user_id>/',
+         views.ChangeBoardMembershipPermissionView.as_view(),
+         name='change_board_membership_permission'),
 
     # card membership
-    path(),
+    path('card/<int:card_id>/add-member/<int:user_id>/',
+         views.AddMemberToCardiew.as_view(),
+         name='add_member_to_board'),
+    path('card/<int:card_id>/remove-member/<int:user_id>/',
+         views.RemoveMemberFromCardView.as_view(),
+         name='remove_member_from_board'),
 
 ]
