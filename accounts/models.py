@@ -108,7 +108,7 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
         return self.email
 
 
-class PvMessageModel(BaseModel, SoftDeleteModel):
+class MessageModel(BaseModel, SoftDeleteModel):
     from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
                                   related_name='pv_sender')
     to_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
