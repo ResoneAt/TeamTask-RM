@@ -59,6 +59,7 @@ class WorkSpaceCreateView(LoginRequiredMixin, View):
             workspace = form.save(commit=False)
             workspace.owner = request.user
             workspace.save()
+            messages.success(request, 'create workspace successfully', 'success')
             return redirect(workspace.get_absolute_url())
         return render(request, self.template_name, {'form': form})
 
@@ -70,6 +71,7 @@ class WorkSpaceEditView(LoginRequiredMixin, View):
     def setup(self, request, *args, **kwargs):
         self.workspace_instance = get_object_or_404(WorkSpaceModel,
                                                     pk=kwargs['workspace_id'])
+        return super().setup(request, *args, **kwargs)
 
     def get(self, request, **kwargs):
         workspace = self.workspace_instance
@@ -81,36 +83,42 @@ class WorkSpaceEditView(LoginRequiredMixin, View):
         form = WorkSpaceForm(request.POST, request.FILES, instance=workspace)
         if form.is_valid():
             form.save()
-            messages.success(request, 'edit workspace successfully')
+            messages.success(request, 'edit workspace successfully', 'success')
             return redirect(workspace.get_absolute_url())
         return render(request, self.template_name, {'form': form, 'workspace': workspace})
 
 
-class CreateBoardView(LoginRequiredMixin, View):
+class BoardCreateView(LoginRequiredMixin, View):
     template_name = 'create_board.html'
 
-    def get(self,request,workspace_id):
-        workspace = WorkSpaceModel.objects.get(pk=workspace_id,owner=request.user)
-        form = BoardForm()
-        return render(request,self.template_name,{'form':form,'workspace':workspace})
+    def setup(self, request, *args, **kwargs):
+        self.workspace_instance = get_object_or_404(WorkSpaceModel,
+                                                    pk=kwargs['workspace_id'])
+        return super().setup(request, *args, **kwargs)
 
-    def post(self,request,workspace_id):
-        workspace = WorkSpaceModel.objects.get(pk=workspace_id, owner=request.user)
-        form = BoardForm(request.POST,request.FILES)
+    def get(self, request, **kwargs):
+        form = BoardForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, **kwargs):
+        form = BoardForm(request.POST, request.FILES)
         if form.is_valid():
             board = form.save(commit=False)
             board.owner = request.user
-            board.workspace = workspace
+            board.workspace = self.workspace_instance
             board.save()
+            messages.success(request, 'create Board successfully', 'success')
             return redirect(board.get_absolute_url())
-        return render(request,self.template_name,{'form':form,'workspace':workspace})
+        return render(request, self.template_name, {'form': form})
+
 
 class ShowWorkSpaceView(View):
     template_name = 'show_workspace.html'
 
-    def get(self,request,workspace_id):
+    def get(self, request, workspace_id):
         workspace = get_object_or_404(WorkSpaceModel,pk=workspace_id)
         return render(request,self.template_name,{'workspace':workspace})
+
 
 class ShowBoardView(LoginRequiredMixin,View):
     template_name = 'show_board.html'
