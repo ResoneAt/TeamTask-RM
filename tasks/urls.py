@@ -9,7 +9,7 @@ urlpatterns = [
     path('workspace/<int:workspace_id>/', views.WorkSpaceView.as_view(), name='workspace_detail'),
     path('workspace/edit/<int:workspace_id>/', views.WorkSpaceEditView.as_view(), name='workspace_edit'),
     path('workspace/delete/<int:workspace_id>/', views.WorkSpaceDeleteView.as_view(), name='workspace_delete'),
-    path('workspace/<int:workspace_id>/members/', views.BoardMembersView.as_view(), name='board_members'),
+    path('workspace/<int:workspace_id>/members/', views.WorkspaceMembersView.as_view(), name='board_members'),
 
     # board
     path('workspace/<int:workspace_id>/board/create/', views.BoardCreateView.as_view(), name='board_create'),
@@ -63,7 +63,7 @@ urlpatterns = [
 
     # card membership
     path('card/<int:card_id>/add-member/<int:user_id>/',
-         views.AddMemberToCardiew.as_view(),
+         views.AddMemberToCardView.as_view(),
          name='add_member_to_board'),
     path('card/<int:card_id>/remove-member/<int:user_id>/',
          views.RemoveMemberFromCardView.as_view(),

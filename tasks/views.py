@@ -129,3 +129,102 @@ class BoardCreateView(LoginRequiredMixin, View):
             messages.success(request, 'create Board successfully', 'success')
             return redirect(board.get_absolute_url())
         return render(request, self.template_name, {'form': form})
+
+
+class WorkSpaceDeleteView(LoginRequiredMixin, View):
+    ...
+
+
+class WorkspaceMembersView(LoginRequiredMixin, View):
+    ...
+
+
+class BoardEditView(LoginRequiredMixin, View):
+    ...
+
+
+class BoardDeleteView(LoginRequiredMixin, View):
+    ...
+
+
+class BoardMembersView(LoginRequiredMixin, View):
+    ...
+
+
+class ListCreateView(LoginRequiredMixin, View):
+    ...
+
+
+class ListEditView(LoginRequiredMixin, View):
+    ...
+
+
+class ListDeleteView(LoginRequiredMixin, View):
+    ...
+
+
+class CardCreateView(LoginRequiredMixin, View):
+    ...
+
+
+class CardDeleteView(LoginRequiredMixin, View):
+    ...
+
+
+class LabelCreateView(LoginRequiredMixin, View):
+    ...
+
+
+class LabelEditView(LoginRequiredMixin, View):
+    ...
+
+
+class LabelDeleteView(LoginRequiredMixin, View):
+    ...
+
+
+class SubCardCreateView(LoginRequiredMixin, View):
+    ...
+
+
+class SubCardEditView(LoginRequiredMixin, View):
+    ...
+
+
+class SubCardDeleteView(LoginRequiredMixin, View):
+    ...
+
+
+class AddMemberToWorkspaceView(LoginRequiredMixin, View):
+    ...
+
+
+class RemoveMemberFromWorkspaceView(LoginRequiredMixin, View):
+    ...
+
+
+class ChangeWorkspaceMembershipPermissionView(LoginRequiredMixin, View):
+    ...
+
+
+class AddMemberToBoardView(LoginRequiredMixin, View):
+    ...
+
+
+class RemoveMemberFromBoardView(LoginRequiredMixin, View):
+    ...
+
+
+class ChangeBoardMembershipPermissionView(LoginRequiredMixin, View):
+    ...
+
+
+class AddMemberToCardView(LoginRequiredMixin, View):
+    ...
+
+
+class RemoveMemberFromCardView(LoginRequiredMixin, View):
+    ...
+
+
+
