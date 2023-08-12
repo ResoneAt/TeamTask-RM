@@ -102,6 +102,7 @@ class LogoutView(LoginRequiredMixin, View):
 
 
 class NotificationListView(LoginRequiredMixin, View):
+    notifications_instance: object
     template_name = 'accounts/notifications.html'
 
     def setup(self, request, *args, **kwargs):
@@ -114,16 +115,17 @@ class NotificationListView(LoginRequiredMixin, View):
 
 
 class MessageListView(View):
+    messages_instance: object
     template_name = 'accounts/messages_list.html'
 
     def setup(self, request, *args, **kwargs):
         self.messages_instance = (MessageModel.objects.
-                                    select_related('from_user').
-                                    values('from_user', 'to_user').
-                                    filter(Q(from_user=request.user) |
-                                           Q(to_user=request.user)).
-                                    annotate(unread_count=count(is_read=False)).
-                                    order_by('from_user', 'to_user', 'created_at'))
+                                  select_related('from_user').
+                                  values('from_user', 'to_user').
+                                  filter(Q(from_user=request.user) |
+                                         Q(to_user=request.user)).
+                                  annotate(unread_count=count(is_read=False)).
+                                  order_by('from_user', 'to_user', 'created_at'))
         return super().setup(request, args, kwargs)
 
     def get(self, request):

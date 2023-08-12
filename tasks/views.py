@@ -21,6 +21,7 @@ class MyCardsView(LoginRequiredMixin, View):
    
     
 class CardEditView(LoginRequiredMixin, View):
+    card_instance: object
     template_name = 'card_edit.html'
     form_class = CardEditForm
 
@@ -28,12 +29,12 @@ class CardEditView(LoginRequiredMixin, View):
         self.card_instance = get_object_or_404(CardModel, pk=kwargs['card_id'])
         return super().setup(request, *args, **kwargs)
 
-    def get(self, request, **kwargs):
+    def get(self, request):
         card = self.card_instance
         form = self.form_class(instance=card)
         return render(request, self.template_name, {'form': form, 'my_card': card})
 
-    def post(self, request, **kwargs):
+    def post(self, request):
         card = self.card_instance
         form = self.form_class(request.POST, request.FILES, instance=card)
 
@@ -43,6 +44,14 @@ class CardEditView(LoginRequiredMixin, View):
             return redirect('show_my_cards')
 
         return render(request, self.template_name, {'form': form, 'card': card})
+
+
+class WorkSpaceView(View):
+    template_name = 'show_workspace.html'
+
+    def get(self, request, workspace_id):
+        workspace = get_object_or_404(WorkSpaceModel, pk=workspace_id)
+        return render(request, self.template_name, {'workspace': workspace})
 
 
 class WorkSpaceCreateView(LoginRequiredMixin, View):
@@ -65,6 +74,7 @@ class WorkSpaceCreateView(LoginRequiredMixin, View):
 
 
 class WorkSpaceEditView(LoginRequiredMixin, View):
+    workspace_instance: object
     template_name = 'edit_workspace'
     form_class = WorkSpaceForm
 
@@ -73,12 +83,12 @@ class WorkSpaceEditView(LoginRequiredMixin, View):
                                                     pk=kwargs['workspace_id'])
         return super().setup(request, *args, **kwargs)
 
-    def get(self, request, **kwargs):
+    def get(self, request):
         workspace = self.workspace_instance
         form = self.form_class(instance=workspace)
         return render(request, self.template_name, {'form': form, 'workspace': workspace})
 
-    def post(self, request, **kwargs):
+    def post(self, request):
         workspace = self.workspace_instance
         form = WorkSpaceForm(request.POST, request.FILES, instance=workspace)
         if form.is_valid():
@@ -88,7 +98,16 @@ class WorkSpaceEditView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form, 'workspace': workspace})
 
 
+class BoardView(LoginRequiredMixin, View):
+    template_name = 'show_board.html'
+
+    def get(self, request, board_id):
+        board = get_object_or_404(BoardModel, pk=board_id)
+        return render(request, self.template_name, {'board': board})
+
+
 class BoardCreateView(LoginRequiredMixin, View):
+    workspace_instance: object
     template_name = 'create_board.html'
 
     def setup(self, request, *args, **kwargs):
@@ -96,11 +115,11 @@ class BoardCreateView(LoginRequiredMixin, View):
                                                     pk=kwargs['workspace_id'])
         return super().setup(request, *args, **kwargs)
 
-    def get(self, request, **kwargs):
+    def get(self, request):
         form = BoardForm()
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request, **kwargs):
+    def post(self, request):
         form = BoardForm(request.POST, request.FILES)
         if form.is_valid():
             board = form.save(commit=False)
@@ -110,19 +129,3 @@ class BoardCreateView(LoginRequiredMixin, View):
             messages.success(request, 'create Board successfully', 'success')
             return redirect(board.get_absolute_url())
         return render(request, self.template_name, {'form': form})
-
-
-class ShowWorkSpaceView(View):
-    template_name = 'show_workspace.html'
-
-    def get(self, request, workspace_id):
-        workspace = get_object_or_404(WorkSpaceModel,pk=workspace_id)
-        return render(request,self.template_name,{'workspace':workspace})
-
-
-class ShowBoardView(LoginRequiredMixin,View):
-    template_name = 'show_board.html'
-
-    def get(self,request,board_id):
-        board = BoardModel.objects.get(pk=board_id,owner=request.user)
-        return render(request,self.template_name,{'board':board})
