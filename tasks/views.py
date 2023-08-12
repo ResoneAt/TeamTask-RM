@@ -132,51 +132,51 @@ class BoardCreateView(LoginRequiredMixin, View):
 
 
 class WorkSpaceDeleteView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/delete_workspace.html'
 
 
 class WorkspaceMembersView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/workspace_members.html'
 
 
 class BoardEditView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/board_edit.html'
 
 
 class BoardDeleteView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/board_delete.html'
 
 
 class BoardMembersView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/board_members.html'
 
 
 class ListCreateView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/list_create.html'
 
 
 class ListEditView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/list_create.html'
 
 
 class ListDeleteView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/list_delete.html'
 
 
 class CardCreateView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/card_create.html'
 
 
 class CardDeleteView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/card_delete.html'
 
 
 class LabelCreateView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/label_create.html'
 
 
 class LabelEditView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/label_create.html'
 
 
 class LabelDeleteView(LoginRequiredMixin, View):
@@ -184,11 +184,11 @@ class LabelDeleteView(LoginRequiredMixin, View):
 
 
 class SubCardCreateView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/sub_card_create.html'
 
 
 class SubCardEditView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/sub_card_create.html'
 
 
 class SubCardDeleteView(LoginRequiredMixin, View):
@@ -196,7 +196,7 @@ class SubCardDeleteView(LoginRequiredMixin, View):
 
 
 class AddMemberToWorkspaceView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/add_member.html'
 
 
 class RemoveMemberFromWorkspaceView(LoginRequiredMixin, View):
@@ -204,11 +204,11 @@ class RemoveMemberFromWorkspaceView(LoginRequiredMixin, View):
 
 
 class ChangeWorkspaceMembershipPermissionView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/change_membership_permission.html'
 
 
 class AddMemberToBoardView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/add_member.html'
 
 
 class RemoveMemberFromBoardView(LoginRequiredMixin, View):
@@ -216,11 +216,11 @@ class RemoveMemberFromBoardView(LoginRequiredMixin, View):
 
 
 class ChangeBoardMembershipPermissionView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/change_membership_permission.html'
 
 
 class AddMemberToCardView(LoginRequiredMixin, View):
-    ...
+    template_name = 'tasks/add_member.html'
 
 
 class RemoveMemberFromCardView(LoginRequiredMixin, View):
