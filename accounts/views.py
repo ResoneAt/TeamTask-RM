@@ -80,11 +80,11 @@ class EditProfileView(LoginRequiredMixin, View):
             return redirect('accounts:profile')
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, user_id):
+    def get(self, request, **kwargs):
         form = self.form_class(instance=request.user)
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request, user_id):
+    def post(self, request, **kwargs):
         form = self.form_class(request.POST, request.File, instance=request.user)
         if form.is_valid():
             form.save()

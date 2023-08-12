@@ -21,19 +21,19 @@ class MyCardsView(LoginRequiredMixin, View):
    
     
 class CardEditView(LoginRequiredMixin, View):
-    template_name = 'card_edit.html'  
+    template_name = 'card_edit.html'
     form_class = CardEditForm
 
     def setup(self, request, *args, **kwargs):
         self.card_instance = get_object_or_404(CardModel, pk=kwargs['card_id'])
         return super().setup(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, **kwargs):
         card = self.card_instance
         form = self.form_class(instance=card)
         return render(request, self.template_name, {'form': form, 'my_card': card})
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, **kwargs):
         card = self.card_instance
         form = self.form_class(request.POST, request.FILES, instance=card)
 
@@ -45,39 +45,48 @@ class CardEditView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form, 'card': card})
 
 
-class CreateWorkSpaceView(LoginRequiredMixin, View):
+class WorkSpaceCreateView(LoginRequiredMixin, View):
     template_name = 'create_workspace.html'
+    form_class = WorkSpaceForm
 
-    def get(self,request):
-        form = WorkSpaceForm()
-        return render(request,self.template_name,{'form':form})
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
     
-    def post(self,request):
-        form = WorkSpaceForm(request.POST,request.FILES)
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             workspace = form.save(commit=False)
             workspace.owner = request.user
             workspace.save()
             return redirect(workspace.get_absolute_url())
-        return render(request,self.template_name,{'form':form})
+        return render(request, self.template_name, {'form': form})
 
-class EditWorkSpaceView(LoginRequiredMixin,View):
+
+class WorkSpaceEditView(LoginRequiredMixin, View):
     template_name = 'edit_workspace'
+    form_class = WorkSpaceForm
 
-    def get(self,request,workspace_id):
-        workspace = WorkSpaceModel.objects.get(pk=workspace_id,owner=request.user)
-        form = WorkSpaceForm(isinstance=workspace)
-        return render(request,self.template_name,{'form':form,'workspace':workspace})
+    def setup(self, request, *args, **kwargs):
+        self.workspace_instance = get_object_or_404(WorkSpaceModel,
+                                                    pk=kwargs['workspace_id'])
 
-    def post(self,request,workspace_id):
-        workspace = WorkSpaceModel.objects.get(pk=workspace_id, owner=request.user)
-        form = WorkSpaceForm(request.POST,request.FILES,isinstance=workspace)
+    def get(self, request, **kwargs):
+        workspace = self.workspace_instance
+        form = self.form_class(instance=workspace)
+        return render(request, self.template_name, {'form': form, 'workspace': workspace})
+
+    def post(self, request, **kwargs):
+        workspace = self.workspace_instance
+        form = WorkSpaceForm(request.POST, request.FILES, instance=workspace)
         if form.is_valid():
             form.save()
+            messages.success(request, 'edit workspace successfully')
             return redirect(workspace.get_absolute_url())
-        return render(request,self.template_name,{'form':form,'workspace':workspace})
+        return render(request, self.template_name, {'form': form, 'workspace': workspace})
 
-class CreateBoardView(LoginRequiredMixin,View):
+
+class CreateBoardView(LoginRequiredMixin, View):
     template_name = 'create_board.html'
 
     def get(self,request,workspace_id):
