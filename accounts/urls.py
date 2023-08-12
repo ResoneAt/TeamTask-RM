@@ -5,6 +5,7 @@ from . import views
 app_name = 'accounts'
 urlpatterns = [
 
+    # user
     path('signup/', views.SignUpView.as_view(), name='signup'),
     path('login/', views.LogoutView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
@@ -12,11 +13,13 @@ urlpatterns = [
     path('profile/edit/<int:user_id>/', views.EditProfileView.as_view(), name='edit_profile'),
     path('delete-account/', views.DeleteAccountView.as_view(), name='delete_account'),
 
+    # message
     path('message/<int:user_id>/', views.SendMessageView.as_view(), name='message'),
     path('message/list/', views.MessageListView.as_view(), name='message_list'),
     path('message/edit/<int:message_id>/', views.EditMessageView.as_view(), name='edit_message'),
     path('message/delete/<int:message_id>/', views.DeleteMessageView.as_viwe(), name='delete_message'),
 
+    # reset password
     path('reset-password/form/',
          views.UserPasswordResetView.as_view(),
          name='reset_password_form'),
