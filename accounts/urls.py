@@ -3,11 +3,30 @@ from . import views
 
 
 app_name = 'accounts'
-urlpatterns =[
-    path('register/', views.UserRegisterView.as_view(), name='user_register'),
-    path('login/', views.UserLoginView.as_view(), name='user_login'),
-    path('logout/', views.LogoutView.as_view(), name= 'user_logout'),
-    path('profile/<int:user_id>/', views.ProfileView.as_view(), name='user_profile'),
-    path('profile/edit/<int:user_id>/', views.EditUserView.as_view(), name='user_edit'),
-    
+urlpatterns = [
+
+    path('signup/', views.SignUpView.as_view(), name='signup'),
+    path('login/', views.LogoutView.as_view(), name='login'),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('profile/<int:user_id>/', views.ProfileView.as_view(), name='profile'),
+    path('profile/edit/<int:user_id>/', views.EditProfileView.as_view(), name='edit_profile'),
+    path('delete-account/', views.DeleteAccountView.as_view(), name='delete_account'),
+
+    path('message/<int:user_id>/', views.SendMessageView.as_view(), name='message'),
+    path('message/list/', views.MessageListView.as_view(), name='message_list'),
+    path('message/edit/<int:message_id>/', views.EditMessageView.as_view(), name='edit_message'),
+    path('message/delete/<int:message_id>/', views.DeleteMessageView.as_viwe(), name='delete_message'),
+
+    path('reset-password/form/',
+         views.UserPasswordResetView.as_view(),
+         name='reset_password_form'),
+    path('reset-password/done/',
+         views.UserPasswordResetDoneView.as_view(),
+         name='password_reset_done'),
+    path('reset-password/confirm/<uidb64>/<token>/',
+         views.UserPasswordResetConfirmView.as_view(),
+         name='password_reset_confirm'),
+    path('reset-password/complete/',
+         views.UserPasswordResetCompleteView.as_view(),
+         name='password_reset_complete'),
 ]
