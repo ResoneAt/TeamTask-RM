@@ -1,10 +1,12 @@
-from django.shortcuts import render,get_object_or_404, redirect
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from .models import CardModel,WorkSpaceModel,BoardModel
+from .models import CardModel, WorkSpaceModel, BoardModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardEditForm ,WorkSpaceForm ,BoardForm
+from .forms import CardEditForm, WorkSpaceForm, BoardForm
 
-class ShowMyCards(LoginRequiredMixin,View):
+
+class MyCardsView(LoginRequiredMixin, View):
     template_name = 'show_my_cards.html'
     
     def get(self, request):
@@ -12,37 +14,38 @@ class ShowMyCards(LoginRequiredMixin,View):
         complete_cards = CardModel.get_completed_cards(request.user)
         incomplete_cards = CardModel.get_incomplete_cards(request.user)
         context = {
-            'complete_cards' : complete_cards ,
-             'incomplete_cards' : incomplete_cards  
+            'complete_cards': complete_cards,
+            'incomplete_cards': incomplete_cards
         }
         return render(request, self.template_name, context)
    
     
-class CardEditView(LoginRequiredMixin,View):
+class CardEditView(LoginRequiredMixin, View):
     template_name = 'card_edit.html'  
     form_class = CardEditForm
-    
+
     def setup(self, request, *args, **kwargs):
         self.card_instance = get_object_or_404(CardModel, pk=kwargs['card_id'])
         return super().setup(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        mycard = self.card_instance
-        form = self.form_class(instance=mycard)
-        return render(request, self.template_name, {'form':form, 'mycard':mycard})
+        card = self.card_instance
+        form = self.form_class(instance=card)
+        return render(request, self.template_name, {'form': form, 'my_card': card})
 
-    def post(self, request,*args, **kwargs):
-        mycard = self.card_instance
-        form = self.form_class(request.POST,request.FILES, instance=mycard)
+    def post(self, request, *args, **kwargs):
+        card = self.card_instance
+        form = self.form_class(request.POST, request.FILES, instance=card)
 
         if form.is_valid():
             form.save()
-            return redirect('show_my_cards')   
+            messages.success(request, 'Edit card successfully', 'success')
+            return redirect('show_my_cards')
 
-        return render(request, self.template_name, {'form':form, 'mycard':mycard})
+        return render(request, self.template_name, {'form': form, 'card': card})
 
 
-class CreateWorkSpaceView(LoginRequiredMixin,View):
+class CreateWorkSpaceView(LoginRequiredMixin, View):
     template_name = 'create_workspace.html'
 
     def get(self,request):

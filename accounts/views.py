@@ -5,7 +5,7 @@ from django.contrib.auth import logout , login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
-from accounts.models import User, NotificationModel, PvMessageModel
+from accounts.models import User, NotificationModel, MessageModel
 from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditProfileForm
 from django.contrib.auth import authenticate
 
@@ -117,7 +117,7 @@ class MessageListView(View):
     template_name = 'accounts/messages_list.html'
 
     def setup(self, request, *args, **kwargs):
-        self.messages_instance_1 = (PvMessageModel.objects.
+        self.messages_instance = (MessageModel.objects.
                                     select_related('from_user').
                                     values('from_user', 'to_user').
                                     filter(Q(from_user=request.user) |
@@ -137,7 +137,7 @@ class SendMessageView(View):
 
     def setup(self, request, *args, **kwargs):
         self.user = get_object_or_404(User, pk=kwargs['user_id'])
-        self.messages_instance = (PvMessageModel.objects.select_related('to_user')
+        self.messages_instance = (MessageModel.objects.select_related('to_user')
                                   .filter(Q(from_user=request.user, to_user=self.user) |
                                           Q(from_user=self.user, to_user=request.user))
                                   .order_by('created_at'))

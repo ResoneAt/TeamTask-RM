@@ -91,11 +91,13 @@ class CardModel(BaseModel, SoftDeleteModel):
     
     @staticmethod
     def get_completed_cards(user):
-        return CardModel.objects.filter(status='done',user=user)
+        return CardModel.objects.filter(status='done',
+                                        user=user)
     
     @staticmethod
     def get_incomplete_cards(user):
-        return CardModel.objects.filter(Q(status='doing',user=user) | Q(status='todo',user=user))
+        return CardModel.objects.filter(Q(status='doing', user=user) |
+                                        Q(status='todo', user=user))
     
     def move_card_to_new_list(self, new_list_id):
         try:

@@ -75,7 +75,7 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
         return self.is_admin
 
     def seen_pv_message(self, from_user):
-        messages = PvMessageModel.objects.filter(from_user=from_user,
+        messages = MessageModel.objects.filter(from_user=from_user,
                                                  to_user=self,
                                                  is_read=False)
         messages.update(is_read=True)
