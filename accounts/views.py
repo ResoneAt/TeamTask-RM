@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate
 
 class SignUpView(View):
     form_class = UserRegistrationForm
-    template_name = 'accounts/register.html'
+    template_name = 'accounts/signup.html'
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -103,7 +103,7 @@ class EditProfileView(LoginRequiredMixin, View):
 
 class NotificationListView(LoginRequiredMixin, View):
     notifications_instance: object
-    template_name = 'accounts/notifications.html'
+    template_name = 'accounts/notifications_list.html'
 
     def setup(self, request, *args, **kwargs):
         self.notifications_instance = NotificationModel.objects.filter(to_user=request.user)
@@ -135,7 +135,7 @@ class MessageListView(View):
 
 class SendMessageView(View):
     form_class = SendMessageForm
-    template_name = 'accounts/send_message.html'
+    template_name = 'accounts/pv_message.html'
 
     def setup(self, request, *args, **kwargs):
         self.user = get_object_or_404(User, pk=kwargs['user_id'])
@@ -165,11 +165,11 @@ class SendMessageView(View):
 
 
 class DeleteAccountView(LoginRequiredMixin, View):
-    ...
+    template_name = 'accounts/delete_account.html'
 
 
 class EditMessageView(LoginRequiredMixin, View):
-    ...
+    template_name = 'accounts/edit_message.html'
 
 
 class DeleteMessageView(LoginRequiredMixin, View):
@@ -177,16 +177,16 @@ class DeleteMessageView(LoginRequiredMixin, View):
 
 
 class UserPasswordResetView(LoginRequiredMixin, View):
-    ...
+    template_name = 'accounts/password_reset_form.html'
 
 
 class UserPasswordResetDoneView(LoginRequiredMixin, View):
-    ...
+    template_name = 'accounts/password_reset_done.html'
 
 
 class UserPasswordResetConfirmView(LoginRequiredMixin, View):
-    ...
+    template_name = 'accounts/password_reset_confirm.html'
 
 
 class UserPasswordResetCompleteView(LoginRequiredMixin, View):
-    ...
+    template_name = 'accounts/password_reset_complete.html'
