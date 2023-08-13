@@ -23,7 +23,7 @@ class MyCardsView(LoginRequiredMixin, View):
 class CardEditView(LoginRequiredMixin, View):
     card_instance: object
     template_name = 'tasks/card_edit.html'
-    form_class = CardEditForm
+    form_class = CardCreateEditForm
 
     def setup(self, request, *args, **kwargs):
         self.card_instance = get_object_or_404(CardModel, pk=kwargs['card_id'])
