@@ -2,13 +2,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <div class ="navbar-nav">
-        <a class="navbar-brand" href="{% url 'home:home' %}">Home</a>
+        <a class="navbar-brand" href="{% url 'accounts:home' %}">Home</a>
         {% if request.user.is_authenticated %}
         <a class="navbar-brand" href="{% url 'accounts:user_logout' %}">Logout</a>
-        <a href='{% url 'accounts:user_profile' request.user.id %}' class='navbar-brand'>profile</a>
+        <a href='{% url "accounts:profile" request.user.id %}' class='navbar-brand'>profile</a>
         {% else %}
-        <a class="navbar-brand" href="{% url 'accounts:user_register' %}">Register</a>
-        <a class="navbar-brand" href="{% url 'accounts:user_login' %}">Login</a>
+        <a class="navbar-brand" href="{% url 'accounts:signup' %}">Register</a>
+        <a class="navbar-brand" href="{% url 'accounts:login' %}">Login</a>
         {% endif %}
       </div>
     </div>
