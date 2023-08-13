@@ -10,7 +10,7 @@ from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditPro
 from django.contrib.auth import authenticate
 
 
-class HomePageView(View):
+class HomePageView(LoginRequiredMixin, View):
 
     def get(self, request):
         return render(request, 'accounts/home.html')
