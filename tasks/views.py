@@ -134,6 +134,21 @@ class BoardCreateView(LoginRequiredMixin, View):
 class WorkSpaceDeleteView(LoginRequiredMixin, View):
     template_name = 'tasks/delete_workspace.html'
 
+    def setup( self, request, *args, **kwargs):
+        self.workspace_instance = get_object_or_404(WorkSpaceModel,
+                                                    pk=kwargs['workspace_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self,request):
+        workspace = self.workspace_instance
+        return render(request, self.template_name, {'workspace':workspace}) 
+
+    def post(self, request):
+        workspace = self.workspace_instance
+        workspace.delete()
+        messages.success(request, 'You delete workspace successfully', 'success')
+        return redirect('home')
+
 
 class WorkspaceMembersView(LoginRequiredMixin, View):
     template_name = 'tasks/workspace_members.html'
