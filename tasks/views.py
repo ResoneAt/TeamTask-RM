@@ -1,9 +1,9 @@
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from .models import CardModel, WorkSpaceModel, BoardModel
+from .models import CardModel, WorkSpaceModel, BoardModel, ListModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardEditForm, WorkSpaceForm, BoardForm
+from .forms import CardCreateEditForm, WorkSpaceForm, BoardForm
 
 
 class MyCardsView(LoginRequiredMixin, View):
@@ -164,7 +164,28 @@ class ListDeleteView(LoginRequiredMixin, View):
 
 
 class CardCreateView(LoginRequiredMixin, View):
+    list_instance : object
     template_name = 'tasks/card_create.html'
+    form_class = CardCreateEditForm
+
+    def setup(self, request, *args, **kwargs):
+        self.list_instance = get_object_or_404(ListModel,
+                                                pk=kwargs['list_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            new_card = form.save(commit=False)
+            new_card.list = self.list_instance
+            new_card.save()
+            messages.success(request, 'you created a new card', 'success')
+            return redirect(new_card.get_absolute_url())
+        return render(request, self.template_name, {'form': form})
 
 
 class CardDeleteView(LoginRequiredMixin, View):
