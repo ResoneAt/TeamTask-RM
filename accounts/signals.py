@@ -10,11 +10,3 @@ def login_welcome_signal(sender, request, user, **kwargs):
         body='welcome to our TeamTask',
         to_user=user
     )
-
-
-@receiver(signal=post_save, sender='WSMembershipModel')
-def login_welcome_signal(sender, request, instance, **kwargs):
-    NotificationModel.objects.create(
-        body=f'you add to {instance.workspace.title} workspace ',
-        to_user=instance.user
-    )
