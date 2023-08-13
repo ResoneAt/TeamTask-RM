@@ -22,7 +22,7 @@ class BoardForm(forms.ModelForm):
             'visibility':'Visibility',
             'background':'Background'
         }
-class CardEditForm(forms.ModelForm):
+class CardCreateEditForm(forms.ModelForm):
     class Meta:
         model = CardModel
         exclude = ('list',)
