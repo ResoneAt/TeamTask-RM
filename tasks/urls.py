@@ -24,7 +24,7 @@ urlpatterns = [
     path('list/delete/<int:list_id>', views.ListDeleteView.as_view(), name='list_delete'),
 
     # card
-    path('card/create/', views.CardCreateView.as_view(), name='card_create'),
+    path('card/create/<int:list_id>', views.CardCreateView.as_view(), name='card_create'),
     path('my-cards/', views.MyCardsView.as_view(), name='my_cards'),
     path('card/edit/<int:card_id>/', views.CardEditView.as_view(), name='card_edit'),
     path('card/delete/<int:card_id>/', views.CardDeleteView.as_view(), name='card_delete'),
