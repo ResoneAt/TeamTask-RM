@@ -10,6 +10,12 @@ from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditPro
 from django.contrib.auth import authenticate
 
 
+class HomePageView(View):
+
+    def get(self, request):
+        return render(request, 'accounts/home.html')
+
+
 class SignUpView(View):
     form_class = UserRegistrationForm
     template_name = 'accounts/signup.html'
