@@ -30,4 +30,10 @@ class CardCreateEditForm(forms.ModelForm):
             # other attributes??
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
-
+class LabelCreateEditForm(forms.ModelForm):
+    class Meta:
+        model = CardModel
+        exclude = ('card',)
+        widgets = {
+            'background_color': forms.Select(attrs={'class': 'form-control'}),
+        }
