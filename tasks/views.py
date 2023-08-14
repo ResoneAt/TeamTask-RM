@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import CardModel, WorkSpaceModel, BoardModel, ListModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardCreateEditForm, WorkSpaceForm, BoardForm
+from .forms import CardCreateEditForm, WorkSpaceForm, BoardForm,ListCreateEditForm
 
 
 class MyCardsView(LoginRequiredMixin, View):
@@ -214,6 +214,20 @@ class BoardMembersView(LoginRequiredMixin, View):
 
 class ListCreateView(LoginRequiredMixin, View):
     template_name = 'tasks/list_create.html'
+    form_class = ListCreateEditForm
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            new_list = form.save(commit=False)
+            new_list.save()
+            return redirect('board')
+
+        return render(request, self.template_name, {'form':form})
 
 
 class ListEditView(LoginRequiredMixin, View):
