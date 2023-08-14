@@ -205,6 +205,15 @@ class CardCreateView(LoginRequiredMixin, View):
 
 class CardDeleteView(LoginRequiredMixin, View):
     template_name = 'tasks/card_delete.html'
+    
+    def get(self, request, card_id):
+        card = get_object_or_404(CardModel, pk=card_id)
+        # if 
+        card.delete()
+        messages.success(request, 'card deleted successfully', 'success')
+        # else:
+        #     messages.error(request, 'you cant delete this card', 'danger')
+        return redirect('my_cards')
 
 
 class LabelCreateView(LoginRequiredMixin, View):
