@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import CardModel, WorkSpaceModel, BoardModel, ListModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardCreateEditForm, WorkSpaceForm, BoardForm
+from .forms import CardCreateEditForm,LabelCreateEditForm, WorkSpaceForm, BoardForm
 
 
 class MyCardsView(LoginRequiredMixin, View):
@@ -217,7 +217,29 @@ class CardDeleteView(LoginRequiredMixin, View):
 
 
 class LabelCreateView(LoginRequiredMixin, View):
+    card_instance : object
     template_name = 'tasks/label_create.html'
+    form_class = LabelCreateEditForm
+
+    def setup(self, request, *args, **kwargs):
+        self.card_instance = get_object_or_404(CardModel,
+                                                pk=kwargs['card_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            new_label = form.save(commit=False)
+            new_label.card = self.card_instance
+            new_label.save()
+            messages.success(request, 'you created a new label', 'success')
+            return redirect(new_label.get_absolute_url())
+        return render(request, self.template_name, {'form': form})
+    
 
 
 class LabelEditView(LoginRequiredMixin, View):
