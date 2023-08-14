@@ -153,6 +153,11 @@ class WorkSpaceDeleteView(LoginRequiredMixin, View):
 class WorkspaceMembersView(LoginRequiredMixin, View):
     template_name = 'tasks/workspace_members.html'
 
+    def get(self, request, workspace_id):
+        workspace = get_object_or_404(WorkSpaceModel, pk=workspace_id)
+        members = workspace.members.all()
+        return render(request, self.template_name, {'workspace':workspace, 'members':members})
+
 
 class BoardEditView(LoginRequiredMixin, View):
     template_name = 'tasks/board_edit.html'
