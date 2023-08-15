@@ -250,7 +250,7 @@ class LabelCreateView(LoginRequiredMixin, View):
 
 class LabelEditView(LoginRequiredMixin, View):
     label_instance: object
-    template_name = 'tasks/label_create.html'
+    template_name = 'tasks/label_edit.html'
     form_class = LabelCreateEditForm
 
     def setup(self, request, *args, **kwargs):
