@@ -207,6 +207,11 @@ class BoardDeleteView(LoginRequiredMixin, View):
 class BoardMembersView(LoginRequiredMixin, View):
     template_name = 'tasks/board_members.html'
 
+    def get(self, request, board_id):
+        board = get_object_or_404(BoardModel, pk=board_id)
+        members = board.members.all()
+        return render(request, self.template_name, {'board':board,'members':members})
+
 
 class ListCreateView(LoginRequiredMixin, View):
     template_name = 'tasks/list_create.html'
