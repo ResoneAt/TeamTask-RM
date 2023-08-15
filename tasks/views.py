@@ -205,7 +205,6 @@ class CardCreateView(LoginRequiredMixin, View):
 
 
 class CardDeleteView(LoginRequiredMixin, View):
-    template_name = 'tasks/card_delete.html'
     
     def setup( self, request, *args, **kwargs):
         self.card_instance = get_object_or_404(CardModel,
@@ -323,7 +322,7 @@ class SubCardEditView(LoginRequiredMixin, View):
     form_class = SubCardCreateEditForm
 
     def setup(self, request, *args, **kwargs):
-        self.subcard_instance = get_object_or_404(SubTaskModel, pk=kwargs['subcard_id'])
+        self.subcard_instance = get_object_or_404(SubTaskModel, pk=kwargs['sub_card_id'])
         return super().setup(request, *args, **kwargs)
 
     def get(self, request):
