@@ -162,6 +162,27 @@ class WorkspaceMembersView(LoginRequiredMixin, View):
 
 class BoardEditView(LoginRequiredMixin, View):
     template_name = 'tasks/board_edit.html'
+    board_instance : object
+    form_class = BoardForm
+
+    def setup(self, request, *args, **kwargs):
+        self.board_instance = get_object_or_404(BoardModel, pk=kwargs['board_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request):
+        board = self.board_instance
+        form = self.form_class(request.POST, request.FILES, instance=board)
+        return render(request, self.template_name, {'form':form, 'board':board})
+
+    def post(self, request):
+        board = self.board_instance
+        form = self.form_class(request.POST, request.FILES, instance=board)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Board edited successfully', 'success')
+            return redirect('board',board_id=board.id)
+
+        return render(request, self.template_name, {'form':form, 'board':board})
 
 
 class BoardDeleteView(LoginRequiredMixin, View):
