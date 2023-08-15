@@ -171,7 +171,9 @@ class SendMessageView(View):
 
 
 class DeleteAccountView(LoginRequiredMixin, View):
-    template_name = 'accounts/delete_account.html'
+    template_name = 'accounts/delete_account.html
+
+
 
 
 class EditMessageView(LoginRequiredMixin, View):
@@ -179,7 +181,17 @@ class EditMessageView(LoginRequiredMixin, View):
 
 
 class DeleteMessageView(LoginRequiredMixin, View):
-    ...
+
+    def get(self, request, message_id):
+        message = MessageModel.objects.get(pk=message_id)
+        if message.user.id == request.user.id:
+            message.delete()
+            messages.success(request, 'message deleted successfully', 'success')
+        else:
+            messages.error(request, 'You canot delete in messages', 'danger')
+        return redirect('accounts:message_list')
+    
+
 
 
 class UserPasswordResetView(LoginRequiredMixin, View):
