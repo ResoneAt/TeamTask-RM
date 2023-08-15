@@ -177,6 +177,21 @@ class DeleteAccountView(LoginRequiredMixin, View):
     template_name = 'accounts/delete_account.html'
 
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.id == kwargs['user_id']:
+            messages.error(request, 'You Canot Do This Action!', 'danger')
+            return redirect('accounts:profile', kwargs['user_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, user_id):
+        return render(request, self.template_name)
+
+    def post(self, request, user_id):
+        request.user.delete()
+        return redirect('accounts:login')
+
+
+
 class EditMessageView(LoginRequiredMixin, View):
     form_class = EditMessageForm
     template_name = 'accounts/edit_message.html'
