@@ -33,7 +33,7 @@ class CardEditView(LoginRequiredMixin, View):
     def get(self, request):
         card = self.card_instance
         form = self.form_class(instance=card)
-        return render(request, self.template_name, {'form': form, 'my_card': card})
+        return render(request, self.template_name, {'form': form, 'card': card})
 
     def post(self, request):
         card = self.card_instance
@@ -41,8 +41,8 @@ class CardEditView(LoginRequiredMixin, View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Edit card successfully', 'success')
-            return redirect('show_my_cards')
+            messages.success(request, 'card edited successfully', 'success')
+            return redirect('board_detail', card.list.board.id)
 
         return render(request, self.template_name, {'form': form, 'card': card})
 
