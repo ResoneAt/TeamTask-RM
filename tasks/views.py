@@ -4,7 +4,7 @@ from django.views import View
 from .models import CardModel, WorkSpaceModel, BoardModel, ListModel, LabelModel,SubTaskModel
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CardCreateEditForm,LabelCreateEditForm,SubCardCreateEditForm,\
-    WorkSpaceForm, BoardForm
+    WorkSpaceForm, BoardForm,ListCreateEditForm
 
 
 class MyCardsView(LoginRequiredMixin, View):
@@ -233,6 +233,28 @@ class ListCreateView(LoginRequiredMixin, View):
 
 class ListEditView(LoginRequiredMixin, View):
     template_name = 'tasks/list_create.html'
+    list_instance : object
+    form_class = ListCreateEditForm
+
+    def setup(self, request, *args, **kwargs):
+        self.list_instance = get_object_or_404(ListModel, pk=kwargs['list_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request):
+        list_obj = self.list_instance
+        form = self.form_class(instance=list_obj)
+        return render(request, self.template_name, {'form':form, 'list_obj':list_obj})
+
+    def post(self, request):
+        list_obj = self.list_instance
+        form = self.form_class(request.POST, instance=list_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'List edited successfully', 'success')
+            return redirect('board')
+
+        return render(request, self.template_name, {'form':form, 'list_obj':list_obj})
+
 
 
 class ListDeleteView(LoginRequiredMixin, View):

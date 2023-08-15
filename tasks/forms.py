@@ -1,5 +1,5 @@
 from django import forms
-from .models import CardModel,WorkSpaceModel,BoardModel,LabelModel,SubTaskModel
+from .models import CardModel,WorkSpaceModel,BoardModel,LabelModel,SubTaskModel,ListModel
 
 class WorkSpaceForm(forms.ModelForm):
     class Meta:
