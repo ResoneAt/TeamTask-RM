@@ -219,7 +219,7 @@ class CardDeleteView(LoginRequiredMixin, View):
         messages.success(request, 'card deleted successfully', 'success')
         # else:
         #     messages.error(request, 'you cant delete this card', 'danger')
-        return redirect('my_cards')
+        return redirect('board_detail', card.list.board.id)
 
 
 class LabelCreateView(LoginRequiredMixin, View):
