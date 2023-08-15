@@ -37,7 +37,7 @@ urlpatterns = [
     # sub card
     path('card/<int:card_id>/sub-card/create/', views.SubCardCreateView.as_view(), name='sub_card_create'),
     path('sub-card/edit/<int:sub_card_id>', views.SubCardEditView.as_view(), name='sub_card_edit'),
-    path('card/<int:card_id>/sub-card/create/', views.SubCardDeleteView.as_view(), name='sub_card_delete'),
+    path('card/<int:card_id>/sub-card/delete/', views.SubCardDeleteView.as_view(), name='sub_card_delete'),
 
     # workspace membership
     path('workspace/<int:workspace_id>/add-member/<int:user_id>/',
