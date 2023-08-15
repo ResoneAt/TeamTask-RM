@@ -4,14 +4,18 @@ from accounts.models import NotificationModel
 
 
 @receiver(signal=post_save, sender='WSMembershipModel')
-def add_to_workspace_signal(sender, request, instance, **kwargs):
+def add_member_to_workspace_signal(sender, request, instance, **kwargs):
     NotificationModel.objects.create(
-        body=f'You have been added to Workspace {instance.workspace.title}'
+        body=f'You have been added to {instance.workspace.title} Workspace'
              f' by {instance.workspace.owner}',
         to_user=instance.user
     )
 
 
 @receiver(signal=post_save, sender='BMembershipModel')
-def add_to_board_signal():
-    ...
+def add_member_to_board_signal(sender, request, instance, **kwargs):
+    NotificationModel.objects.create(
+        body=f'You have been added to {instance.workspace.title} Board '
+             f' by {instance.workspace.owner}',
+        to_user=instance.user
+    )
