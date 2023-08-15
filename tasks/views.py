@@ -271,7 +271,20 @@ class LabelEditView(LoginRequiredMixin, View):
 
 
 class LabelDeleteView(LoginRequiredMixin, View):
-    ...
+
+    def setup( self, request, *args, **kwargs):
+        self.label_instance = get_object_or_404(LabelModel,
+                                                pk=kwargs['label_id'])
+        return super().setup(request, *args, **kwargs)
+    
+    def post(self, request):
+        label = self.label_instance
+        # if 
+        label.delete()
+        messages.success(request, 'label deleted successfully', 'success')
+        # else:
+        #     messages.error(request, 'you cant delete this label', 'danger')
+        return redirect('board_detail',label.card.list.board.id)
 
 
 class SubCardCreateView(LoginRequiredMixin, View):
