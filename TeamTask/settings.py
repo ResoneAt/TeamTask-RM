@@ -147,3 +147,14 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_URL = 'accounts:login'
+
+
+# Google Account
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'TeamTask.group@gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = 'nuunjchpvygkuosc'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'TeamTask Group'
