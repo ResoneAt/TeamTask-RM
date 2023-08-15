@@ -176,10 +176,7 @@ class SendMessageView(View):
 
 
 class DeleteAccountView(LoginRequiredMixin, View):
-    template_name = 'accounts/delete_account.html
-
-
-
+    template_name = 'accounts/delete_account.html'
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.id == kwargs['user_id']:
@@ -193,7 +190,6 @@ class DeleteAccountView(LoginRequiredMixin, View):
     def post(self, request, user_id):
         request.user.delete()
         return redirect('accounts:login')
-
 
 
 class EditMessageView(LoginRequiredMixin, View):
