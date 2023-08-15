@@ -187,6 +187,21 @@ class BoardEditView(LoginRequiredMixin, View):
 
 class BoardDeleteView(LoginRequiredMixin, View):
     template_name = 'tasks/board_delete.html'
+    board_instance : object
+
+    def setup(self, request, *args, **kwargs):
+        self.board_instance = get_object_or_404(BoardModel, pk=kwargs['board_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request):
+        board = self.board_instance
+        return render(request, self.template_name, {'board':board})
+    
+    def post(self, request):
+        board = self.board_instance
+        board.delete()
+        messages.success(request, 'You deleted board successfully', 'success')
+        return redirect('workspace')
 
 
 class BoardMembersView(LoginRequiredMixin, View):
