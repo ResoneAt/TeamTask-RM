@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
-from .models import User
+from .models import User , MessageModel
 
 
 class UserRegistrationForm(forms.Form):
@@ -104,3 +104,9 @@ class SendMessageForm(forms.ModelForm):
 
 class EditProfileForm(forms.ModelForm):
     ...
+
+
+class EditMessageForm(forms.ModelForm):
+    class Meta:
+        model: MessageModel
+        field = ('text',)

@@ -1,12 +1,15 @@
 from itertools import count
+from typing import Any
+from django import http
 from django.db.models import Q
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import logout , login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
 from accounts.models import User, NotificationModel, MessageModel
-from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditProfileForm
+from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditProfileForm , EditMessageForm
 from django.contrib.auth import authenticate
 
 
@@ -175,7 +178,34 @@ class DeleteAccountView(LoginRequiredMixin, View):
 
 
 class EditMessageView(LoginRequiredMixin, View):
+    form_class = EditMessageForm
     template_name = 'accounts/edit_message.html'
+
+    def setup(self, request, *args, **kwargs):
+        self.message_instance = MessageModel.objects.get(pk=kwargs['message_id'])
+        return super().setup(request, *args, **kwargs)
+
+
+    def dispatch(self, request, *args, **kwargs):
+        message = self.message_instance 
+        if not message.user.id == request.user.id:
+            messages.error(request, ' you canot Edit this Message', 'danger')
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        message = self.message_instance 
+        form = self.form_class(instance=message)
+        return render(request, 'accounts/edit_message.html', {'form':form})
+
+    def post(self, request, *args, **kwargs):
+        message = self.message_instance 
+        form = self.form_class(request.POST, instance=message)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'you Editet this Message', 'success')
+            return redirect('accounts:edit_message', message_id)
+        
 
 
 class DeleteMessageView(LoginRequiredMixin, View):

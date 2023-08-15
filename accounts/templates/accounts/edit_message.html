@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form action="" method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Edit">
+    </form>
+    
+    {% if request.user.id == message.user.id %}
+        <a href = "{% url 'accounts:edit_message' message.id %}" class="btn btn-info">Edit</a>
+    {% endif %}
+
+{% endblock %}
