@@ -19,3 +19,11 @@ def add_member_to_board_signal(sender, request, instance, **kwargs):
              f' by {instance.workspace.owner}',
         to_user=instance.user
     )
+
+
+@receiver(signal=post_save, sender='CMembershipModel')
+def assigning_a_card_to_a_member_signal(sender, request, instance, **kwargs):
+    NotificationModel.objects.create(
+        body=f'A new task has been assigned to you by Ramin as below',
+        to_user=instance.user
+    )
