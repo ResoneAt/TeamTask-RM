@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from .models import CardModel, WorkSpaceModel, BoardModel, ListModel, LabelModel
+from .models import CardModel, WorkSpaceModel, BoardModel, ListModel, LabelModel,SubTaskModel
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CardCreateEditForm,LabelCreateEditForm,SubCardCreateEditForm,\
     WorkSpaceForm, BoardForm
@@ -313,7 +313,29 @@ class SubCardCreateView(LoginRequiredMixin, View):
 
 
 class SubCardEditView(LoginRequiredMixin, View):
-    template_name = 'tasks/sub_card_create.html'
+    template_name = 'tasks/sub_card_edit.html'
+    subcard_instance: object
+    form_class = SubCardCreateEditForm
+
+    def setup(self, request, *args, **kwargs):
+        self.subcard_instance = get_object_or_404(SubTaskModel, pk=kwargs['subcard_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request):
+        subcard = self.subcard_instance
+        form = self.form_class(instance=subcard)
+        return render(request, self.template_name, {'form': form, 'subcard': subcard})
+
+    def post(self, request):
+        subcard = self.subcard_instance
+        form = self.form_class(request.POST, instance=subcard)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'subcard edited successfully', 'success')
+            return redirect('board_detail',subcard.card.list.board.id)
+
+        return render(request, self.template_name, {'form': form, 'subcard': subcard})
 
 
 class SubCardDeleteView(LoginRequiredMixin, View):
