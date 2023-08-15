@@ -248,7 +248,7 @@ class UserPasswordResetView(auth_views.PasswordResetView):
 
 
 
-class UserPasswordResetDoneView(LoginRequiredMixin, View):
+class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):
     template_name = 'accounts/password_reset_done.html'
 
 
