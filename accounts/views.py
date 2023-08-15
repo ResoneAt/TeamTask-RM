@@ -257,5 +257,5 @@ class UserPasswordResetConfirmView(LoginRequiredMixin, View):
     template_name = 'accounts/password_reset_confirm.html'
 
 
-class UserPasswordResetCompleteView(LoginRequiredMixin, View):
+class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'accounts/password_reset_complete.html'
