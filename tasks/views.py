@@ -399,7 +399,20 @@ class SubCardEditView(LoginRequiredMixin, View):
 
 
 class SubCardDeleteView(LoginRequiredMixin, View):
-    ...
+    
+    def setup( self, request, *args, **kwargs):
+        self.subcard_instance = get_object_or_404(SubTaskModel,
+                                                pk=kwargs['subcard_id'])
+        return super().setup(request, *args, **kwargs)
+    
+    def post(self, request):
+        subcard = self.subcard_instance
+        # if 
+        subcard.delete()
+        messages.success(request, 'subcard deleted successfully', 'success')
+        # else:
+        #     messages.error(request, 'you cant delete this subcard', 'danger')
+        return redirect('board_detail',subcard.card.list.board.id)
 
 
 class AddMemberToWorkspaceView(LoginRequiredMixin, View):
