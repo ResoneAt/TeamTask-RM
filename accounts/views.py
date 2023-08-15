@@ -8,6 +8,8 @@ from django.contrib import messages
 from accounts.models import User, NotificationModel, MessageModel
 from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditProfileForm
 from django.contrib.auth import authenticate
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
 
 
 class HomePageView(LoginRequiredMixin, View):
@@ -182,12 +184,16 @@ class DeleteMessageView(LoginRequiredMixin, View):
     ...
 
 
-class UserPasswordResetView(LoginRequiredMixin, View):
+class UserPasswordResetView(auth_views.PasswordResetView):
     template_name = 'accounts/password_reset_form.html'
+    success_url = reverse_lazy('accounts:password_reset_done')
+    email_template_name = 'accounts/password_reset_email.html'
+
 
 
 class UserPasswordResetDoneView(LoginRequiredMixin, View):
     template_name = 'accounts/password_reset_done.html'
+
 
 
 class UserPasswordResetConfirmView(LoginRequiredMixin, View):
