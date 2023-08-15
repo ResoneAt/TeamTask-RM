@@ -207,8 +207,13 @@ class CardCreateView(LoginRequiredMixin, View):
 class CardDeleteView(LoginRequiredMixin, View):
     template_name = 'tasks/card_delete.html'
     
-    def get(self, request, card_id):
-        card = get_object_or_404(CardModel, pk=card_id)
+    def setup( self, request, *args, **kwargs):
+        self.card_instance = get_object_or_404(CardModel,
+                                                pk=kwargs['card_id'])
+        return super().setup(request, *args, **kwargs)
+    
+    def post(self, request):
+        card = self.card_instance
         # if 
         card.delete()
         messages.success(request, 'card deleted successfully', 'success')
