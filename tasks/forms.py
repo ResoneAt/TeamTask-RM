@@ -1,7 +1,6 @@
 from django import forms
 from .models import CardModel,WorkSpaceModel,BoardModel,LabelModel,SubTaskModel
 
-
 class WorkSpaceForm(forms.ModelForm):
     class Meta:
         model = WorkSpaceModel
@@ -29,6 +28,15 @@ class CardCreateEditForm(forms.ModelForm):
         widgets = {
             # other attributes??
             'status': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+
+class ListCreateEditForm(forms.ModelForm):
+    class Meta:
+        model = ListModel
+        fields = ['title']
+        labels = {
+            'title':'Title',
         }
 class LabelCreateEditForm(forms.ModelForm):
     class Meta:
