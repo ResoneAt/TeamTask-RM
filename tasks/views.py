@@ -3,7 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import CardModel, WorkSpaceModel, BoardModel, ListModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardCreateEditForm, WorkSpaceForm, BoardForm,ListCreateEditForm
+from .forms import CardCreateEditForm,LabelCreateEditForm,SubCardCreateEditForm,\
+    WorkSpaceForm, BoardForm
 
 
 class MyCardsView(LoginRequiredMixin, View):
@@ -265,10 +266,41 @@ class CardCreateView(LoginRequiredMixin, View):
 
 class CardDeleteView(LoginRequiredMixin, View):
     template_name = 'tasks/card_delete.html'
+    
+    def get(self, request, card_id):
+        card = get_object_or_404(CardModel, pk=card_id)
+        # if 
+        card.delete()
+        messages.success(request, 'card deleted successfully', 'success')
+        # else:
+        #     messages.error(request, 'you cant delete this card', 'danger')
+        return redirect('my_cards')
 
 
 class LabelCreateView(LoginRequiredMixin, View):
+    card_instance : object
     template_name = 'tasks/label_create.html'
+    form_class = LabelCreateEditForm
+
+    def setup(self, request, *args, **kwargs):
+        self.card_instance = get_object_or_404(CardModel,
+                                                pk=kwargs['card_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            new_label = form.save(commit=False)
+            new_label.card = self.card_instance
+            new_label.save()
+            messages.success(request, 'you created a new label', 'success')
+            return redirect(new_label.get_absolute_url())
+        return render(request, self.template_name, {'form': form})
+    
 
 
 class LabelEditView(LoginRequiredMixin, View):
@@ -281,6 +313,27 @@ class LabelDeleteView(LoginRequiredMixin, View):
 
 class SubCardCreateView(LoginRequiredMixin, View):
     template_name = 'tasks/sub_card_create.html'
+    card_instance : object
+    form_class = SubCardCreateEditForm
+
+    def setup(self, request, *args, **kwargs):
+        self.card_instance = get_object_or_404(CardModel,
+                                                pk=kwargs['card_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            new_subcard = form.save(commit=False)
+            new_subcard.card = self.card_instance
+            new_subcard.save()
+            messages.success(request, 'you created a new subcard', 'success')
+            return redirect(self.card_instance.get_absolute_url())
+        return render(request, self.template_name, {'form': form})
 
 
 class SubCardEditView(LoginRequiredMixin, View):
