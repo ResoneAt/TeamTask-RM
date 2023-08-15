@@ -256,9 +256,23 @@ class ListEditView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form':form, 'list_obj':list_obj})
 
 
-
 class ListDeleteView(LoginRequiredMixin, View):
     template_name = 'tasks/list_delete.html'
+    list_instance : object
+
+    def setup(self, request, *args, **kwargs):
+        self.list_instance = get_object_or_404(ListModel, pk=kwargs['list_id'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request):
+        list_obj = self.list_instance
+        return render(request, self.template_name, {'list_obj':list_obj})
+
+    def post(self, request):
+        list_obj = self.list_instance
+        list_obj.delete()
+        messages.success(request, 'List deleted successfully', 'success')
+        return redirect('board')
 
 
 class CardCreateView(LoginRequiredMixin, View):
