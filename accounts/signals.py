@@ -7,6 +7,6 @@ from .models import User, NotificationModel
 @receiver(signal=user_logged_in, sender=User)
 def login_welcome_signal(sender, request, user, **kwargs):
     NotificationModel.objects.create(
-        body='welcome to our TeamTask',
+        body='welcome to our project',
         to_user=user
     )

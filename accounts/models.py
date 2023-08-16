@@ -38,7 +38,7 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
     personal_planning = 5
     work_field_choices = ((developer, 'Developer'),
                           (digital_marketing, 'Digital marketing'),
-                    UserRegistrationForm      (business, 'Business'),
+                          (business, 'Business'),
                           (education, 'Education'),
                           (personal_planning, 'Personal_planning'))
     work_field = models.IntegerField(verbose_name=_('Work field'),
