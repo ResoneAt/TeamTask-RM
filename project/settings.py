@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'TeamTask.urls'
+ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
     {
@@ -73,7 +73,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'TeamTask.wsgi.application'
+WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Database
