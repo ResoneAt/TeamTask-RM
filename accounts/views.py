@@ -219,7 +219,7 @@ class EditMessageView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(request, 'you Editet this Message', 'success')
-            return redirect('accounts:edit_message', message_id)
+            return redirect('accounts:edit_message', message.id)
         
 
 

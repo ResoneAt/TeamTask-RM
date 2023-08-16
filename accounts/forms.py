@@ -5,10 +5,16 @@ from .models import User , MessageModel
 
 
 class UserRegistrationForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder': 'username'}))
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control','placeholder': 'Email'}))
-    password1 = forms.CharField(label='password',widget=forms.PasswordInput(attrs={'class':'form-control','placeholder': 'your password'}))
-    password2 = forms.CharField(label='confirm password', widget=forms.PasswordInput(attrs={'class':'form-control','placeholder': 'your password'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
+                                                             'placeholder': 'username'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control',
+                                                            'placeholder': 'Email'}))
+    password1 = forms.CharField(label='password',
+                                widget=forms.PasswordInput(attrs={'class': 'form-control',
+                                                                  'placeholder': 'your password'}))
+    password2 = forms.CharField(label='confirm password',
+                                widget=forms.PasswordInput(attrs={'class': 'form-control',
+                                                                  'placeholder': 'your password'}))
 
     def clean_email(self):
         email = self.cleaned_data['email']
@@ -23,7 +29,7 @@ class UserRegistrationForm(forms.Form):
         p2 = cd.get('password2')
 
         if p1 and p2 and p1 != p2:
-            raise ValidationError ('password must match')
+            raise ValidationError('password must match')
 
 
 class UserLoginForm(forms.Form):
