@@ -33,7 +33,7 @@ class CardEditView(LoginRequiredMixin, View):
     def get(self, request):
         card = self.card_instance
         form = self.form_class(instance=card)
-        return render(request, self.template_name, {'form': form, 'my_card': card})
+        return render(request, self.template_name, {'form': form, 'card': card})
 
     def post(self, request):
         card = self.card_instance
@@ -41,8 +41,8 @@ class CardEditView(LoginRequiredMixin, View):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Edit card successfully', 'success')
-            return redirect('show_my_cards')
+            messages.success(request, 'card edited successfully', 'success')
+            return redirect('board_detail', card.list.board.id)
 
         return render(request, self.template_name, {'form': form, 'card': card})
 
@@ -301,16 +301,20 @@ class CardCreateView(LoginRequiredMixin, View):
 
 
 class CardDeleteView(LoginRequiredMixin, View):
-    template_name = 'tasks/card_delete.html'
     
-    def get(self, request, card_id):
-        card = get_object_or_404(CardModel, pk=card_id)
+    def setup( self, request, *args, **kwargs):
+        self.card_instance = get_object_or_404(CardModel,
+                                                pk=kwargs['card_id'])
+        return super().setup(request, *args, **kwargs)
+    
+    def post(self, request):
+        card = self.card_instance
         # if 
         card.delete()
         messages.success(request, 'card deleted successfully', 'success')
         # else:
         #     messages.error(request, 'you cant delete this card', 'danger')
-        return redirect('my_cards')
+        return redirect('board_detail', card.list.board.id)
 
 
 class LabelCreateView(LoginRequiredMixin, View):
@@ -341,7 +345,7 @@ class LabelCreateView(LoginRequiredMixin, View):
 
 class LabelEditView(LoginRequiredMixin, View):
     label_instance: object
-    template_name = 'tasks/label_create.html'
+    template_name = 'tasks/label_edit.html'
     form_class = LabelCreateEditForm
 
     def setup(self, request, *args, **kwargs):
@@ -414,7 +418,7 @@ class SubCardEditView(LoginRequiredMixin, View):
     form_class = SubCardCreateEditForm
 
     def setup(self, request, *args, **kwargs):
-        self.subcard_instance = get_object_or_404(SubTaskModel, pk=kwargs['subcard_id'])
+        self.subcard_instance = get_object_or_404(SubTaskModel, pk=kwargs['sub_card_id'])
         return super().setup(request, *args, **kwargs)
 
     def get(self, request):
