@@ -31,3 +31,5 @@ class CardCreateEditForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
 
+class UsernameSearch(forms.Form):
+    search = forms.CharField(label='search user', widget=forms.TextInput)

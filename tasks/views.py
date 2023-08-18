@@ -3,7 +3,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import CardModel, WorkSpaceModel, BoardModel, ListModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardCreateEditForm, WorkSpaceForm, BoardForm
+from .forms import CardCreateEditForm, WorkSpaceForm, BoardForm, UsernameSearch
+from accounts.models import User
 
 
 class MyCardsView(LoginRequiredMixin, View):
@@ -231,8 +232,17 @@ class SubCardDeleteView(LoginRequiredMixin, View):
     ...
 
 
+# mohammad
 class AddMemberToWorkspaceView(LoginRequiredMixin, View):
-    template_name = 'tasks/add_member.html'
+	template_name = 'tasks/add_member_workspace.html'
+	user = User.object.all()
+	if request.GET.get('search'):
+		user = user.filter(username=request.GET['search'])
+		context = {
+		    'user' : user
+		    }
+		 return render(request, self.template_name, context)
+
 
 
 class RemoveMemberFromWorkspaceView(LoginRequiredMixin, View):
@@ -245,7 +255,14 @@ class ChangeWorkspaceMembershipPermissionView(LoginRequiredMixin, View):
 
 class AddMemberToBoardView(LoginRequiredMixin, View):
     template_name = 'tasks/add_member.html'
-
+	template_name = 'tasks/add_member_workspace.html'
+	user = User.object.all()
+	if request.GET.get('search'):
+		user = user.filter(username=request.GET['search'])
+		context = {
+		    'user' : user
+		    }
+		 return render(request, self.template_name, context)
 
 class RemoveMemberFromBoardView(LoginRequiredMixin, View):
     ...
@@ -257,10 +274,17 @@ class ChangeBoardMembershipPermissionView(LoginRequiredMixin, View):
 
 class AddMemberToCardView(LoginRequiredMixin, View):
     template_name = 'tasks/add_member.html'
-
+	template_name = 'tasks/add_member_workspace.html'
+	user = User.object.all()
+	if request.GET.get('search'):
+		user = user.filter(username=request.GET['search'])
+		context = {
+		    'user' : user
+		    }
+		 return render(request, self.template_name, context)
 
 class RemoveMemberFromCardView(LoginRequiredMixin, View):
     ...
 
-
+# end mohammad
 

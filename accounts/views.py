@@ -46,10 +46,10 @@ class LoginView(View):
     from_class = UserLoginForm
     template_name = 'accounts/login.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect('home:home')
-        return super().dispatch(request, *args, **kwargs)
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.is_authenticated:
+    #         return redirect('home:home')
+    #     return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
         form = self.from_class()
@@ -63,7 +63,7 @@ class LoginView(View):
             if user:
                 login(request, user)
                 messages.success(request, 'you logged in successfully', 'success')
-                return redirect('home:home')
+                return redirect('tasks:workspace_detail')
             messages.error(request, 'username or password is wrong', 'warning')
         return render(request, self.template_name, {'form': form})
 
