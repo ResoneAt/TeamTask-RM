@@ -46,3 +46,7 @@ class NotificationViewSet(viewsets.ViewSet):
 
     def destroy(self, request, pk=None):
         ...
+
+
+class ResetPasswordAPIView(APIView):
+    ...
