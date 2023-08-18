@@ -100,11 +100,11 @@ class WorkSpaceEditView(LoginRequiredMixin, View):
 
 
 class BoardView(LoginRequiredMixin, View):
-    template_name = 'tasks/board.html'
+    template_name = 'tasks/board.py.html'
 
     def get(self, request, board_id):
         board = get_object_or_404(BoardModel, pk=board_id)
-        return render(request, self.template_name, {'board': board})
+        return render(request, self.template_name, {'board.py': board})
 
 
 class BoardCreateView(LoginRequiredMixin, View):
@@ -172,7 +172,7 @@ class BoardEditView(LoginRequiredMixin, View):
     def get(self, request):
         board = self.board_instance
         form = self.form_class(request.POST, request.FILES, instance=board)
-        return render(request, self.template_name, {'form':form, 'board':board})
+        return render(request, self.template_name, {'form':form, 'board.py':board})
 
     def post(self, request):
         board = self.board_instance
@@ -180,9 +180,9 @@ class BoardEditView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(request, 'Board edited successfully', 'success')
-            return redirect('board',board_id=board.id)
+            return redirect('board.py',board_id=board.id)
 
-        return render(request, self.template_name, {'form':form, 'board':board})
+        return render(request, self.template_name, {'form':form, 'board.py':board})
 
 
 class BoardDeleteView(LoginRequiredMixin, View):
@@ -195,12 +195,12 @@ class BoardDeleteView(LoginRequiredMixin, View):
 
     def get(self, request):
         board = self.board_instance
-        return render(request, self.template_name, {'board':board})
+        return render(request, self.template_name, {'board.py':board})
     
     def post(self, request):
         board = self.board_instance
         board.delete()
-        messages.success(request, 'You deleted board successfully', 'success')
+        messages.success(request, 'You deleted board.py successfully', 'success')
         return redirect('workspace')
 
 
@@ -210,7 +210,7 @@ class BoardMembersView(LoginRequiredMixin, View):
     def get(self, request, board_id):
         board = get_object_or_404(BoardModel, pk=board_id)
         members = board.members.all()
-        return render(request, self.template_name, {'board':board,'members':members})
+        return render(request, self.template_name, {'board.py':board,'members':members})
 
 
 class ListCreateView(LoginRequiredMixin, View):
@@ -226,7 +226,7 @@ class ListCreateView(LoginRequiredMixin, View):
         if form.is_valid():
             new_list = form.save(commit=False)
             new_list.save()
-            return redirect('board')
+            return redirect('board.py')
 
         return render(request, self.template_name, {'form':form})
 
@@ -251,7 +251,7 @@ class ListEditView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(request, 'List edited successfully', 'success')
-            return redirect('board')
+            return redirect('board.py')
 
         return render(request, self.template_name, {'form':form, 'list_obj':list_obj})
 
@@ -272,7 +272,7 @@ class ListDeleteView(LoginRequiredMixin, View):
         list_obj = self.list_instance
         list_obj.delete()
         messages.success(request, 'List deleted successfully', 'success')
-        return redirect('board')
+        return redirect('board.py')
 
 
 class CardCreateView(LoginRequiredMixin, View):
