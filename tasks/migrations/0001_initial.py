@@ -111,7 +111,7 @@ class Migration(migrations.Migration):
                 ('deleted_at', models.DateTimeField(blank=True, editable=False, null=True, verbose_name='Deleted at')),
                 ('title', models.CharField(help_text='Enter List title', max_length=100, verbose_name='Title')),
                 ('background_color', models.CharField(blank=True, choices=[('red', 'Red'), ('blue', 'Blue'), ('green', 'Green'), ('orange', 'Orange'), ('purple', 'Purple'), ('yellow', 'Yellow')], max_length=10, null=True)),
-                ('board', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='lists', to='tasks.boardmodel')),
+                ('board.py', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='lists', to='tasks.boardmodel')),
             ],
             options={
                 'verbose_name': 'List',
@@ -141,7 +141,7 @@ class Migration(migrations.Migration):
                 ('is_deleted', models.BooleanField(default=False, verbose_name='Is Deleted')),
                 ('deleted_at', models.DateTimeField(blank=True, editable=False, null=True, verbose_name='Deleted at')),
                 ('text', models.TextField(help_text='Please Write Your Message')),
-                ('board', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='tasks.boardmodel')),
+                ('board.py', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='tasks.boardmodel')),
                 ('from_user', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='g_sender', to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -195,7 +195,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
                 ('permission', models.CharField(max_length=255)),
-                ('board', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='tasks.boardmodel')),
+                ('board.py', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='tasks.boardmodel')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
             ],
             options={

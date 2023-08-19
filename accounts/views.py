@@ -1,18 +1,29 @@
 from itertools import count
+from typing import Any
+from django import http
 from django.db.models import Q
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import logout , login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
 from accounts.models import User, NotificationModel, MessageModel
-from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditProfileForm
+from .forms import UserRegistrationForm, UserLoginForm, SendMessageForm, EditProfileForm , EditMessageForm
 from django.contrib.auth import authenticate
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+
+
+class HomePageView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        return render(request, 'accounts/home.html')
 
 
 class SignUpView(View):
     form_class = UserRegistrationForm
-    template_name = 'accounts/register.html'
+    template_name = 'accounts/signup.html'
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -103,7 +114,7 @@ class EditProfileView(LoginRequiredMixin, View):
 
 class NotificationListView(LoginRequiredMixin, View):
     notifications_instance: object
-    template_name = 'accounts/notifications.html'
+    template_name = 'accounts/notifications_list.html'
 
     def setup(self, request, *args, **kwargs):
         self.notifications_instance = NotificationModel.objects.filter(to_user=request.user)
@@ -135,7 +146,7 @@ class MessageListView(View):
 
 class SendMessageView(View):
     form_class = SendMessageForm
-    template_name = 'accounts/send_message.html'
+    template_name = 'accounts/pv_message.html'
 
     def setup(self, request, *args, **kwargs):
         self.user = get_object_or_404(User, pk=kwargs['user_id'])
@@ -165,28 +176,83 @@ class SendMessageView(View):
 
 
 class DeleteAccountView(LoginRequiredMixin, View):
-    ...
+    template_name = 'accounts/delete_account.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.id == kwargs['user_id']:
+            messages.error(request, 'You Canot Do This Action!', 'danger')
+            return redirect('accounts:profile', kwargs['user_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, user_id):
+        return render(request, self.template_name)
+
+    def post(self, request, user_id):
+        request.user.delete()
+        return redirect('accounts:login')
 
 
 class EditMessageView(LoginRequiredMixin, View):
-    ...
+    form_class = EditMessageForm
+    template_name = 'accounts/edit_message.html'
+
+    def setup(self, request, *args, **kwargs):
+        self.message_instance = MessageModel.objects.get(pk=kwargs['message_id'])
+        return super().setup(request, *args, **kwargs)
+
+
+    def dispatch(self, request, *args, **kwargs):
+        message = self.message_instance 
+        if not message.user.id == request.user.id:
+            messages.error(request, ' you canot Edit this Message', 'danger')
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        message = self.message_instance 
+        form = self.form_class(instance=message)
+        return render(request, 'accounts/edit_message.html', {'form':form})
+
+    def post(self, request, *args, **kwargs):
+        message = self.message_instance 
+        form = self.form_class(request.POST, instance=message)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'you Editet this Message', 'success')
+            return redirect('accounts:edit_message', message.id)
+        
 
 
 class DeleteMessageView(LoginRequiredMixin, View):
-    ...
+
+    def get(self, request, message_id):
+        message = MessageModel.objects.get(pk=message_id)
+        if message.user.id == request.user.id:
+            message.delete()
+            messages.success(request, 'message deleted successfully', 'success')
+        else:
+            messages.error(request, 'You canot delete in messages', 'danger')
+        return redirect('accounts:message_list')
+    
 
 
-class UserPasswordResetView(LoginRequiredMixin, View):
-    ...
+
+class UserPasswordResetView(auth_views.PasswordResetView):
+    template_name = 'accounts/password_reset_form.html'
+    success_url = reverse_lazy('accounts:password_reset_done')
+    email_template_name = 'accounts/password_reset_email.html'
 
 
-class UserPasswordResetDoneView(LoginRequiredMixin, View):
-    ...
+
+class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'accounts/password_reset_done.html'
 
 
-class UserPasswordResetConfirmView(LoginRequiredMixin, View):
-    ...
+
+class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'accounts/password_reset_confirm.html'
+    success_url = reverse_lazy('accounts:password_reset_complete')
 
 
-class UserPasswordResetCompleteView(LoginRequiredMixin, View):
-    ...
+class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'accounts/password_reset_complete.html'
