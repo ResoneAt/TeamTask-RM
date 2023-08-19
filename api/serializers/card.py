@@ -16,5 +16,7 @@ class ListSerializer(serializers.ModelSerializer):
 
 
 class LabelSerializer(serializers.ModelSerializer):
-    ...
+    class Meta:
+        model = ListModel
+        exclude = ('card',)
 
