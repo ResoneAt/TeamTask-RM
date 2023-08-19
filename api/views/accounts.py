@@ -2,7 +2,6 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from accounts.models import User
-from api.serializers.accounts import UserSerializers
 
 
 class SignUpAPIView(APIView):
