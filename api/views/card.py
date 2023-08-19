@@ -59,6 +59,7 @@ class SubCardViewSet(ViewSet):
 
 
 class ListViewSet(ViewSet):
+    queryset = ListModel.objects.all()
     
     def create(self, request, id): 
         board_instance = get_object_or_404(BoardModel, id=id)
@@ -70,15 +71,15 @@ class ListViewSet(ViewSet):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        list = ListModel.objects.get(pk=pk)
-        srz_data =ListSerializer(instance=list, data=request.data, partial=True)
+        list = get_object_or_404(self.queryset,pk=pk)
+        srz_data =ListSerializer(instance=list, data=request.POST, partial=True)
         if srz_data.is_valid():
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk):
-        list = ListModel.objects.get(pk=pk)
+        list = get_object_or_404(self.queryset,pk=pk)
         list.delete()
         return Response({'message': 'list deleted'}, status=status.HTTP_200_OK)
 
