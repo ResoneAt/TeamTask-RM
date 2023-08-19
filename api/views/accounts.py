@@ -27,9 +27,6 @@ class ProfileViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         pass
 
-    def update(self, request, pk=None):
-        ...
-
     def partial_update(self, request, pk=None):
         ...
 

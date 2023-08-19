@@ -16,5 +16,5 @@ class SendMessageAPIView(APIView):
     def delete(self):
         ...
 
-    def put(self):
+    def patch(self):
         ...
