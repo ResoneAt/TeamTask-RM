@@ -47,8 +47,8 @@ class SubCardViewSet(ViewSet):
 
 class ListViewSet(ViewSet):
     
-    def create(self, request, id): 
-        board_instance = get_object_or_404(BoardModel, id=id)
+    def create(self, request, board_id): 
+        board_instance = get_object_or_404(BoardModel, id=board_id)
         srz_data = ListSerializer(data=request.data)
         if srz_data.is_valid():
             srz_data.object.board = board_instance
