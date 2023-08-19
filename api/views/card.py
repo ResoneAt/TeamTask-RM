@@ -61,8 +61,8 @@ class SubCardViewSet(ViewSet):
 class ListViewSet(ViewSet):
     queryset = ListModel.objects.all()
     
-    def create(self, request, id): 
-        board_instance = get_object_or_404(BoardModel, id=id)
+    def create(self, request, board_id): 
+        board_instance = get_object_or_404(BoardModel, id=board_id)
         srz_data = ListSerializer(data=request.data)
         if srz_data.is_valid():
             srz_data.object.board = board_instance
@@ -85,6 +85,7 @@ class ListViewSet(ViewSet):
 
 
 class LabelViewSet(ViewSet):
+    queryset = LabelModel.objects.all()
 
     def create(self, request, card_id):
         card_instance = get_object_or_404(CardModel, id=card_id)
@@ -96,14 +97,14 @@ class LabelViewSet(ViewSet):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        label = LabelModel.objects.get(pk=pk)
-        srz_data =LabelSerializer(instance=label, data=request.data, partial=True)
+        label = get_object_or_404(self.queryset, pk=pk)
+        srz_data =LabelSerializer(instance=label, data=request.POST, partial=True)
         if srz_data.is_valid():
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk):
-        label = LabelModel.objects.get(pk=pk)
+        label = get_object_or_404(self.queryset, pk=pk)
         label.delete()
         return Response({'message': 'label deleted'}, status=status.HTTP_200_OK)
