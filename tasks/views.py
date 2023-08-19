@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from .models import CardModel, WorkSpaceModel, BoardModel, ListModel, LabelModel,SubTaskModel
+from .models import CardModel, WorkSpaceModel, BoardModel, ListModel, LabelModel, SubTaskModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardCreateEditForm,LabelCreateEditForm,SubCardCreateEditForm,\
-    WorkSpaceForm, BoardForm,ListCreateEditForm
+from .forms import CardCreateEditForm, LabelCreateEditForm, SubCardCreateEditForm,\
+    WorkSpaceForm, BoardForm, ListCreateEditForm
 
 
 class MyCardsView(LoginRequiredMixin, View):
@@ -19,8 +19,8 @@ class MyCardsView(LoginRequiredMixin, View):
             'incomplete_cards': incomplete_cards
         }
         return render(request, self.template_name, context)
-   
-    
+
+
 class CardEditView(LoginRequiredMixin, View):
     card_instance: object
     template_name = 'tasks/card_edit.html'
@@ -342,7 +342,6 @@ class LabelCreateView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
     
 
-
 class LabelEditView(LoginRequiredMixin, View):
     label_instance: object
     template_name = 'tasks/label_edit.html'
@@ -367,7 +366,6 @@ class LabelEditView(LoginRequiredMixin, View):
             return redirect('board_detail',label.card.list.board.id)
 
         return render(request, self.template_name, {'form': form, 'label': label})
-
 
 
 class LabelDeleteView(LoginRequiredMixin, View):
