@@ -1,8 +1,8 @@
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from tasks.models import ListModel,BoardModel, CardModel,LabelModel
-from api.serializers.card import ListSerializer,LabelSerializer
+from tasks.models import ListModel,BoardModel, CardModel,LabelModel,SubTaskModel
+from api.serializers.card import ListSerializer,LabelSerializer,SubCardSerializer
 from rest_framework import status
 
 class MyCardViewSet(ViewSet):
@@ -35,14 +35,27 @@ class CardViewSet(ViewSet):
 
 class SubCardViewSet(ViewSet):
 
-    def create(self, request):
-        ...
+    def create(self, request, card_id):
+        card_instance = get_object_or_404(CardModel, id=card_id)
+        srz_data = SubCardSerializer(data=request.data)
+        if srz_data.is_valid():
+            srz_data.object.card = card_instance
+            srz_data.save()
+            return Response(srz_data.data, status=status.HTTP_201_CREATED)
+        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        ...
+        subcard = SubTaskModel.objects.get(pk=pk)
+        srz_data =SubCardSerializer(instance=subcard, data=request.data, partial=True)
+        if srz_data.is_valid():
+            srz_data.save()
+            return Response(srz_data.data, status=status.HTTP_200_OK)
+        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request):
-        ...
+    def destroy(self, request, pk):
+        subcard = SubTaskModel.objects.get(pk=pk)
+        subcard.delete()
+        return Response({'message': 'subcard deleted'}, status=status.HTTP_200_OK)
 
 
 class ListViewSet(ViewSet):
