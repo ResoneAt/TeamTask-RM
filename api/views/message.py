@@ -21,7 +21,7 @@ class MessagesListAPIView(APIView):
     
 
 class SendMessageAPIView(APIView):
-    def get(self, request, formmat=None):
+    def get(self, request, format=None):
         message = MessageModel.objects.all()
         serializer = MessageSerializer(message, many=True)
         return Response(serializer.data)
@@ -37,7 +37,12 @@ class SendMessageAPIView(APIView):
     def delete(self, request, format=None):
         message = MessageModel.objects.all()
         message.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)    
+        return Response(status=status.HTTP_204_NO_CONTENT)
+     
 
-    def patch(self):
-        ...
+    def patch(self, request):
+        message = MessageModel.objects.all()
+        serializer = MessageSerializer(message, many=True)
+        return Response(serializer.data)
+    
+        
