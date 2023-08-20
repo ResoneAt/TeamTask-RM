@@ -274,25 +274,26 @@ class ChangeWorkspaceMembershipPermissionView(LoginRequiredMixin, View):
 class AddMemberToBoardView(LoginRequiredMixin, View):
     template_name = 'tasks/add_member.html'
 	# template_name = 'tasks/add_member_workspace.html'
-    def get(self, request):
-	    user = User.object.all()
-	    if request.GET.get('search'):
-		    user = user.filter(username=request.GET['search'])
-		    context = {
-		        'user' : user
-		        }
 
+    def get(self, request):
+        user = User.object.all()
+        if request.GET.get('search'):
+            user = user.filter(username=request.GET['search'])
+            context = {
+                'user' : user
+                }
             user = User.objects.get(pk=user_id)
             add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
             if add_memeber.exists():
                 messages.error(request, 'you already user in board', 'warning')
             else:
                 RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
-                messages.success(request, 'you success add user in workspace', 'success')
+                messages.success(request, 'you success add user in board', 'success')
             context = {
                 'users': users
             }
             return self.render_to_response(context)
+
 
 class RemoveMemberFromBoardView(LoginRequiredMixin, View):
     def get(self, request, user_id):
@@ -322,10 +323,10 @@ class AddMemberToCardView(LoginRequiredMixin, View):
             user = User.objects.get(pk=user_id)
             add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
             if add_memeber.exists():
-                messages.error(request, 'you already user in board', 'warning')
+                messages.error(request, 'you already user in card', 'warning')
             else:
                 RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
-                messages.success(request, 'you success add user in workspace', 'success')
+                messages.success(request, 'you success add user in card', 'success')
             context = {
                 'users': users
             }
@@ -338,7 +339,7 @@ class RemoveMemberFromCardView(LoginRequiredMixin, View):
         add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
         if add_memeber.exists():
             add_memeber.delete()
-            messages.success(request, 'you sucess remove member in board', 'success')
+            messages.success(request, 'you sucess remove member in card', 'success')
         else:
             return None
 
