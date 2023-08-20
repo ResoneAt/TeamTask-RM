@@ -1,8 +1,8 @@
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from tasks.models import ListModel,BoardModel
-from api.serializers.card import ListSerializer
+from tasks.models import ListModel,BoardModel, CardModel,LabelModel
+from api.serializers.card import ListSerializer,LabelSerializer
 from rest_framework import status
 
 class MyCardViewSet(ViewSet):
@@ -72,11 +72,24 @@ class ListViewSet(ViewSet):
 
 class LabelViewSet(ViewSet):
 
-    def create(self, request):
-        ...
+    def create(self, request, card_id):
+        card_instance = get_object_or_404(CardModel, id=card_id)
+        srz_data = LabelSerializer(data=request.data)
+        if srz_data.is_valid():
+            srz_data.object.card = card_instance
+            srz_data.save()
+            return Response(srz_data.data, status=status.HTTP_201_CREATED)
+        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        ...
+        label = LabelModel.objects.get(pk=pk)
+        srz_data =LabelSerializer(instance=label, data=request.data, partial=True)
+        if srz_data.is_valid():
+            srz_data.save()
+            return Response(srz_data.data, status=status.HTTP_200_OK)
+        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request):
-        ...
+    def destroy(self, request, pk):
+        label = LabelModel.objects.get(pk=pk)
+        label.delete()
+        return Response({'message': 'label deleted'}, status=status.HTTP_200_OK)

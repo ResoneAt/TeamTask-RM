@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tasks.models import ListModel
+from tasks.models import ListModel,LabelModel
 
 class CardSerializer(serializers.ModelSerializer):
     ...
@@ -16,5 +16,7 @@ class ListSerializer(serializers.ModelSerializer):
 
 
 class LabelSerializer(serializers.ModelSerializer):
-    ...
+    class Meta:
+        model = LabelModel
+        exclude = ('card',)
 
