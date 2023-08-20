@@ -281,10 +281,28 @@ class AddMemberToBoardView(LoginRequiredMixin, View):
 		    context = {
 		        'user' : user
 		        }
-		    return render(request, self.template_name, context)
+
+            user = User.objects.get(pk=user_id)
+            add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+            if add_memeber.exists():
+                messages.error(request, 'you already user in board', 'warning')
+            else:
+                RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
+                messages.success(request, 'you success add user in workspace', 'success')
+            context = {
+                'users': users
+            }
+            return self.render_to_response(context)
 
 class RemoveMemberFromBoardView(LoginRequiredMixin, View):
-    ...
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            add_memeber.delete()
+            messages.success(request, 'you sucess remove member in board', 'success')
+        else:
+            return None
 
 
 class ChangeBoardMembershipPermissionView(LoginRequiredMixin, View):
@@ -301,10 +319,28 @@ class AddMemberToCardView(LoginRequiredMixin, View):
             context = {
                 'user' : user
                 }
-            return render(request, self.template_name, context)
+            user = User.objects.get(pk=user_id)
+            add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+            if add_memeber.exists():
+                messages.error(request, 'you already user in board', 'warning')
+            else:
+                RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
+                messages.success(request, 'you success add user in workspace', 'success')
+            context = {
+                'users': users
+            }
+            return self.render_to_response(context)
 
 class RemoveMemberFromCardView(LoginRequiredMixin, View):
-    ...
+    templated_name = ''
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            add_memeber.delete()
+            messages.success(request, 'you sucess remove member in board', 'success')
+        else:
+            return None
 
 # end mohammad
 
