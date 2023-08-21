@@ -23,12 +23,12 @@ class WorkspaceViewSet(ViewSet):
     def create(self, request):
         serializer = WorkspaceSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            workspace = serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        workspace = get_object_or_404(WorkSpaceModel, pk=pk)
+        workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
         serializer = WorkspaceSerializer(workspace, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -36,6 +36,6 @@ class WorkspaceViewSet(ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request):
-        workspace = get_object_or_404(WorkSpaceModel, pk=pk)
+        workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
         workspace.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
