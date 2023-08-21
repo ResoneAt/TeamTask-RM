@@ -9,8 +9,10 @@ from django.shortcuts import get_object_or_404
 class WorkspaceViewSet(ViewSet):
     
     def list(self, request):
-        workspace = WorkSpaceModel.objects.all()
-        serializer = WorkspaceSerializer(workspace, many=True)
+        user_owned_workspace = WorkSpaceModel.objects.filter(owner=request.user)
+        user_member_of_workspace = WorkSpaceModel.objects.filter(members=request.user)
+        all_workspaces = user_owned_workspace.union(user_member_of_workspace)
+        serializer = WorkspaceSerializer(all_workspaces, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
