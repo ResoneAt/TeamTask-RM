@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'tasks.apps.TasksConfig',
     'core.apps.CoreConfig',
+    'rest_framework',
+    
 
 ]
 
