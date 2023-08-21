@@ -3,8 +3,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import CardModel, WorkSpaceModel, BoardModel, ListModel, LabelModel, SubTaskModel
 from django.contrib.auth.mixins import LoginRequiredMixin
+<<<<<<< HEAD
+from .forms import CardCreateEditForm, WorkSpaceForm, BoardForm, UsernameSearch
+from accounts.models import User
+from .models import RelationAddMemeber
+=======
 from .forms import CardCreateEditForm, LabelCreateEditForm, SubCardCreateEditForm,\
     WorkSpaceForm, BoardForm, ListCreateEditForm
+>>>>>>> dev
 
 
 class MyCardsView(LoginRequiredMixin, View):
@@ -453,12 +459,38 @@ class SubCardDeleteView(LoginRequiredMixin, View):
         return redirect('board_detail',subcard.card.list.board.id)
 
 
+# mohammad
 class AddMemberToWorkspaceView(LoginRequiredMixin, View):
-    template_name = 'tasks/add_member.html'
+    template_name = 'tasks/add_member_workspace.html'
 
+    def get(self, request):
+        users = User.objects.all()
+        if request.GET.get('search'):
+            users = users.filter(username=request.GET['search'])
+
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            messages.error(request, 'you already user in weorkspace', 'warning')
+        else:
+            RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
+            messages.success(request, 'you success add user in workspace', 'success')
+        context = {
+            'users': users
+        }
+        return self.render_to_response(context)
+        
 
 class RemoveMemberFromWorkspaceView(LoginRequiredMixin, View):
-    ...
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            add_memeber.delete()
+            messages.success(request, 'you sucess remove member in workspace', 'success')
+        else:
+            return None
+        
 
 
 class ChangeWorkspaceMembershipPermissionView(LoginRequiredMixin, View):
@@ -467,10 +499,37 @@ class ChangeWorkspaceMembershipPermissionView(LoginRequiredMixin, View):
 
 class AddMemberToBoardView(LoginRequiredMixin, View):
     template_name = 'tasks/add_member.html'
+	# template_name = 'tasks/add_member_workspace.html'
+
+    def get(self, request):
+        user = User.object.all()
+        if request.GET.get('search'):
+            user = user.filter(username=request.GET['search'])
+            context = {
+                'user' : user
+                }
+            user = User.objects.get(pk=user_id)
+            add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+            if add_memeber.exists():
+                messages.error(request, 'you already user in board', 'warning')
+            else:
+                RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
+                messages.success(request, 'you success add user in board', 'success')
+            context = {
+                'users': users
+            }
+            return self.render_to_response(context)
 
 
 class RemoveMemberFromBoardView(LoginRequiredMixin, View):
-    ...
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            add_memeber.delete()
+            messages.success(request, 'you sucess remove member in board', 'success')
+        else:
+            return None
 
 
 class ChangeBoardMembershipPermissionView(LoginRequiredMixin, View):
@@ -479,10 +538,36 @@ class ChangeBoardMembershipPermissionView(LoginRequiredMixin, View):
 
 class AddMemberToCardView(LoginRequiredMixin, View):
     template_name = 'tasks/add_member.html'
-
+	# template_name = 'tasks/add_member_workspace.html'
+    def get(self, request):
+        user = User.object.all()
+        if request.GET.get('search'):
+            user = user.filter(username=request.GET['search'])
+            context = {
+                'user' : user
+                }
+            user = User.objects.get(pk=user_id)
+            add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+            if add_memeber.exists():
+                messages.error(request, 'you already user in card', 'warning')
+            else:
+                RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
+                messages.success(request, 'you success add user in card', 'success')
+            context = {
+                'users': users
+            }
+            return self.render_to_response(context)
 
 class RemoveMemberFromCardView(LoginRequiredMixin, View):
-    ...
+    templated_name = ''
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            add_memeber.delete()
+            messages.success(request, 'you sucess remove member in card', 'success')
+        else:
+            return None
 
-
+# end mohammad
 

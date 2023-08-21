@@ -43,8 +43,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD:TeamTask/settings.py
+
+    # Local apps
+    'accounts.apps.AccountsConfig',
+    'tasks.apps.TasksConfig',
+    'core.apps.CoreConfig',
+    'rest_framework',
+    
+=======
     *LOCAL_APPS,
     *THIRD_PARTY_APPS,
+>>>>>>> dev:project/settings.py
 
 ]
 
@@ -174,9 +184,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

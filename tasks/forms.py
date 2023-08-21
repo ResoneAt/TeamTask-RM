@@ -30,6 +30,10 @@ class CardCreateEditForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
 
+<<<<<<< HEAD
+class UsernameSearch(forms.Form):
+    search = forms.CharField(label='search user', widget=forms.TextInput)
+=======
 
 class ListCreateEditForm(forms.ModelForm):
     class Meta:
@@ -51,3 +55,4 @@ class SubCardCreateEditForm(forms.ModelForm):
         model = SubTaskModel
         exclude = ('card',)
        
+>>>>>>> dev

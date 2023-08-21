@@ -14,6 +14,7 @@ class ListModel(BaseModel, SoftDeleteModel):
     board = models.ForeignKey('BoardModel', on_delete=models.DO_NOTHING,
                               related_name='lists')
     
+    # we can write  instead'red' into '1' and max_lenght=1
     COLOR_CHOICES = [
         ('red',    'Red'),
         ('blue',   'Blue'),
@@ -342,3 +343,15 @@ class WSMembershipModel(BaseModel):
     def __str__(self):
         return f'{self.user} - {self.workspace}'
     
+
+class RelationAddMemeber(BaseModel):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admin')
+    to_add_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='add')
+
+    def __str__(self):
+        return f'{self.from_user} - {self.to_add_user}'
+    
+    class Meta:
+        verbose_name = 'relation-add-member'
+        verbose_name_plural = 'relation-add-members'
+        db_table = 'relation-add-member-model'
