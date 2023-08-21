@@ -1,6 +1,5 @@
 from django import forms
-from .models import CardModel,WorkSpaceModel,BoardModel
-
+from .models import CardModel,WorkSpaceModel,BoardModel,LabelModel,SubTaskModel,ListModel
 
 class WorkSpaceForm(forms.ModelForm):
     class Meta:
@@ -31,5 +30,29 @@ class CardCreateEditForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
 
+<<<<<<< HEAD
 class UsernameSearch(forms.Form):
     search = forms.CharField(label='search user', widget=forms.TextInput)
+=======
+
+class ListCreateEditForm(forms.ModelForm):
+    class Meta:
+        model = ListModel
+        fields = ['title']
+        labels = {
+            'title':'Title',
+        }
+class LabelCreateEditForm(forms.ModelForm):
+    class Meta:
+        model = LabelModel
+        exclude = ('card',)
+        widgets = {
+            'background_color': forms.Select(attrs={'class': 'form-control'}),
+        }
+        
+class SubCardCreateEditForm(forms.ModelForm):
+    class Meta:
+        model = SubTaskModel
+        exclude = ('card',)
+       
+>>>>>>> dev
