@@ -18,7 +18,11 @@ class MyCardViewSet(ViewSet):
 
 
 class CardViewSet(ViewSet):
+    """
+    this is card api
+    """
     query_set = CardModel.objects.all()
+    serializer_class = CardSerializer
     
     def list(self, request):
         srz_data = CardSerializer(instance=self.query_set, many=True)
