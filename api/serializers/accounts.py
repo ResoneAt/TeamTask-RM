@@ -22,8 +22,10 @@ class SignUpSerializer(serializers.ModelSerializer):
         return data
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    ...
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
 
 
 class NotificationSerializer(serializers.ModelSerializer):
