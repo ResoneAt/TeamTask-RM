@@ -9,6 +9,11 @@ from django.shortcuts import get_object_or_404
 class MessagesListAPIView(APIView):
 
     def get(self, request):
+        """
+        View the list of users who messaged me.
+        Requires the 'to_user' and 'from_user' and 'user_id' parameter.
+        Returns the user list.
+        """
         user = request.user
         sent_users = MessageModel.objects.filter(pv_sender__to_user=user).distinct()
         received_users = MessageModel.objects.filter(receiver__from_user=user).distinct()
@@ -17,6 +22,10 @@ class MessagesListAPIView(APIView):
 
     
     def post(self, request):
+        """
+        Create and view a user list.
+        Returns the created user list.
+        """
         serializer = MessagesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -27,11 +36,22 @@ class MessagesListAPIView(APIView):
 class SendMessageAPIView(APIView):
     
     def get(self, request, message_id):
+        """
+        Retrieve a specific message by its ID.
+        Requires the 'message_id' parameter.
+        Returns the message details.
+        """
         message = get_object_or_404(MessageModel, id=message_id)
         serializer = MessagesSerializer(message)
         return Response(serializer.data)
     
+
     def post(self, request):
+        """
+        Create and send a new message.
+        Requires 'receiver_id' and 'text' fields in the request data.
+        Returns the created message.
+        """
         sender = request.user
         receiver_id = request.data.get('receiver_id')
         text = request.data.get('text')
@@ -48,7 +68,14 @@ class SendMessageAPIView(APIView):
         serializer = MessagesSerializer(message)
         return Response(serializer.data, status=201)
 
+
     def delete(self, request, message_id):
+        """
+        Delete a specific message by its ID.
+        Requires the 'message_id' parameter.
+        The authenticated user can only delete their own messages.
+        Returns a success message upon successful deletion.
+        """
         message = get_object_or_404(MessageModel, id=message_id)
 
         if message.from_user != request.user:
@@ -57,8 +84,14 @@ class SendMessageAPIView(APIView):
         message.delete()
         return Response({'message': 'Message deleted successfully.'})
      
-     
+
     def patch(self, request, message_id):
+        """
+        Update a specific message by its ID.
+        Requires the 'message_id' parameter.
+        The authenticated user can only update their own messages.
+        Returns the updated message.
+        """
         message = get_object_or_404(MessageModel, id=message_id)
 
         if message.sender != request.user:
