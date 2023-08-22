@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from .views import card
+from .views import card, accounts
 from rest_framework.schemas import get_schema_view
 
 router = routers.SimpleRouter()
@@ -22,7 +22,7 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-
+    path('signup/', accounts.SignUpAPIView.as_view(), name='signup'),
 ]
 
 urlpatterns += router.urls
