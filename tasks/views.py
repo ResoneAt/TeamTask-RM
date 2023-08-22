@@ -3,14 +3,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import CardModel, WorkSpaceModel, BoardModel, ListModel, LabelModel, SubTaskModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-<<<<<<< HEAD
-from .forms import CardCreateEditForm, WorkSpaceForm, BoardForm, UsernameSearch
 from accounts.models import User
 from .models import RelationAddMemeber
-=======
 from .forms import CardCreateEditForm, LabelCreateEditForm, SubCardCreateEditForm,\
     WorkSpaceForm, BoardForm, ListCreateEditForm
->>>>>>> dev
 
 
 class MyCardsView(LoginRequiredMixin, View):
