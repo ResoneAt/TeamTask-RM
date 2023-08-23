@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User
+from accounts.models import User, NotificationModel
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -29,5 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-    ...
+    class Meta:
+        model = NotificationModel
+        fields = '__all__'
 

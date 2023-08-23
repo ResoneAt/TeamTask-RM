@@ -10,6 +10,8 @@ app_name = 'api'
 router = routers.SimpleRouter()
 
 router.register(r'user', accounts.UserViewSet, basename='user')
+router.register(r'notification', accounts.NotificationViewSet, basename='notification')
+
 router.register(r'card', card.CardViewSet, basename='card')
 router.register(r'mycard', card.MyCardViewSet, basename='mycardviewset')
 router.register(r'subcard', card.SubCardViewSet)
