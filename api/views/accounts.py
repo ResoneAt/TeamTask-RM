@@ -3,7 +3,7 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from accounts.models import User
+from accounts.models import User, NotificationModel
 from ..serializers.accounts import (
     SignUpSerializer,
     UserSerializer,
@@ -65,14 +65,22 @@ class UserViewSet(viewsets.ViewSet):
 
 
 class NotificationViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
     def list(self, request):
-        ...
+        notifications = NotificationModel.objects.filter(user=request.user)
+        srz_data = NotificationSerializer(instance=notifications, many=True)
+        return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
-        ...
+        notification = get_object_or_404(NotificationSerializer, pk=pk)
+        srz_data = NotificationSerializer(instance=notification)
+        return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None):
-        ...
+        notification = get_object_or_404(NotificationSerializer, pk=pk)
+        notification.delete()
+        return Response({'message': 'notification deleted'})
 
 
 class ResetPasswordAPIView(APIView):
