@@ -9,9 +9,13 @@ from tasks.models import (
     BMembershipModel,
     CMembershipModel,
     WSMembershipModel,
-    WorkSpaceModel
+    WorkSpaceModel, CardModel
 )
-from ..serializers.membership import WorkspaceMembershipSerializer, BoardMembershipSerializer
+from ..serializers.membership import (
+    WorkspaceMembershipSerializer,
+    BoardMembershipSerializer,
+    CardMembershipSerializer
+)
 
 
 class AddMemberToWorkspaceAPIView(APIView):
@@ -94,18 +98,22 @@ class BoardMembersListAPIView(APIView):
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
 
-class CardMembershipViewSet(ViewSet):
-    def list(self):
+class AddMemberToCardAPIView(APIView):
+    def post(self, request, user_id, card_id):
+        to_user = get_object_or_404(User, pk=user_id)
+        card = get_object_or_404(CardModel, pk=card_id)
+        membership = CMembershipModel.objects.create(from_user=request.user,
+                                                     to_user=to_user,
+                                                     card=card)
+        srz_data = CardMembershipSerializer(instance=membership)
+        return Response(data=srz_data.data, status=status.HTTP_200_OK)
+
+
+class RemoveMemberFromCardAPIView(APIView):
+    def delete(self, request, membership_id):
         ...
 
-    def retrieve(self):
-        ...
 
-    def create(self):
-        ...
-
-    def partial_update(self):
-        ...
-
-    def destroy(self):
+class CardMembersListAPIView(APIView):
+    def get(self, request, board_id):
         ...
