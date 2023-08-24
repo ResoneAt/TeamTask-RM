@@ -298,8 +298,10 @@ class GMessageModel(BaseModel, SoftDeleteModel):
 
 
 class CMembershipModel(BaseModel):
-    user = models.ForeignKey(User,
-                             on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING)
+    to_user = models.ForeignKey(User,
+                                on_delete=models.DO_NOTHING)
     card = models.ForeignKey(CardModel,
                              on_delete=models.DO_NOTHING)
 
@@ -313,8 +315,10 @@ class CMembershipModel(BaseModel):
     
 
 class BMembershipModel(BaseModel):
-    user = models.ForeignKey(User,
-                             on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING)
+    to_user = models.ForeignKey(User,
+                                on_delete=models.DO_NOTHING)
     board = models.ForeignKey(BoardModel,
                               on_delete=models.DO_NOTHING)
     permission = models.CharField(max_length=255)
@@ -329,8 +333,10 @@ class BMembershipModel(BaseModel):
     
 
 class WSMembershipModel(BaseModel):
-    user = models.ForeignKey(User,
-                             on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING)
+    to_user = models.ForeignKey(User,
+                                on_delete=models.DO_NOTHING)
     workspace = models.ForeignKey(WorkSpaceModel,
                                   on_delete=models.DO_NOTHING)
     permission = models.CharField(max_length=255)
