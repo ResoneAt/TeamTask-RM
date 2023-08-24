@@ -25,7 +25,7 @@ class AddMemberToWorkspaceAPIView(APIView):
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
 
-class UpdateUserMembershipFromWorkspaceAPIView(APIView):
+class UpdateMembershipFromWorkspaceAPIView(APIView):
     def patch(self, request, membership_id):
         membership = get_object_or_404(WSMembershipModel,
                                        pk=membership_id)
@@ -49,8 +49,7 @@ class WorkspaceMembersListAPIView(APIView):
     def get(self, request, workspace_id):
         workspace = get_object_or_404(WorkSpaceModel, pk=workspace_id)
         members = (WSMembershipModel.objects.select_related('to_user')
-                   .filter(workspace=workspace)
-                   .values('to_user', 'permission'))
+                   .filter(workspace=workspace))
         srz_data = WorkspaceMembershipSerializer(instance=members, many=True)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 

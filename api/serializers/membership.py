@@ -1,8 +1,11 @@
 from rest_framework import serializers
+
+from api.serializers.accounts import UserSerializer
 from tasks.models import WSMembershipModel
 
 
 class WorkspaceMembershipSerializer(serializers.ModelSerializer):
+    to_user = UserSerializer()
     class Meta:
         model = WSMembershipModel
         fields = '__all__'
