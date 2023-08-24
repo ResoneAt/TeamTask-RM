@@ -73,5 +73,8 @@ urlpatterns = [
     path('remove-member-from-card/<int:membership_id>/',
          membership.RemoveMemberFromCardAPIView.as_view(),
          name='remove_member_from_card'),
+    path('card-members-list/<int:card_id>/',
+         membership.CardMembersListAPIView.as_view(),
+         name='card_members_list'),
 
               ]+router.urls

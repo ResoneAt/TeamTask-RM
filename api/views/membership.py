@@ -117,5 +117,10 @@ class RemoveMemberFromCardAPIView(APIView):
 
 
 class CardMembersListAPIView(APIView):
-    def get(self, request, board_id):
-        ...
+    def get(self, request, card_id):
+        card = get_object_or_404(CardModel, pk=card_id)
+        members = (CMembershipModel.objects.select_related('to_user')
+                   .filter(card=card))
+        srz_data = CardMembershipSerializer(instance=members, many=True)
+        return Response(data=srz_data, status=status.HTTP_200_OK)
+
