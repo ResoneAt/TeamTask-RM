@@ -8,7 +8,8 @@ from tasks.models import (
     BoardModel,
     BMembershipModel,
     CMembershipModel,
-    WSMembershipModel
+    WSMembershipModel,
+    WorkSpaceModel
 )
 from ..serializers.membership import WorkspaceMembershipSerializer
 
@@ -16,7 +17,7 @@ from ..serializers.membership import WorkspaceMembershipSerializer
 class AddMemberToWorkspaceAPIView(APIView):
     def post(self, request, user_id, workspace_id):
         to_user = get_object_or_404(User, pk=user_id)
-        workspace = get_object_or_404(WSMembershipModel, pk=workspace_id)
+        workspace = get_object_or_404(WorkSpaceModel, pk=workspace_id)
         membership = WSMembershipModel.objects.create(from_user=request.user,
                                                       to_user=to_user,
                                                       workspace=workspace)
@@ -25,9 +26,9 @@ class AddMemberToWorkspaceAPIView(APIView):
 
 
 class UpdateUserMembershipFromWorkspaceAPIView(APIView):
-    def post(self, request, workspace_id):
+    def patch(self, request, membership_id):
         membership = get_object_or_404(WSMembershipModel,
-                                       pk=workspace_id)
+                                       pk=membership_id)
         srz_data = WorkspaceMembershipSerializer(instance=membership,
                                                  data=request.POST,
                                                  partial=True)
@@ -38,7 +39,10 @@ class UpdateUserMembershipFromWorkspaceAPIView(APIView):
 
 
 class RemoveMemberFromWorkspaceAPIView(APIView):
-    ...
+    def delete(self, request, membership_id):
+        membership = get_object_or_404(WSMembershipModel, pk=membership_id)
+        membership.delete()
+        return Response({'message': 'user removed'}, status=status.HTTP_200_OK)
 
 
 class WorkspaceMembersListAPIView(APIView):
