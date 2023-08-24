@@ -23,7 +23,7 @@ urlpatterns = [
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('signup/', accounts.SignUpAPIView.as_view(), name='signup'),
     path('board/', board.BoardListView.as_view(), name='all_board_workspace'),
-    path('board/<int:pk>/', board.BoardCreateView.as_view(), name='create_board'),
-    path('board/<int:pk>/', board.BoardUpdateView.as_view(), name='update_board'),
-    path('board/<int:pk>/', board.BoardDeleteView.as_view(), name='delete_board'),
+    path('board/create/<int:pk>/', board.BoardCreateView.as_view(), name='create_board'),
+    path('board/update/<int:pk>/', board.BoardUpdateView.as_view(), name='update_board'),
+    path('board/delete/<int:pk>/', board.BoardDeleteView.as_view(), name='delete_board'),
 ]+router.urls
