@@ -79,19 +79,19 @@ class UpdateMembershipFromBoardAPIView(APIView):
 
 
 class RemoveMemberFromBoardAPIView(APIView):
-    ...
+    def delete(self, request, membership_id):
+        membership = get_object_or_404(BMembershipModel, pk=membership_id)
+        membership.delete()
+        return Response({'message': 'user removed'}, status=status.HTTP_200_OK)
 
 
 class BoardMembersListAPIView(APIView):
-    ...
-
-
-
-
-
-
-
-
+    def get(self, request, board_id):
+        board = get_object_or_404(BoardModel, pk=board_id)
+        members = (BMembershipModel.objects.select_related('to_user')
+                   .filter(board=board))
+        srz_data = BoardMembershipSerializer(instance=members, many=True)
+        return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
 
 class CardMembershipViewSet(ViewSet):
