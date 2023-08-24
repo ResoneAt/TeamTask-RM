@@ -23,6 +23,13 @@ class UserRegistrationForm(forms.Form):
             raise ValidationError('this Email already exists')
         return email
 
+    # we can witre clean emailthis way
+    # def clean(self):
+    #     cd = super().clean()
+    #     email = cd.get('email')
+    #     if email:
+    #         raise ValidationError('this Email already exists')
+
     def clean(self):
         cd = super().clean()
         p1 = cd.get('password1')

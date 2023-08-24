@@ -14,6 +14,7 @@ class ListModel(BaseModel, SoftDeleteModel):
     board = models.ForeignKey('BoardModel', on_delete=models.DO_NOTHING,
                               related_name='lists')
     
+    # we can write  instead'red' into '1' and max_lenght=1
     COLOR_CHOICES = [
         ('red',    'Red'),
         ('blue',   'Blue'),
@@ -297,8 +298,12 @@ class GMessageModel(BaseModel, SoftDeleteModel):
 
 
 class CMembershipModel(BaseModel):
-    user = models.ForeignKey(User,
-                             on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING,
+                                  related_name='card_admin')
+    to_user = models.ForeignKey(User,
+                                on_delete=models.DO_NOTHING,
+                                related_name='card_user')
     card = models.ForeignKey(CardModel,
                              on_delete=models.DO_NOTHING)
 
@@ -308,15 +313,19 @@ class CMembershipModel(BaseModel):
         db_table = 'CardMembership'
 
     def __str__(self):
-        return f'{self.user} - {self.card}'
+        return f'{self.to_user} - {self.card}'
     
 
 class BMembershipModel(BaseModel):
-    user = models.ForeignKey(User,
-                             on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING,
+                                  related_name='board_admin')
+    to_user = models.ForeignKey(User,
+                                on_delete=models.DO_NOTHING,
+                                related_name='board_user')
     board = models.ForeignKey(BoardModel,
                               on_delete=models.DO_NOTHING)
-    permission = models.CharField(max_length=255)
+    permission = models.CharField(max_length=255, default='public')
 
     class Meta:
         verbose_name = 'Membership in Board'
@@ -324,15 +333,19 @@ class BMembershipModel(BaseModel):
         db_table = 'BoardMembership'
 
     def __str__(self):
-        return f'{self.user} - {self.board}'
+        return f'{self.to_user} - {self.board}'
     
 
 class WSMembershipModel(BaseModel):
-    user = models.ForeignKey(User,
-                             on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING,
+                                  related_name='workspace_admin')
+    to_user = models.ForeignKey(User,
+                                on_delete=models.DO_NOTHING,
+                                related_name='workspace_user')
     workspace = models.ForeignKey(WorkSpaceModel,
                                   on_delete=models.DO_NOTHING)
-    permission = models.CharField(max_length=255)
+    permission = models.CharField(max_length=255, default='public')
 
     class Meta:
         verbose_name = 'Membership in Workspace'
@@ -340,5 +353,17 @@ class WSMembershipModel(BaseModel):
         db_table = 'WorkspaceMembership'
 
     def __str__(self):
-        return f'{self.user} - {self.workspace}'
-    
+        return f'{self.to_user} - {self.workspace}'
+
+
+class RelationAddMemeber(BaseModel):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admin')
+    to_add_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='add')
+
+    def __str__(self):
+        return f'{self.from_user} - {self.to_add_user}'
+
+    class Meta:
+        verbose_name = 'relation-add-member'
+        verbose_name_plural = 'relation-add-members'
+        db_table = 'relation-add-member-model'

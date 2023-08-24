@@ -20,12 +20,11 @@ class CardsView(APIView):
         query_set = CardModel.objects.filter(list__board_id=board_id)
         srz_data = CardSerializer(instance=query_set, many=True)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
-
+      
 class CardView(APIView):
     def get(self, request, card_id):
         card = get_object_or_404(CardModel, id=card_id)
-        srz_data = CardSerializer(instance=card)
-        return Response(data=srz_data.data, status=status.HTTP_200_OK)
+
 
 class CardCreate(APIView):
     def post(self, request, list_id):
