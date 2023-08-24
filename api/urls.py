@@ -22,5 +22,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('signup/', accounts.SignUpAPIView.as_view(), name='signup'),
-    path('board/', board.BoardView.as_view(), name='show_board')
+    path('board/', board.BoardView.as_view(), name='show_board'),
+    path('board/<int:pk>/', board.BoardView.as_view(), name='create_view'),
+
 ]+router.urls
