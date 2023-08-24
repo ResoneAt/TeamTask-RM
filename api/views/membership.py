@@ -111,7 +111,9 @@ class AddMemberToCardAPIView(APIView):
 
 class RemoveMemberFromCardAPIView(APIView):
     def delete(self, request, membership_id):
-        ...
+        membership = get_object_or_404(CMembershipModel, pk=membership_id)
+        membership.delete()
+        return Response({'message': 'user removed'}, status=status.HTTP_200_OK)
 
 
 class CardMembersListAPIView(APIView):
