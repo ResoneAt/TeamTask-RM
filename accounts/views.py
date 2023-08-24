@@ -27,7 +27,7 @@ class SignUpView(View):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('home:home')
+            return redirect('accounts:home')
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
@@ -41,9 +41,9 @@ class SignUpView(View):
             user = User.objects.create_user(cd['username'],
                                             cd['email'],
                                             cd['password1'])
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'you registered successfully', 'success')
-            return redirect('home:home')
+            return redirect('accounts:home')
         return render(request, self.template_name, {'form': form})
 
 
@@ -53,7 +53,7 @@ class LoginView(View):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('home:home')
+            return redirect('accounts:home')
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
@@ -78,7 +78,7 @@ class LogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
         messages.success(request, 'you successfully logout profile', 'success')
-        return redirect('home:home')
+        return redirect('accounts:home')
 
 
 class ProfileView(LoginRequiredMixin, View):
