@@ -41,4 +41,9 @@ urlpatterns = [
          membership.WorkspaceMembersListAPIView.as_view(),
          name='workspace_members_list'),
 
+    path('add-member-to-board/<int:board_id>/<int:user_id>/',
+         membership.AddMemberToBoardAPIView.as_view(),
+         name='add_member_to_board'),
+
+
 ]+router.urls
