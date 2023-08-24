@@ -28,7 +28,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 #         ...
 
 
-class BoardView(APIView):
+class BoardListView(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get(self, request):
@@ -36,6 +36,8 @@ class BoardView(APIView):
         ser_data = BoardSerializer(instance=all_board, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
+
+class BoardCreateView(APIView):
     def post(self, request):
         data = BoardSerializer(data=request.POST)
         if data.is_valid():
@@ -43,6 +45,8 @@ class BoardView(APIView):
             return Response(data.data, status=status.HTTP_201_CREATED)
         return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class BoardUpdateView(APIView):
     def put(self, request, pk):
         board = BoardModel.objects.get(pk=pk)
         ser_data = BoardSerializer(instance=board, data=request.POST, partial=True)
@@ -51,6 +55,8 @@ class BoardView(APIView):
             return Response(ser_data.data, status=status.HTTP_200_OK)
         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class BoardDeleteView(APIView):
     def delete(self, request, pk):
         board = BoardModel.objects.get(pk=pk)
         board.delete()
