@@ -60,23 +60,23 @@ class CardCommentAdmin(admin.ModelAdmin):
 @admin.register(BMembershipModel)
 class BMemebershipAdmin(admin.ModelAdmin):
     list_display = [
-        'user', 'board', 'permission'
+        'to_user', 'board', 'permission'
     ]
-    search_fields = ['board', 'user']
+    search_fields = ['board', 'to_user']
     list_filter = ['board']
 
 
 @admin.register(WSMembershipModel)
 class WSMembershipModelAdmin(admin.ModelAdmin):
     list_display = [
-        'user', 'workspace', 'permission'
+        'to_user', 'workspace', 'permission'
     ]
-    search_fields = ['workspace', 'user']
+    search_fields = ['workspace', 'to_user']
     list_filter = ['workspace']
 
 
 @admin.register(CMembershipModel)
 class CMembershipModelAdmin(admin.ModelAdmin):
-    list_display = ['user', 'card']
+    list_display = ['to_user', 'card']
     search_fields = ['card']
     list_filter = ['card']
