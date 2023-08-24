@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 from .views import card, accounts
+from .views import board
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -21,4 +22,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('signup/', accounts.SignUpAPIView.as_view(), name='signup'),
+    path('board/', board.BoardView.as_view(), name='show_board')
 ]+router.urls
