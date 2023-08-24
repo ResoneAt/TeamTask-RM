@@ -44,6 +44,10 @@ urlpatterns = [
     path('add-member-to-board/<int:board_id>/<int:user_id>/',
          membership.AddMemberToBoardAPIView.as_view(),
          name='add_member_to_board'),
+    path('update-membership-from-board/<int:membership_id>/',
+         membership.UpdateMembershipFromBoardAPIView.as_view(),
+         name='update_membership_from_board'),
 
 
-]+router.urls
+
+              ]+router.urls

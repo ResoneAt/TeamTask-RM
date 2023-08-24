@@ -64,8 +64,18 @@ class AddMemberToBoardAPIView(APIView):
         srz_data = BoardMembershipSerializer(instance=membership)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
+
 class UpdateMembershipFromBoardAPIView(APIView):
-    ...
+    def patch(self, request, membership_id):
+        membership = get_object_or_404(BMembershipModel,
+                                       pk=membership_id)
+        srz_data = BoardMembershipSerializer(instance=membership,
+                                             data=request.POST,
+                                             partial=True)
+        if srz_data.is_valid():
+            srz_data.save()
+            return Response(data=srz_data.data, status=status.HTTP_200_OK)
+        return Response(data=srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RemoveMemberFromBoardAPIView(APIView):
