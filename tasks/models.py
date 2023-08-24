@@ -321,7 +321,7 @@ class BMembershipModel(BaseModel):
                                 on_delete=models.DO_NOTHING)
     board = models.ForeignKey(BoardModel,
                               on_delete=models.DO_NOTHING)
-    permission = models.CharField(max_length=255)
+    permission = models.CharField(max_length=255, default='public')
 
     class Meta:
         verbose_name = 'Membership in Board'
@@ -339,7 +339,7 @@ class WSMembershipModel(BaseModel):
                                 on_delete=models.DO_NOTHING)
     workspace = models.ForeignKey(WorkSpaceModel,
                                   on_delete=models.DO_NOTHING)
-    permission = models.CharField(max_length=255)
+    permission = models.CharField(max_length=255, default='public')
 
     class Meta:
         verbose_name = 'Membership in Workspace'
