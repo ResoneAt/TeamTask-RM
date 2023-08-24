@@ -25,7 +25,16 @@ class AddMemberToWorkspaceAPIView(APIView):
 
 
 class UpdateUserMembershipFromWorkspaceAPIView(APIView):
-    ...
+    def post(self, request, workspace_id):
+        membership = get_object_or_404(WSMembershipModel,
+                                       pk=workspace_id)
+        srz_data = WorkspaceMembershipSerializer(instance=membership,
+                                                 data=request.POST,
+                                                 partial=True)
+        if srz_data.is_valid():
+            srz_data.save()
+            return Response(data=srz_data.data, status=status.HTTP_200_OK)
+        return Response(data=srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RemoveMemberFromWorkspaceAPIView(APIView):
