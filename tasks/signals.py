@@ -3,10 +3,10 @@ from django.dispatch import receiver
 from accounts.models import NotificationModel
 from .models import WorkSpaceModel
 from accounts.models import User
+from .models import WSMembershipModel, BMembershipModel, CMembershipModel
 
 
-
-@receiver(signal=post_save, sender='WSMembershipModel')
+@receiver(signal=post_save, sender=WSMembershipModel)
 def add_member_to_workspace_signal(sender, request, instance, **kwargs):
     NotificationModel.objects.create(
         body=f'You have been added to {instance.workspace.title} Workspace'
@@ -15,18 +15,7 @@ def add_member_to_workspace_signal(sender, request, instance, **kwargs):
     )
 
 
-@receiver(signal=post_save, sender='BMembershipModel')
-<<<<<<< HEAD
-def add_to_board_signal():
-    ...
-
-
-# @receiver(post_save, sender=User)
-# def add_member_to_workspace(sender, instance, created, **kwargs):
-#     if created:
-#         workspace = WorkSpaceModel.objects.get()
-            # isinstance.member.add(workspace)
-=======
+@receiver(signal=post_save, sender=BMembershipModel)
 def add_member_to_board_signal(sender, request, instance, **kwargs):
     NotificationModel.objects.create(
         body=f'You have been added to {instance.workspace.title} Board '
@@ -35,10 +24,9 @@ def add_member_to_board_signal(sender, request, instance, **kwargs):
     )
 
 
-@receiver(signal=post_save, sender='CMembershipModel')
+@receiver(signal=post_save, sender=CMembershipModel)
 def assigning_a_card_to_a_member_signal(sender, request, instance, **kwargs):
     NotificationModel.objects.create(
         body=f'A new task has been assigned to you by Ramin as below',
         to_user=instance.user
     )
->>>>>>> dev
