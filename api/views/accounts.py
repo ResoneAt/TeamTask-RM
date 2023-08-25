@@ -12,6 +12,7 @@ from ..serializers.accounts import (
 
 
 class SignUpAPIView(APIView):
+    serializer_class = SignUpSerializer
 
     def post(self, request):
         srz_data = SignUpSerializer(data=request.data)
@@ -21,19 +22,10 @@ class SignUpAPIView(APIView):
         return Response(data=srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginAPIView(APIView):
-    def post(self, request):
-        ...
-
-
-class LogoutAPIView(APIView):
-    def post(self, request):
-        ...
-
-
 class UserViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     query_set = User.objects.all()
+    serializer_class = UserSerializer
 
     def list(self, request):
         if request.query_params:
