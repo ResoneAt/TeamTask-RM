@@ -2,11 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from tasks.models import ListModel,BoardModel, CardModel,LabelModel,SubTaskModel
-from api.serializers.card import ListSerializer,LabelSerializer,SubCardSerializer,\
-                                 CardSerializer
+from tasks.models import ListModel, BoardModel, CardModel, LabelModel, SubTaskModel
+from api.serializers.card import ListSerializer, LabelSerializer, SubCardSerializer, CardSerializer
 from accounts.models import User
 from rest_framework import status
+
 
 
 class MyCards(APIView):
@@ -17,7 +17,9 @@ class MyCards(APIView):
         user = User.objects.get(id=user_id)
         cards = CardModel.objects.filter(cmembership__user=user)
         serializer = CardSerializer(cards, many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 
 class CardsView(APIView):
@@ -30,14 +32,16 @@ class CardsView(APIView):
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
 
-class CardView(APIView):
+class CardAPIView(APIView):
     lookup_field = 'pk'
 
     def get(self, request: Response, card_id):
         card = get_object_or_404(CardModel, id=card_id)
+        srz_data = CardSerializer(instance=card)
+        return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
 
-class CardCreate(APIView):
+class CardCreateAPIView(APIView):
     serializer_class = CardSerializer
     lookup_field = 'pk'
 
@@ -51,20 +55,20 @@ class CardCreate(APIView):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CardUpdate(APIView):
+class CardUpdateAPIView(APIView):
     serializer_class = CardSerializer
     lookup_field = 'pk'
 
     def put(self, request: Response, card_id):
         card = get_object_or_404(CardModel, id=card_id)
-        srz_data = CardSerializer(instance=card,data=request.POST, partial=True)
+        srz_data = CardSerializer(instance=card, data=request.POST, partial=True)
         if srz_data.is_valid():
             srz_data.save()
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CardDelete(APIView):
+class CardDeleteAPIView(APIView):
     serializer_class = CardSerializer
     lookup_field = 'pk'
 
@@ -125,7 +129,7 @@ class ListViewSet(ViewSet):
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request: Response, pk):
-        list = get_object_or_404(self.queryset,pk=pk)
+        list = get_object_or_404(self.queryset, pk=pk)
         list.delete()
         return Response({'message': 'list deleted'}, status=status.HTTP_200_OK)
 
