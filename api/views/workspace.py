@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 
 
 class WorkspaceViewSet(ViewSet):
-    
+
     def list(self, request):
         user_owned_workspace = WorkSpaceModel.objects.filter(owner=request.user)
         user_member_of_workspace = WorkSpaceModel.objects.filter(members=request.user)
@@ -35,7 +35,8 @@ class WorkspaceViewSet(ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request):
+    def destroy(self, request, pk=None):
         workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
         workspace.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
