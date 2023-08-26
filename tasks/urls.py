@@ -47,7 +47,7 @@ urlpatterns = [
     path('workspace/<int:workspace_id>/remove-member/<int:user_id>/',
          views.RemoveMemberFromWorkspaceView.as_view(),
          name='remove_member_from_workspace'),
-         
+
     path('workspace/<int:workspace_id>/change-member-permission/<int:user_id>/',
          views.ChangeWorkspaceMembershipPermissionView.as_view(),
          name='change_workspace_membership_permission'),

@@ -14,10 +14,10 @@ def login_welcome_signal(sender, request, user, **kwargs):
 
 
 @receiver(post_save, sender=User)
-def send_email_to_user(sender, instance, created, **kwargs):
+def send_welcome_email_to_user_signal(sender, instance, created, **kwargs):
     if created:
         subject = 'welcome to TeamTask'
         message = f'Dear {instance.username}, welcome to TeamTask'
-        from_email = 'eslamiramin85@gmail.com'
+        from_email = 'TeamTask.group@gmail.com'
         to_email = instance.email
         send_mail(subject, message, from_email, [to_email])

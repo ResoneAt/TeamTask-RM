@@ -38,9 +38,9 @@ class SignUpView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = User.objects.create_user(cd['username'],
-                                            cd['email'],
-                                            cd['password1'])
+            user = User.objects.create_user(username=cd['username'],
+                                            email=cd['email'],
+                                            password=cd['password1'])
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'you registered successfully', 'success')
             return redirect('accounts:home')
