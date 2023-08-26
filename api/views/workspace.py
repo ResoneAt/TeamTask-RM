@@ -7,7 +7,8 @@ from django.shortcuts import get_object_or_404
 
 
 class WorkspaceViewSet(ViewSet):
-
+    serializer_class = WorkspaceSerializer
+    
     def list(self, request):
         user_owned_workspace = WorkSpaceModel.objects.filter(owner=request.user)
         user_member_of_workspace = WorkSpaceModel.objects.filter(members=request.user)
