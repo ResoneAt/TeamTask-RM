@@ -8,25 +8,25 @@ from api.serializers.card import ListSerializer,LabelSerializer,SubCardSerialize
 from accounts.models import User
 from rest_framework import status
 
-class MyCards(APIView):
+class MyCardsAPIView(APIView):
     def get(self, request, user_id):
         user = User.objects.get(id=user_id)
         cards = CardModel.objects.filter(cmembership__user=user)
         serializer = CardSerializer(cards, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
-class CardsView(APIView):    
+class CardsAPIView(APIView):    
     def get(self, request,board_id):
         query_set = CardModel.objects.filter(list__board_id=board_id)
         srz_data = CardSerializer(instance=query_set, many=True)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
       
-class CardView(APIView):
+class CardAPIView(APIView):
     def get(self, request, card_id):
         card = get_object_or_404(CardModel, id=card_id)
 
 
-class CardCreate(APIView):
+class CardCreateAPIView(APIView):
     def post(self, request, list_id):
         list_instance = get_object_or_404(ListModel, id=list_id)
         srz_data = CardSerializer(data=request.data)
@@ -36,7 +36,7 @@ class CardCreate(APIView):
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CardUpdate(APIView):
+class CardUpdateAPIView(APIView):
     def put(self, request, card_id):
         card = get_object_or_404(CardModel, id=card_id)
         srz_data = CardSerializer(instance=card,data=request.POST, partial=True)
@@ -45,7 +45,7 @@ class CardUpdate(APIView):
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CardDelete(APIView):
+class CardDeleteAPIView(APIView):
     def delete(self, request, card_id):
         card = get_object_or_404(CardModel, id=card_id)
         card.delete()
