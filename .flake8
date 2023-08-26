@@ -1,4 +1,6 @@
 [flake8]
 ignore = E203
 max-line-length = 120
-exclude = */migrations/*
+exclude = 
+    */migrations/*
+    ./venv/
