@@ -61,7 +61,7 @@ class UserViewSet(viewsets.ViewSet):
 class NotificationViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = NotificationSerializer
-    lookup_field = 'pk'
+    lookup_field = 'id'
 
     def list(self, request: Request):
         notifications = NotificationModel.objects.filter(user=request.user)
