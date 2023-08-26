@@ -76,8 +76,8 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
 
     def seen_pv_message(self, from_user):
         messages = MessageModel.objects.filter(from_user=from_user,
-                                                 to_user=self,
-                                                 is_read=False)
+                                               to_user=self,
+                                               is_read=False)
         messages.update(is_read=True)
 
     def add_to_work_space(self):
@@ -141,6 +141,3 @@ class NotificationModel(BaseModel, SoftDeleteModel):
 
     def __str__(self) -> str:
         return f'{self.body} to user {self.to_user.username}'
-    
-
-
