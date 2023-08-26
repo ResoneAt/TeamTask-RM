@@ -8,8 +8,7 @@ from accounts.models import User
 from rest_framework import status
 
 
-
-class MyCards(APIView):
+class MyCardsAPIView(APIView):
     serializer_class = CardSerializer
     lookup_field = 'pk'
 
@@ -20,9 +19,7 @@ class MyCards(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-
-class CardsView(APIView):
+class CardsAPIView(APIView):
     serializer_class = CardSerializer
     lookup_field = 'pk'
 

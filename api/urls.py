@@ -33,12 +33,12 @@ urlpatterns = [
     path('signup/', accounts.SignUpAPIView.as_view(), name='signup'),
 
     # Card
-    path('cards/<int:user_id>/my-cards/', views.card.MyCards.as_view(), name='my-cards-list'),
-    path('boards/<int:board_id>/cards/', views.card.CardsView.as_view(), name='board-cards-list'),
-    path('cards/<int:card_id>/', views.card.CardView.as_view(), name='card-detail'),
-    path('cards/<int:list_id>/create-card/', views.card.CardCreate.as_view(), name='create-card'),
-    path('cards/<int:card_id>/update/', views.card.CardUpdate.as_view(), name='update-card'),
-    path('cards/<int:card_id>/delete/', views.card.CardDelete.as_view(), name='delete-card'),
+    path('cards/<int:user_id>/my-cards/', views.card.MyCardsAPIView.as_view(), name='my-cards-list'),
+    path('boards/<int:board_id>/cards/', views.card.CardsAPIView.as_view(), name='board-cards-list'),
+    path('cards/<int:card_id>/', views.card.CardAPIView.as_view(), name='card-detail'),
+    path('cards/<int:list_id>/create-card/', views.card.CardCreateAPIView.as_view(), name='create-card'),
+    path('cards/<int:card_id>/update/', views.card.CardUpdateAPIView.as_view(), name='update-card'),
+    path('cards/<int:card_id>/delete/', views.card.CardDeleteAPIView.as_view(), name='delete-card'),
 
     # membership
     path('add-member-to-workspace/<int:workspace_id>/<int:user_id>/',
