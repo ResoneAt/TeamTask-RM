@@ -36,7 +36,8 @@ class WorkspaceViewSet(ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk):
+    def destroy(self, request, pk=None):
         workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
         workspace.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
