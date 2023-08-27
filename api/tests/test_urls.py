@@ -4,7 +4,8 @@ from api.views.card import MyCardsAPIView, CardAPIView, CardCreateAPIView, CardU
                         CardDeleteAPIView
 from api.views.membership import AddMemberToWorkspaceAPIView, UpdateMembershipFromWorkspaceAPIView, \
 RemoveMemberFromWorkspaceAPIView, WorkspaceMembersListAPIView, AddMemberToBoardAPIView,\
-UpdateMembershipFromBoardAPIView, RemoveMemberFromBoardAPIView, BoardMembersListAPIView
+UpdateMembershipFromBoardAPIView, RemoveMemberFromBoardAPIView, BoardMembersListAPIView,\
+AddMemberToCardAPIView
 
 
 
@@ -61,5 +62,9 @@ class TestUrlsMembership(TestCase):
     def test_BoardMembersListAPIView(self):
         url = reverse('api:board_members_list', args=('1',))
         self.assertEqual(resolve(url).func.view_class, BoardMembersListAPIView)
+    
+    def test_AddMemberToCardAPIView(self):
+        url = reverse('api:add_member_to_card', args=('1','1'))
+        self.assertEqual(resolve(url).func.view_class, AddMemberToCardAPIView)
     
 
