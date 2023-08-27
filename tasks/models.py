@@ -109,6 +109,14 @@ class CardModel(BaseModel, SoftDeleteModel):
         self.list = new_list  
         self.save() 
 
+    def get_progress(self):
+        total_subtasks = self.subtasks.count()
+        completed_subtasks = self.subtasks.filter(status=True).count()
+        if total_subtasks > 0:
+            return (completed_subtasks / total_subtasks) * 100
+        else:
+            return 0
+
 
 class SubTaskModel(models.Model):
     title = models.CharField(verbose_name=_('Title'),
