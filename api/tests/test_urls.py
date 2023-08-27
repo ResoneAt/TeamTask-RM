@@ -79,4 +79,3 @@ class TestUrlsMembership(TestCase):
         url = reverse('api:card_members_list', args=('1',))
         self.assertEqual(resolve(url).func.view_class, CardMembersListAPIView)
     
-
