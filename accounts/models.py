@@ -10,11 +10,13 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
     username = models.CharField(verbose_name=_('Username'),
                                 max_length=250, unique=True,
                                 null=False, blank=False,
-                                help_text=_('Please enter your username'))
+                                help_text=_('Please enter your username'),
+                                db_index=True)
     email = models.EmailField(verbose_name=_('Email'),
                               unique=True,
                               null=False, blank=False,
-                              help_text=_('Please enter your email'))
+                              help_text=_('Please enter your email'),
+                              db_index=True)
     full_name = models.CharField(verbose_name=_('Full name'),
                                  max_length=250,
                                  null=True, blank=True,
@@ -47,10 +49,12 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
                                      help_text=_('Please enter your work field'))
 
     is_admin = models.BooleanField(verbose_name=_('Is Admin'),
-                                   default=False)
+                                   default=False,
+                                   db_index=True)
 
     is_active = models.BooleanField(verbose_name=_('Is Active'),
-                                    default=True)
+                                    default=True,
+                                    db_index=True)
 
     updated_at = models.DateTimeField(verbose_name=_('Updated at'),
                                       auto_now=True)
@@ -110,9 +114,11 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
 
 class MessageModel(BaseModel, SoftDeleteModel):
     from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
-                                  related_name='pv_sender')
+                                  related_name='pv_sender',
+                                  db_index=True)
     to_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
-                                related_name='receiver')
+                                related_name='receiver',
+                                db_index=True)
     text = models.TextField(help_text='Please Write Your Message')
     is_read = models.BooleanField(default=False)
 
@@ -133,7 +139,8 @@ class MessageModel(BaseModel, SoftDeleteModel):
 class NotificationModel(BaseModel, SoftDeleteModel):
     body = models.TextField()
     to_user = models.ForeignKey(User,
-                                on_delete=models.DO_NOTHING)
+                                on_delete=models.DO_NOTHING,
+                                db_index=True)
 
     class Meta:
         verbose_name, verbose_name_plural = _("Notification"), _("Notifications")
