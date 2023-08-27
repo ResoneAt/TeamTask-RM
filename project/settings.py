@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = [
 # JET_TOKEN = 'a11d2eef-1480-40f6-8dbd-64eabf3c0ee8'
 
 INSTALLED_APPS = [
+    # 'jet_django',
     'admin_soft.apps.AdminSoftDashboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',

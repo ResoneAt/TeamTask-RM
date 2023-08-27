@@ -107,7 +107,7 @@ class CardModel(BaseModel, SoftDeleteModel):
             raise ValueError('Invalid list ID')
         self.list.cards.remove(self) 
         self.list = new_list  
-        self.save() 
+        self.save()
 
 
 class SubTaskModel(models.Model):
