@@ -89,17 +89,17 @@ class CardModel(BaseModel, SoftDeleteModel):
 
     def get_comments(self):
         return CardCommentModel.objects.filter(card=self)
-    
+
     @staticmethod
     def get_completed_cards(user):
         return CardModel.objects.filter(status='done',
                                         user=user)
-    
+
     @staticmethod
     def get_incomplete_cards(user):
         return CardModel.objects.filter(Q(status='doing', user=user) |
                                         Q(status='todo', user=user))
-    
+
     def move_card_to_new_list(self, new_list_id):
         try:
             new_list = ListModel.objects.get(id=new_list_id)
@@ -109,11 +109,19 @@ class CardModel(BaseModel, SoftDeleteModel):
         self.list = new_list  
         self.save() 
 
-    def get_progress(self):
-        total_subtasks = self.subtasks.count()
-        completed_subtasks = self.subtasks.filter(status=True).count()
-        if total_subtasks > 0:
-            return (completed_subtasks / total_subtasks) * 100
+    def completion_percentage(self):
+        total_cards = self.list.cards.count()
+        completed_cards = self.list.cards.filter(status='done').count()
+        if total_cards > 0:
+            return (completed_cards / total_cards) * 100
+        else:
+            return 0
+
+    def all_cards_completion_percentage():
+        total_cards = CardModel.objects.all()
+        completed_cards = CardModel.objects.filter(status='done').count()
+        if total_cards > 0:
+            return (completed_cards / total_cards) * 100
         else:
             return 0
 
