@@ -2,7 +2,8 @@ from django.test import TestCase
 from django.urls import resolve, reverse
 from api.views.card import MyCardsAPIView, CardAPIView, CardCreateAPIView, CardUpdateAPIView, \
                         CardDeleteAPIView
-from api.views.membership import AddMemberToWorkspaceAPIView, UpdateMembershipFromWorkspaceAPIView
+from api.views.membership import AddMemberToWorkspaceAPIView, UpdateMembershipFromWorkspaceAPIView, \
+RemoveMemberFromWorkspaceAPIView
 
 
 class TestUrlsCards(TestCase):
@@ -34,3 +35,7 @@ class TestUrlsMembership(TestCase):
     def test_UpdateMembershipFromWorkspaceAPIView(self):
         url = reverse('api:update_membership_from_workspace', args=('1',))
         self.assertEqual(resolve(url).func.view_class, UpdateMembershipFromWorkspaceAPIView)
+
+    def test_RemoveMemberFromWorkspaceAPIView(self):
+        url = reverse('api:remove_member_from_workspace', args=('1',))
+        self.assertEqual(resolve(url).func.view_class, RemoveMemberFromWorkspaceAPIView)
