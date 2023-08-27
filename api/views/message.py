@@ -31,7 +31,7 @@ class MessagesListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
-    
+
 
 class SendMessageAPIView(APIView):
     serializer_class = MessagesSerializer
@@ -102,5 +102,3 @@ class SendMessageAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-        
