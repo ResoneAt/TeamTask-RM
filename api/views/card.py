@@ -174,7 +174,7 @@ class LabelViewSet(ViewSet):
         if request.user.is_authenticated:
             card_instance = get_object_or_404(CardModel, id=card_id)
             if card_instance.cmembershipmodel_set.filter(to_user=request.user).exists()\
-                or card_instance.list.board.owner == request.user:
+                    or card_instance.list.board.owner == request.user:
                 srz_data = LabelSerializer(data=request.data)
                 if srz_data.is_valid():
                     srz_data.object.card = card_instance
@@ -190,7 +190,7 @@ class LabelViewSet(ViewSet):
         if request.user.is_authenticated:
             label = get_object_or_404(self.queryset, pk=pk)
             if label.card.cmembershipmodel_set.filter(to_user=request.user).exists()\
-                or label.card.list.board.owner == request.user:
+                    or label.card.list.board.owner == request.user:
                 srz_data = LabelSerializer(instance=label, data=request.POST, partial=True)
                 if srz_data.is_valid():
                     srz_data.save()
@@ -205,7 +205,7 @@ class LabelViewSet(ViewSet):
         if request.user.is_authenticated:
             label = get_object_or_404(self.queryset, pk=pk)
             if label.card.cmembershipmodel_set.filter(to_user=request.user).exists()\
-            or label.card.list.board.owner == request.user:
+                    or label.card.list.board.owner == request.user:
                 label.delete()
                 return Response({'message': 'label deleted'}, status=status.HTTP_200_OK)
             else:
