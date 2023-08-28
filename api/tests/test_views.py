@@ -102,4 +102,10 @@ class NotificationViewSetTest(TestCase):
         NotificationSerializer(request, self.to_user)
         response = self.viewset(request).data
         self.assertEqual(len(response), 1)
+
+    def test_retrieve_notification(self):
+        request = self.factory.get(f'/notifications/{self.notification.pk}/')
+        NotificationSerializer(request, self.to_user)
+        response = self.viewset(request, pk=self.notification.pk).data
+        self.assertEqual(response['body'], 'Test notification')
        
