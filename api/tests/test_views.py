@@ -46,4 +46,9 @@ class UserViewSetTest(APITestCase):
         url = reverse('api:user-list')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
+    def test_retrieve_valid_pk(self):
+        user = User.objects.create_user(username='testuser2', password='testpassword', email='test2@gmail.com')
+        url = reverse('api:user-detail', args=('1',))
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
