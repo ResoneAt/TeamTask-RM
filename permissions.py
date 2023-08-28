@@ -46,4 +46,16 @@ class IsBoardMember(BasePermission):
     def has_object_permission(self, request, view, obj):
         user = request.user
         board = obj.board
-        return board.boardmembershipmodel_set.filter(to_user=user).exists()
+        return board.bmembershipmodel_set.filter(to_user=user).exists()
+
+
+class IsCardMember(BasePermission):
+    message = 'permission denied, you are not a member of this card'
+
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user
+
+    def has_object_permission(self, request, view, obj):
+        user = request.user
+        board = obj.card
+        return board.cmembershipmodel_set.filter(to_user=user).exists()
