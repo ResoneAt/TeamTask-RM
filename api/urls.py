@@ -31,6 +31,9 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('signup/', accounts.SignUpAPIView.as_view(), name='signup'),
+    path('user-list/', accounts.UserViewSet.as_view(({'get': 'user-list'})), name='user-list'),
+    path('user-detail/<int:user_id>', accounts.UserViewSet.as_view(({'get': 'user-detail'})), name='user-detail'),
+
 
     # Card
     path('cards/<int:user_id>/my-cards/', views.card.MyCardsAPIView.as_view(), name='my-cards-list'),
