@@ -25,3 +25,13 @@ class IsBoardOwner(BasePermission):
 		return obj.owner == request.user
 
 
+class IsBoardMember(BasePermission):
+    message = 'permission denied, you are not a member of board'
+    
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user
+    
+    def has_object_permission(self, request, view, obj):
+        user = request.user
+        board = obj.board
+        return board.boardmembershipmodel_set.filter(to_user=user).exists()
