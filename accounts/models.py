@@ -110,6 +110,17 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
     def count_dependent_cards(self):
         return self.prerequisite_cards.count()
 
+    def get_user_comments(self):
+        return CardCommentModel.objects.filter(user=self)
+
+    def get_user_workspaces(self):
+        return WorkSpaceModel.objects.filter(owner=self)
+
+    def get_user_boards(self):
+        return BoardModel.objects.filter(owner=self)
+
+    def get_user_cards(self):
+        return CardModel.objects.filter(list__board__owner=self)
 
 class MessageModel(BaseModel, SoftDeleteModel):
     from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
