@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -15,7 +16,10 @@ class MyCardsAPIView(APIView):
 
     def get(self, request: Response, user_id):
         user = User.objects.get(id=user_id)
-        cards = CardModel.objects.filter(cmembership__user=user)
+        cards = cache.get('my_cards')
+        if not cards:
+            cards = CardModel.objects.filter(cmembership__user=user)
+            cache.set('my_cards', '')
         serializer = CardSerializer(cards, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

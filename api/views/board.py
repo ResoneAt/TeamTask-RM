@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -32,8 +33,11 @@ class BoardListView(APIView):
 
     def get(self, request, workspace_id):
         workspace = WorkSpaceModel.objects.get(pk=workspace_id)
-        all_board = BoardModel.objects.filter(workspace=workspace)
-        ser_data = BoardSerializer(instance=all_board, many=True)
+        boards = cache.get('boards')
+        if not boards:
+            boards = BoardModel.objects.select_related('workspace').filter(workspace=workspace)
+            cache.set('boards', boards)
+        ser_data = BoardSerializer(instance=boards, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 

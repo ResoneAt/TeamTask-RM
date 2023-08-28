@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.viewsets import ViewSet
@@ -26,14 +27,17 @@ class SignUpAPIView(APIView):
 
 class UserViewSet(ViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = User.objects.all()
+    queryset = cache.get('users')
+    if not queryset:
+        queryset = User.objects.all()
+        cache.set('users', queryset)
     serializer_class = UserSerializer
     lookup_field = 'pk'
 
     def list(self, request: Request):
         if request.query_params:
-            self.query_set = self.query_set.filter(username__icontains=request.query_params['search'])
-        srz_data = UserSerializer(instance=self.query_set, many=True)
+            self.queryset = self.queryset.filter(username__icontains=request.query_params['search'])
+        srz_data = UserSerializer(instance=self.queryset, many=True)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request: Request, pk=None):
@@ -66,7 +70,10 @@ class NotificationViewSet(ViewSet):
     lookup_field = 'pk'
 
     def list(self, request: Request):
-        notifications = NotificationModel.objects.filter(user=request.user)
+        notifications = cache.get('notifications')
+        if not notifications:
+            notifications = NotificationModel.objects.filter(user=request.user)
+            cache.set('notifications', notifications)
         srz_data = NotificationSerializer(instance=notifications, many=True)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
