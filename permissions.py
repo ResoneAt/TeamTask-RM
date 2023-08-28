@@ -11,18 +11,18 @@ class IsWorkSpaceOwner(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return obj.owner == request.user
-    
-        
+
+
 class IsBoardOwner(BasePermission):
-	message = 'permission denied, you are not the board owner'
+    message = 'permission denied, you are not the board owner'
 
-	def has_permission(self, request, view):
-		return request.user.is_authenticated and request.user
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user
 
-	def has_object_permission(self, request, view, obj):
-		if request.method in SAFE_METHODS:
-			return True
-		return obj.owner == request.user
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        return obj.owner == request.user
 
 
 class IsWorkSpaceMember(BasePermission):
@@ -39,10 +39,10 @@ class IsWorkSpaceMember(BasePermission):
 
 class IsBoardMember(BasePermission):
     message = 'permission denied, you are not a member of this board'
-    
+
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user
-    
+
     def has_object_permission(self, request, view, obj):
         user = request.user
         board = obj.board
