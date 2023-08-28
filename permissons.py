@@ -2,7 +2,7 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
 class IsWorkSpaceOwner(BasePermission):
-    message = 'permission denied, you are not the owner'
+    message = 'permission denied, you are not the workspace owner'
 
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user
@@ -14,7 +14,7 @@ class IsWorkSpaceOwner(BasePermission):
     
         
 class IsBoardOwner(BasePermission):
-	message = 'permission denied, you are not the owner'
+	message = 'permission denied, you are not the board owner'
 
 	def has_permission(self, request, view):
 		return request.user.is_authenticated and request.user
@@ -25,8 +25,20 @@ class IsBoardOwner(BasePermission):
 		return obj.owner == request.user
 
 
+class IsWorkSpaceMember(BasePermission):
+    message = 'permission denied, you are not a member of this workspace'
+
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user
+
+    def has_object_permission(self, request, view, obj):
+        user = request.user
+        workspace = obj.workspace
+        return workspace.wsmembershipmodel_set.filter(to_user=user).exists()
+
+
 class IsBoardMember(BasePermission):
-    message = 'permission denied, you are not a member of board'
+    message = 'permission denied, you are not a member of this board'
     
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user
