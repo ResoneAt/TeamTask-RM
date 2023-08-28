@@ -71,3 +71,10 @@ class UserViewSetTest(APITestCase):
         response = self.client.patch(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_destroy_owner(self):
+        url = reverse('api:user-detail', kwargs={'pk': self.user.pk})
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
+
+        
