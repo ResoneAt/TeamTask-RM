@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 class WorkspaceViewSet(ViewSet):
     serializer_class = WorkspaceSerializer
-    
+
     def list(self, request):
         if request.user.is_authenticated:
             user_owned_workspace = WorkSpaceModel.objects.filter(owner=request.user)
@@ -18,7 +18,7 @@ class WorkspaceViewSet(ViewSet):
             return Response(serializer.data)
         else:
             return Response('you have to login first')
-        
+
     def retrieve(self, request, pk=None):
         workspace = get_object_or_404(WorkSpaceModel, pk=pk)
         if request.user.is_authenticated:
@@ -36,7 +36,7 @@ class WorkspaceViewSet(ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response('you have to login first')
-         
+
     def partial_update(self, request, pk=None):
         workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
         if workspace.owner == request.user:
@@ -46,11 +46,11 @@ class WorkspaceViewSet(ViewSet):
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-             return Response('permission denied, you are not the workspace owner')
+            return Response('permission denied, you are not the workspace owner')
 
     def destroy(self, request, pk=None):
+        workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
         if workspace.owner == request.user:
-            workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
             workspace.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
