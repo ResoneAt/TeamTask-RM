@@ -57,5 +57,5 @@ class IsCardMember(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         user = request.user
-        board = obj.card
-        return board.cmembershipmodel_set.filter(to_user=user).exists()
+        card = obj.card
+        return card.cmembershipmodel_set.filter(to_user=user).exists()
