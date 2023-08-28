@@ -109,3 +109,11 @@ class NotificationViewSetTest(TestCase):
         response = self.viewset(request, pk=self.notification.pk).data
         self.assertEqual(response['body'], 'Test notification')
        
+    def test_delete_notification(self):
+        initial_count = NotificationModel.objects.count()
+        request = self.factory.delete(f'/notifications/{self.notification.pk}/')
+        NotificationSerializer(request, self.to_user)
+        response = self.viewset(request, pk=self.notification.pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(NotificationModel.objects.count(), initial_count - 1)
+        
