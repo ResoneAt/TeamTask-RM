@@ -83,105 +83,132 @@ class SubCardViewSet(ViewSet):
     queryset = SubTaskModel.objects.all()
 
     def create(self, request, card_id):
-        card_instance = get_object_or_404(CardModel, id=card_id)
-        if card_instance.cmembershipmodel_set.filter(to_user=request.user).exists():
-            srz_data = SubCardSerializer(data=request.data)
-            if srz_data.is_valid():
-                srz_data.object.card = card_instance
-                srz_data.save()
-                return Response(srz_data.data, status=status.HTTP_201_CREATED)
-            return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            card_instance = get_object_or_404(CardModel, id=card_id)
+            if card_instance.cmembershipmodel_set.filter(to_user=request.user).exists():
+                srz_data = SubCardSerializer(data=request.data)
+                if srz_data.is_valid():
+                    srz_data.object.card = card_instance
+                    srz_data.save()
+                    return Response(srz_data.data, status=status.HTTP_201_CREATED)
+                return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                Response('permission denied, you are not a member of this card')
         else:
-           Response('permission denied, you are not a member of this card')
-           
+            Response('you have to login first')
+
     def partial_update(self, request, pk=None):
-        subcard = get_object_or_404(self.queryset, pk=pk)
-        if subcard.card.cmembershipmodel_set.filter(to_user=request.user).exists():
-            srz_data = SubCardSerializer(instance=subcard, data=request.POST, partial=True)
-            if srz_data.is_valid():
-                srz_data.save()
-                return Response(srz_data.data, status=status.HTTP_200_OK)
-            return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            subcard = get_object_or_404(self.queryset, pk=pk)
+            if subcard.card.cmembershipmodel_set.filter(to_user=request.user).exists():
+                srz_data = SubCardSerializer(instance=subcard, data=request.POST, partial=True)
+                if srz_data.is_valid():
+                    srz_data.save()
+                    return Response(srz_data.data, status=status.HTTP_200_OK)
+                return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                Response('permission denied, you are not a member of this card')
         else:
-           Response('permission denied, you are not a member of this card')
+            Response('you have to login first')
 
     def destroy(self, request, pk):
-        subcard = get_object_or_404(self.queryset, pk=pk)
-        if subcard.card.cmembershipmodel_set.filter(to_user=request.user).exists():
-            subcard.delete()
-            return Response({'message': 'subcard deleted'}, status=status.HTTP_200_OK)
+        if request.user.is_authenticated:
+            subcard = get_object_or_404(self.queryset, pk=pk)
+            if subcard.card.cmembershipmodel_set.filter(to_user=request.user).exists():
+                subcard.delete()
+                return Response({'message': 'subcard deleted'}, status=status.HTTP_200_OK)
+            else:
+                Response('permission denied, you are not a member of this card')
         else:
-           Response('permission denied, you are not a member of this card')
+            Response('you have to login first')
 
 
 class ListViewSet(ViewSet):
     queryset = ListModel.objects.all()
 
     def create(self, request, board_id):
-        board_instance = get_object_or_404(BoardModel, id=board_id)
-        if board_instance.owner == request.user:
-            srz_data = ListSerializer(data=request.data)
-            if srz_data.is_valid():
-                srz_data.object.board = board_instance
-                srz_data.save()
-                return Response(srz_data.data, status=status.HTTP_201_CREATED)
-            return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            board_instance = get_object_or_404(BoardModel, id=board_id)
+            if board_instance.owner == request.user:
+                srz_data = ListSerializer(data=request.data)
+                if srz_data.is_valid():
+                    srz_data.object.board = board_instance
+                    srz_data.save()
+                    return Response(srz_data.data, status=status.HTTP_201_CREATED)
+                return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                Response('permission denied, you are not board owner')
         else:
-            Response('permission denied, you are not board owner')
-
+            Response('you have to login first')
 
     def partial_update(self, request, pk=None):
-        list = get_object_or_404(self.queryset, pk=pk)
-        if list.board.owner == request.user:
-            srz_data = ListSerializer(instance=list, data=request.POST, partial=True)
-            if srz_data.is_valid():
-                srz_data.save()
-                return Response(srz_data.data, status=status.HTTP_200_OK)
-            return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            list = get_object_or_404(self.queryset, pk=pk)
+            if list.board.owner == request.user:
+                srz_data = ListSerializer(instance=list, data=request.POST, partial=True)
+                if srz_data.is_valid():
+                    srz_data.save()
+                    return Response(srz_data.data, status=status.HTTP_200_OK)
+                return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                Response('permission denied, you are not board owner')
         else:
-            Response('permission denied, you are not board owner')
+            Response('you have to login first')
 
     def destroy(self, request, pk):
-        list = get_object_or_404(self.queryset, pk=pk)
-        if list.board.owner == request.user:
-            list.delete()
-            return Response({'message': 'list deleted'}, status=status.HTTP_200_OK)
+        if request.user.is_authenticated:
+            list = get_object_or_404(self.queryset, pk=pk)
+            if list.board.owner == request.user:
+                list.delete()
+                return Response({'message': 'list deleted'}, status=status.HTTP_200_OK)
+            else:
+                Response('permission denied, you are not board owner')
         else:
-            Response('permission denied, you are not board owner')
+            Response('you have to login first')
+
 
 class LabelViewSet(ViewSet):
     queryset = LabelModel.objects.all()
 
     def create(self, request, card_id):
-        card_instance = get_object_or_404(CardModel, id=card_id)
-        if card_instance.cmembershipmodel_set.filter(to_user=request.user).exists()\
-            or card_instance.list.board.owner == request.user:
-            srz_data = LabelSerializer(data=request.data)
-            if srz_data.is_valid():
-                srz_data.object.card = card_instance
-                srz_data.save()
-                return Response(srz_data.data, status=status.HTTP_201_CREATED)
-            return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            card_instance = get_object_or_404(CardModel, id=card_id)
+            if card_instance.cmembershipmodel_set.filter(to_user=request.user).exists()\
+                or card_instance.list.board.owner == request.user:
+                srz_data = LabelSerializer(data=request.data)
+                if srz_data.is_valid():
+                    srz_data.object.card = card_instance
+                    srz_data.save()
+                    return Response(srz_data.data, status=status.HTTP_201_CREATED)
+                return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                Response('create label permission denied')
         else:
-            Response('create label permission denied')
+            Response('you have to login first')
 
     def partial_update(self, request, pk=None):
-        label = get_object_or_404(self.queryset, pk=pk)
-        if label.card.cmembershipmodel_set.filter(to_user=request.user).exists()\
-            or label.card.list.board.owner == request.user:
-            srz_data = LabelSerializer(instance=label, data=request.POST, partial=True)
-            if srz_data.is_valid():
-                srz_data.save()
-                return Response(srz_data.data, status=status.HTTP_200_OK)
-            return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            label = get_object_or_404(self.queryset, pk=pk)
+            if label.card.cmembershipmodel_set.filter(to_user=request.user).exists()\
+                or label.card.list.board.owner == request.user:
+                srz_data = LabelSerializer(instance=label, data=request.POST, partial=True)
+                if srz_data.is_valid():
+                    srz_data.save()
+                    return Response(srz_data.data, status=status.HTTP_200_OK)
+                return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                Response('edit label permission denied')
         else:
-            Response('edit label permission denied')
+            Response('you have to login first')
 
     def destroy(self, request, pk):
-        label = get_object_or_404(self.queryset, pk=pk)
-        if label.card.cmembershipmodel_set.filter(to_user=request.user).exists()\
-        or label.card.list.board.owner == request.user:
-            label.delete()
-            return Response({'message': 'label deleted'}, status=status.HTTP_200_OK)
+        if request.user.is_authenticated:
+            label = get_object_or_404(self.queryset, pk=pk)
+            if label.card.cmembershipmodel_set.filter(to_user=request.user).exists()\
+            or label.card.list.board.owner == request.user:
+                label.delete()
+                return Response({'message': 'label deleted'}, status=status.HTTP_200_OK)
+            else:
+                Response('delete label permission denied')
         else:
-            Response('delete label permission denied')
+            Response('you have to login first')
