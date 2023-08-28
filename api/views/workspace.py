@@ -20,8 +20,8 @@ class WorkspaceViewSet(ViewSet):
             return Response('you have to login first')
 
     def retrieve(self, request, pk=None):
-        workspace = get_object_or_404(WorkSpaceModel, pk=pk)
         if request.user.is_authenticated:
+            workspace = get_object_or_404(WorkSpaceModel, pk=pk)
             serializer = WorkspaceSerializer(workspace)
             return Response(serializer.data)
         else:
@@ -38,20 +38,26 @@ class WorkspaceViewSet(ViewSet):
             return Response('you have to login first')
 
     def partial_update(self, request, pk=None):
-        workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
-        if workspace.owner == request.user:
-            serializer = WorkspaceSerializer(workspace, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if request.user.is_authenticated:
+            workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
+            if workspace.owner == request.user:
+                serializer = WorkspaceSerializer(workspace, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response('permission denied, you are not the workspace owner')
         else:
-            return Response('permission denied, you are not the workspace owner')
+            return Response('you have to login first')
 
     def destroy(self, request, pk=None):
-        workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
-        if workspace.owner == request.user:
-            workspace.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.user.is_authenticated:
+            workspace = get_object_or_404(WorkSpaceModel, pk=pk, owner=request.user)
+            if workspace.owner == request.user:
+                workspace.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response('permission denied, you are not the workspace owner')
         else:
-            return Response('permission denied, you are not the workspace owner')
+            return Response('you have to login first')
