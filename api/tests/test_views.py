@@ -63,3 +63,11 @@ class UserViewSetTest(APITestCase):
         data = {'username': 'updated_username'}
         response = self.client.patch(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_partial_update_non_owner(self):
+        user = User.objects.create_user(username='moj', password='mojpassword', email='moj@gmail.com')
+        url = reverse('api:user-detail', args=('1',))
+        data = {'username': 'updated_username'}
+        response = self.client.patch(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
