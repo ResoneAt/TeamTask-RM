@@ -3,6 +3,11 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from accounts.models import User
 from api.views.accounts import SignUpAPIView
+import json
+from django.test import TestCase, RequestFactory
+from accounts.models import NotificationModel
+from api.serializers.accounts import NotificationSerializer
+from api.views.accounts import NotificationViewSet
 
 class SignUpAPIViewTest(APITestCase):
 
@@ -84,3 +89,37 @@ class UserViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertTrue(User.objects.filter(pk=user.pk).exists())
 
+
+class NotificationViewSetTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.to_user = User.objects.create_user(username='testuser', password='testpassword', email='test@gmail.com')
+        self.notification = NotificationModel.objects.create(to_user=self.to_user, body='Test notification')
+        self.viewset = NotificationViewSet.as_view({'get': 'list'})
+
+    def test_list_notifications(self):
+        request = self.factory.get('/notifications/')
+        NotificationSerializer(request, self.to_user)
+        response = self.viewset(request).data
+        self.assertEqual(len(response), 1)
+
+    def test_retrieve_notification(self):
+        request = self.factory.get(f'/notifications/{self.notification.pk}/')
+        NotificationSerializer(request, self.to_user)
+        response = self.viewset(request, pk=self.notification.pk).data
+        self.assertEqual(response['body'], 'Test notification')
+       
+    def test_delete_notification(self):
+        initial_count = NotificationModel.objects.count()
+        request = self.factory.delete(f'/notifications/{self.notification.pk}/')
+        NotificationSerializer(request, self.to_user)
+        response = self.viewset(request, pk=self.notification.pk)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(NotificationModel.objects.count(), initial_count - 1)
+        
+    def test_delete_nonexistent_notification(self):
+        request = self.factory.delete('/notifications/999/')
+        NotificationSerializer(request, self.to_user)
+        response = self.viewset(request, pk=999)
+        self.assertEqual(response.status_code, 404)
+        
