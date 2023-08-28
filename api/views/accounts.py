@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
+from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -23,9 +24,9 @@ class SignUpAPIView(APIView):
         return Response(data=srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserViewSet(viewsets.ViewSet):
+class UserViewSet(ViewSet):
     permission_classes = [IsAuthenticated]
-    query_set = User.objects.all()
+    queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'pk'
 
@@ -58,22 +59,23 @@ class UserViewSet(viewsets.ViewSet):
         return Response({'message': 'user deleted'}, status=status.HTTP_200_OK)
 
 
-class NotificationViewSet(viewsets.ViewSet):
+class NotificationViewSet(ViewSet):
     permission_classes = [IsAuthenticated]
+    queryset = NotificationModel.objects.all()
     serializer_class = NotificationSerializer
-    lookup_field = 'id'
+    lookup_field = 'pk'
 
     def list(self, request: Request):
         notifications = NotificationModel.objects.filter(user=request.user)
         srz_data = NotificationSerializer(instance=notifications, many=True)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
-    def retrieve(self, request: Request, pk=None):
+    def retrieve(self, request: Request, pk: int=None):
         notification = get_object_or_404(NotificationSerializer, pk=pk)
         srz_data = NotificationSerializer(instance=notification)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
-    def destroy(self, request: Request, pk=None):
+    def destroy(self, request: Request, pk: int=None):
         notification = get_object_or_404(NotificationSerializer, pk=pk)
         notification.delete()
         return Response({'message': 'notification deleted'})

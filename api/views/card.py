@@ -11,6 +11,7 @@ from rest_framework import status
 class MyCardsAPIView(APIView):
     serializer_class = CardSerializer
     lookup_field = 'pk'
+    queryset = CardModel.objects.all()
 
     def get(self, request: Response, user_id):
         user = User.objects.get(id=user_id)
@@ -22,6 +23,7 @@ class MyCardsAPIView(APIView):
 class CardsAPIView(APIView):
     serializer_class = CardSerializer
     lookup_field = 'pk'
+    queryset = CardModel.objects.all()
 
     def get(self, request: Response, board_id):
         query_set = CardModel.objects.filter(list__board_id=board_id)
@@ -30,7 +32,7 @@ class CardsAPIView(APIView):
 
 
 class CardAPIView(APIView):
-    lookup_field = 'pk'
+    serializer_class = CardSerializer
 
     def get(self, request: Response, card_id):
         card = get_object_or_404(CardModel, id=card_id)
