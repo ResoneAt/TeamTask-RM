@@ -57,3 +57,9 @@ class UserViewSetTest(APITestCase):
         url = reverse('api:user-detail', kwargs={'pk': 999})
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_partial_update_owner(self):
+        url = reverse('api:user-detail', kwargs={'pk': self.user.pk})
+        data = {'username': 'updated_username'}
+        response = self.client.patch(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
