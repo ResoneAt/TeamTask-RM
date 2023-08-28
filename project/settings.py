@@ -15,7 +15,7 @@ environ.Env.read_env()
 SECRET_KEY = env('SECRET_KEY')
 
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0','*']
 
@@ -67,7 +67,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_THROTTLE_RATES': {
         'anon': '10/min',
-        'user': '60/min'
+        'user': '40/min'
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50
