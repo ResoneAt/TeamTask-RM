@@ -77,6 +77,10 @@ class CardModel(BaseModel, SoftDeleteModel):
     background_img = models.ImageField(upload_to='tasks',
                                        null=True, blank=True)
 
+    prerequisites = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='dependent_cards')
+    dependencies = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='prerequisite_cards')
+    is_independent = models.BooleanField(default=True)
+
     class Meta:
         verbose_name, verbose_name_plural = _('Card'), _('Cards')
         db_table = 'Card'
@@ -84,7 +88,7 @@ class CardModel(BaseModel, SoftDeleteModel):
     def __str__(self) -> str:
         return f'{self.title}'
 
-    def get_absolut_url(self):
+    def get_absolute_url(self):
         return reverse('tasks:card_detail', args=[self.pk])
 
     def get_comments(self):
@@ -124,6 +128,20 @@ class CardModel(BaseModel, SoftDeleteModel):
             return (completed_cards / total_cards) * 100
         else:
             return 0
+
+    def add_prerequisite(self, prerequisite_card):
+        self.prerequisites.add(prerequisite_card)
+
+    def add_dependency(self, dependent_card):
+        self.dependencies.add(dependent_card)
+
+    def mark_as_independent(self):
+        self.is_independent = True
+        self.save()
+
+    def mark_as_not_independent(self):
+        self.is_independent = False
+        self.save()
 
 
 class SubTaskModel(models.Model):
