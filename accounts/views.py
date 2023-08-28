@@ -1,9 +1,6 @@
 from itertools import count
-from typing import Any
-from django import http
 from django.db.models import Q
-from django.http.response import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout , login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
@@ -33,14 +30,14 @@ class SignUpView(View):
     def get(self, request):
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
-    
+
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = User.objects.create_user(cd['username'],
-                                            cd['email'],
-                                            cd['password1'])
+            user = User.objects.create_user(username=cd['username'],
+                                            email=cd['email'],
+                                            password=cd['password1'])
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'you registered successfully', 'success')
             return redirect('accounts:home')
@@ -59,7 +56,7 @@ class LoginView(View):
     def get(self, request):
         form = self.from_class()
         return render(request, self.template_name, {'form': form})
-    
+
     def post(self, request):
         form = self.from_class(request.POST)
         if form.is_valid():
@@ -133,8 +130,7 @@ class MessageListView(View):
         self.messages_instance = (MessageModel.objects.
                                   select_related('from_user').
                                   values('from_user', 'to_user').
-                                  filter(Q(from_user=request.user) |
-                                         Q(to_user=request.user)).
+                                  filter(Q(from_user=request.user) | Q(to_user=request.user)).
                                   annotate(unread_count=count(is_read=False)).
                                   order_by('from_user', 'to_user', 'created_at'))
         return super().setup(request, args, kwargs)
@@ -151,8 +147,8 @@ class SendMessageView(View):
     def setup(self, request, *args, **kwargs):
         self.user = get_object_or_404(User, pk=kwargs['user_id'])
         self.messages_instance = (MessageModel.objects.select_related('to_user')
-                                  .filter(Q(from_user=request.user, to_user=self.user) |
-                                          Q(from_user=self.user, to_user=request.user))
+                                  .filter(Q(from_user=request.user, to_user=self.user) | Q(from_user=self.user,
+                                                                                           to_user=request.user))
                                   .order_by('created_at'))
         return super().setup(request, args, kwargs)
 
@@ -171,7 +167,7 @@ class SendMessageView(View):
             form.from_user, form.to_user = request.user, user
             form.save()
             return redirect('accounts:send_message', user_id)
-        messages.error(request,'you can not send message')
+        messages.error(request, 'you can not send message')
         return redirect('accounts:send_message', user_id)
 
 
@@ -200,31 +196,28 @@ class EditMessageView(LoginRequiredMixin, View):
         self.message_instance = MessageModel.objects.get(pk=kwargs['message_id'])
         return super().setup(request, *args, **kwargs)
 
-
     def dispatch(self, request, *args, **kwargs):
-        message = self.message_instance 
+        message = self.message_instance
         if not message.user.id == request.user.id:
             messages.error(request, ' you canot Edit this Message', 'danger')
             return redirect('home:home')
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        message = self.message_instance 
+        message = self.message_instance
         form = self.form_class(instance=message)
-        return render(request, 'accounts/edit_message.html', {'form':form})
+        return render(request, 'accounts/edit_message.html', {'form': form})
 
     def post(self, request, *args, **kwargs):
-        message = self.message_instance 
+        message = self.message_instance
         form = self.form_class(request.POST, instance=message)
         if form.is_valid():
             form.save()
             messages.success(request, 'you Editet this Message', 'success')
             return redirect('accounts:edit_message', message.id)
-        
 
 
 class DeleteMessageView(LoginRequiredMixin, View):
-
     def get(self, request, message_id):
         message = MessageModel.objects.get(pk=message_id)
         if message.user.id == request.user.id:
@@ -233,8 +226,6 @@ class DeleteMessageView(LoginRequiredMixin, View):
         else:
             messages.error(request, 'You canot delete in messages', 'danger')
         return redirect('accounts:message_list')
-    
-
 
 
 class UserPasswordResetView(auth_views.PasswordResetView):
@@ -243,10 +234,8 @@ class UserPasswordResetView(auth_views.PasswordResetView):
     email_template_name = 'accounts/password_reset_email.html'
 
 
-
 class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):
     template_name = 'accounts/password_reset_done.html'
-
 
 
 class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):

@@ -15,6 +15,7 @@ class SubCardSerializer(serializers.ModelSerializer):
 
 
 class ListSerializer(serializers.ModelSerializer):
+    cards_count = ...
     class Meta:
         model = ListModel
         exclude = ('board',)

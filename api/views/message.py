@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 
 
 class MessagesListAPIView(APIView):
+    serializer_class = MessagesSerializer
 
     def get(self, request):
         """
@@ -20,7 +21,6 @@ class MessagesListAPIView(APIView):
         chatted_users = (sent_users | received_users).exclude(id=user.id)
         return Response([{'id': user.id, 'username': user.username} for user in chatted_users])
 
-    
     def post(self, request):
         """
         Create and view a user list.
@@ -31,10 +31,11 @@ class MessagesListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
-    
+
 
 class SendMessageAPIView(APIView):
-    
+    serializer_class = MessagesSerializer
+
     def get(self, request, message_id):
         """
         Retrieve a specific message by its ID.
@@ -44,7 +45,6 @@ class SendMessageAPIView(APIView):
         message = get_object_or_404(MessageModel, id=message_id)
         serializer = MessagesSerializer(message)
         return Response(serializer.data)
-    
 
     def post(self, request):
         """
@@ -68,7 +68,6 @@ class SendMessageAPIView(APIView):
         serializer = MessagesSerializer(message)
         return Response(serializer.data, status=201)
 
-
     def delete(self, request, message_id):
         """
         Delete a specific message by its ID.
@@ -79,11 +78,11 @@ class SendMessageAPIView(APIView):
         message = get_object_or_404(MessageModel, id=message_id)
 
         if message.from_user != request.user:
-            return Response({'error': 'You do not have permission to delete this message.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': 'You do not have permission to delete this message.'},
+                            status=status.HTTP_403_FORBIDDEN)
 
         message.delete()
         return Response({'message': 'Message deleted successfully.'})
-     
 
     def patch(self, request, message_id):
         """
@@ -95,12 +94,11 @@ class SendMessageAPIView(APIView):
         message = get_object_or_404(MessageModel, id=message_id)
 
         if message.sender != request.user:
-            return Response({'error': 'You do not have permission to update this message.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': 'You do not have permission to update this message.'},
+                            status=status.HTTP_403_FORBIDDEN)
 
         serializer = MessagesSerializer(message, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-        

@@ -11,8 +11,11 @@ from permissions import IsCardMember, IsBoardMember, IsBoardOwner
 
 class MyCardsAPIView(APIView):
     permission_classes = [IsCardMember,]
+    serializer_class = CardSerializer
+    lookup_field = 'pk'
+    queryset = CardModel.objects.all()
 
-    def get(self, request, user_id):
+    def get(self, request: Response, user_id):
         user = User.objects.get(id=user_id)
         cards = CardModel.objects.filter(cmembership__user=user)
         self.check_object_permissions(request, cards)
@@ -22,8 +25,11 @@ class MyCardsAPIView(APIView):
 
 class CardsAPIView(APIView):
     permission_classes = [IsBoardMember,]
+    serializer_class = CardSerializer
+    lookup_field = 'pk'
+    queryset = CardModel.objects.all()
 
-    def get(self, request, board_id):
+    def get(self, request: Response, board_id):
         query_set = CardModel.objects.filter(list__board_id=board_id)
         board = get_object_or_404(BoardModel, id=board_id)
         self.check_object_permissions(request, board)
@@ -33,8 +39,9 @@ class CardsAPIView(APIView):
 
 class CardAPIView(APIView):
     permission_classes = [IsBoardMember,]
+    serializer_class = CardSerializer
 
-    def get(self, request, card_id):
+    def get(self, request: Response, card_id):
         card = get_object_or_404(CardModel, id=card_id)
         self.check_object_permissions(request, card.list.board)
         srz_data = CardSerializer(instance=card)
@@ -43,8 +50,10 @@ class CardAPIView(APIView):
 
 class CardCreateAPIView(APIView):
     permission_classes = [IsBoardOwner,]
+    serializer_class = CardSerializer
+    lookup_field = 'pk'
 
-    def post(self, request, list_id):
+    def post(self, request: Response, list_id):
         list_instance = get_object_or_404(ListModel, id=list_id)
         self.check_object_permissions(request, list_instance.board)
         srz_data = CardSerializer(data=request.data)
@@ -57,8 +66,10 @@ class CardCreateAPIView(APIView):
 
 class CardUpdateAPIView(APIView):
     permission_classes = [IsBoardOwner | IsCardMember]
+    serializer_class = CardSerializer
+    lookup_field = 'pk'
 
-    def put(self, request, card_id):
+    def put(self, request: Response, card_id):
         card = get_object_or_404(CardModel, id=card_id)
         self.check_object_permissions(request, card)
         self.check_object_permissions(request, card.list.board)
@@ -71,8 +82,10 @@ class CardUpdateAPIView(APIView):
 
 class CardDeleteAPIView(APIView):
     permission_classes = [IsBoardOwner]
+    serializer_class = CardSerializer
+    lookup_field = 'pk'
 
-    def delete(self, request, card_id):
+    def delete(self, request: Response, card_id):
         card = get_object_or_404(CardModel, id=card_id)
         self.check_object_permissions(request, card.list.board)
         card.delete()
@@ -81,8 +94,10 @@ class CardDeleteAPIView(APIView):
 
 class SubCardViewSet(ViewSet):
     queryset = SubTaskModel.objects.all()
+    serializer_class = SubCardSerializer
+    lookup_field = 'pk'
 
-    def create(self, request, card_id):
+    def create(self, request: Response, card_id):
         card_instance = get_object_or_404(CardModel, id=card_id)
         if card_instance.cmembershipmodel_set.filter(to_user=request.user).exists():
             srz_data = SubCardSerializer(data=request.data)
@@ -94,7 +109,7 @@ class SubCardViewSet(ViewSet):
         else:
            Response('permission denied, you are not a member of this card')
            
-    def partial_update(self, request, pk=None):
+    def partial_update(self, request: Response, pk=None):
         subcard = get_object_or_404(self.queryset, pk=pk)
         if subcard.card.cmembershipmodel_set.filter(to_user=request.user).exists():
             srz_data = SubCardSerializer(instance=subcard, data=request.POST, partial=True)
@@ -105,7 +120,7 @@ class SubCardViewSet(ViewSet):
         else:
            Response('permission denied, you are not a member of this card')
 
-    def destroy(self, request, pk):
+    def destroy(self, request: Response, pk):
         subcard = get_object_or_404(self.queryset, pk=pk)
         if subcard.card.cmembershipmodel_set.filter(to_user=request.user).exists():
             subcard.delete()
@@ -116,8 +131,10 @@ class SubCardViewSet(ViewSet):
 
 class ListViewSet(ViewSet):
     queryset = ListModel.objects.all()
+    serializer_class = ListSerializer
+    lookup_field = 'pk'
 
-    def create(self, request, board_id):
+    def create(self, request: Response, board_id):
         board_instance = get_object_or_404(BoardModel, id=board_id)
         if board_instance.owner == request.user:
             srz_data = ListSerializer(data=request.data)
@@ -128,7 +145,6 @@ class ListViewSet(ViewSet):
             return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             Response('permission denied, you are not board owner')
-
 
     def partial_update(self, request, pk=None):
         list = get_object_or_404(self.queryset, pk=pk)
@@ -141,7 +157,7 @@ class ListViewSet(ViewSet):
         else:
             Response('permission denied, you are not board owner')
 
-    def destroy(self, request, pk):
+    def destroy(self, request: Response, pk):
         list = get_object_or_404(self.queryset, pk=pk)
         if list.board.owner == request.user:
             list.delete()
@@ -151,8 +167,10 @@ class ListViewSet(ViewSet):
 
 class LabelViewSet(ViewSet):
     queryset = LabelModel.objects.all()
+    serializer_class = LabelSerializer
+    lookup_field = 'pk'
 
-    def create(self, request, card_id):
+    def create(self, request: Response, card_id):
         card_instance = get_object_or_404(CardModel, id=card_id)
         if card_instance.cmembershipmodel_set.filter(to_user=request.user).exists()\
             or card_instance.list.board.owner == request.user:
@@ -165,7 +183,7 @@ class LabelViewSet(ViewSet):
         else:
             Response('create label permission denied')
 
-    def partial_update(self, request, pk=None):
+    def partial_update(self, request: Response, pk=None):
         label = get_object_or_404(self.queryset, pk=pk)
         if label.card.cmembershipmodel_set.filter(to_user=request.user).exists()\
             or label.card.list.board.owner == request.user:
@@ -177,7 +195,7 @@ class LabelViewSet(ViewSet):
         else:
             Response('edit label permission denied')
 
-    def destroy(self, request, pk):
+    def destroy(self, request: Response, pk):
         label = get_object_or_404(self.queryset, pk=pk)
         if label.card.cmembershipmodel_set.filter(to_user=request.user).exists()\
         or label.card.list.board.owner == request.user:

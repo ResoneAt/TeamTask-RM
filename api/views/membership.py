@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework.views import APIView
@@ -19,7 +20,10 @@ from ..serializers.membership import (
 
 
 class AddMemberToWorkspaceAPIView(APIView):
-    def post(self, request, user_id, workspace_id):
+    serializer_class = WorkspaceMembershipSerializer
+    lookup_field = 'pk'
+
+    def post(self, request: Request, user_id, workspace_id):
         to_user = get_object_or_404(User, pk=user_id)
         workspace = get_object_or_404(WorkSpaceModel, pk=workspace_id)
         membership = WSMembershipModel.objects.create(from_user=request.user,
@@ -30,7 +34,10 @@ class AddMemberToWorkspaceAPIView(APIView):
 
 
 class UpdateMembershipFromWorkspaceAPIView(APIView):
-    def patch(self, request, membership_id):
+    serializer_class = WorkspaceMembershipSerializer
+    lookup_field = 'pk'
+
+    def patch(self, request: Request, membership_id):
         membership = get_object_or_404(WSMembershipModel,
                                        pk=membership_id)
         srz_data = WorkspaceMembershipSerializer(instance=membership,
@@ -43,14 +50,20 @@ class UpdateMembershipFromWorkspaceAPIView(APIView):
 
 
 class RemoveMemberFromWorkspaceAPIView(APIView):
-    def delete(self, request, membership_id):
+    serializer_class = WorkspaceMembershipSerializer
+    lookup_field = 'pk'
+
+    def delete(self, request: Request, membership_id):
         membership = get_object_or_404(WSMembershipModel, pk=membership_id)
         membership.delete()
         return Response({'message': 'user removed'}, status=status.HTTP_200_OK)
 
 
 class WorkspaceMembersListAPIView(APIView):
-    def get(self, request, workspace_id):
+    serializer_class = WorkspaceMembershipSerializer
+    lookup_field = 'pk'
+
+    def get(self, request: Request, workspace_id):
         workspace = get_object_or_404(WorkSpaceModel, pk=workspace_id)
         members = (WSMembershipModel.objects.select_related('to_user')
                    .filter(workspace=workspace))
@@ -59,7 +72,10 @@ class WorkspaceMembersListAPIView(APIView):
 
 
 class AddMemberToBoardAPIView(APIView):
-    def post(self, request, user_id, board_id):
+    serializer_class = BoardMembershipSerializer
+    lookup_field = 'pk'
+
+    def post(self, request: Request, user_id, board_id):
         to_user = get_object_or_404(User, pk=user_id)
         board = get_object_or_404(BoardModel, pk=board_id)
         membership = BMembershipModel.objects.create(from_user=request.user,
@@ -70,7 +86,10 @@ class AddMemberToBoardAPIView(APIView):
 
 
 class UpdateMembershipFromBoardAPIView(APIView):
-    def patch(self, request, membership_id):
+    serializer_class = BoardMembershipSerializer
+    lookup_field = 'pk'
+
+    def patch(self, request: Request, membership_id):
         membership = get_object_or_404(BMembershipModel,
                                        pk=membership_id)
         srz_data = BoardMembershipSerializer(instance=membership,
@@ -83,14 +102,20 @@ class UpdateMembershipFromBoardAPIView(APIView):
 
 
 class RemoveMemberFromBoardAPIView(APIView):
-    def delete(self, request, membership_id):
+    serializer_class = WorkspaceMembershipSerializer
+    lookup_field = 'pk'
+
+    def delete(self, request: Request, membership_id):
         membership = get_object_or_404(BMembershipModel, pk=membership_id)
         membership.delete()
         return Response({'message': 'user removed'}, status=status.HTTP_200_OK)
 
 
 class BoardMembersListAPIView(APIView):
-    def get(self, request, board_id):
+    serializer_class = BoardMembershipSerializer
+    lookup_field = 'pk'
+
+    def get(self, request: Request, board_id):
         board = get_object_or_404(BoardModel, pk=board_id)
         members = (BMembershipModel.objects.select_related('to_user')
                    .filter(board=board))
@@ -99,7 +124,10 @@ class BoardMembersListAPIView(APIView):
 
 
 class AddMemberToCardAPIView(APIView):
-    def post(self, request, user_id, card_id):
+    serializer_class = CardMembershipSerializer
+    lookup_field = 'pk'
+
+    def post(self, request: Request, user_id, card_id):
         to_user = get_object_or_404(User, pk=user_id)
         card = get_object_or_404(CardModel, pk=card_id)
         membership = CMembershipModel.objects.create(from_user=request.user,
@@ -110,14 +138,20 @@ class AddMemberToCardAPIView(APIView):
 
 
 class RemoveMemberFromCardAPIView(APIView):
-    def delete(self, request, membership_id):
+    serializer_class = WorkspaceMembershipSerializer
+    lookup_field = 'pk'
+
+    def delete(self, request: Request, membership_id):
         membership = get_object_or_404(CMembershipModel, pk=membership_id)
         membership.delete()
         return Response({'message': 'user removed'}, status=status.HTTP_200_OK)
 
 
 class CardMembersListAPIView(APIView):
-    def get(self, request, card_id):
+    serializer_class = CardMembershipSerializer
+    lookup_field = 'pk'
+
+    def get(self, request: Request, card_id):
         card = get_object_or_404(CardModel, pk=card_id)
         members = (CMembershipModel.objects.select_related('to_user')
                    .filter(card=card))
