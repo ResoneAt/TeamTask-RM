@@ -102,7 +102,7 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
     def delete_from_card(self):
         ...
 
-    def get_absolut_url(self):
+    def get_absolute_url(self):
         kwargs = {
             'user_id': self.pk
         }
@@ -111,6 +111,20 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
     def __str__(self):
         return self.email
 
+    def count_dependent_cards(self):
+        return self.prerequisite_cards.count()
+
+    def get_user_comments(self):
+        return CardCommentModel.objects.filter(user=self)
+
+    def get_user_workspaces(self):
+        return WorkSpaceModel.objects.filter(owner=self)
+
+    def get_user_boards(self):
+        return BoardModel.objects.filter(owner=self)
+
+    def get_user_cards(self):
+        return CardModel.objects.filter(list__board__owner=self)
 
 class MessageModel(BaseModel, SoftDeleteModel):
     from_user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
