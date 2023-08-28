@@ -143,6 +143,9 @@ class CardModel(BaseModel, SoftDeleteModel):
         self.is_independent = False
         self.save()
 
+    def count_dependent_cards(self):
+        return self.dependencies.count()
+
 
 class SubTaskModel(models.Model):
     title = models.CharField(verbose_name=_('Title'),
@@ -308,6 +311,9 @@ class BoardModel(BaseModel, SoftDeleteModel):
     def __str__(self):
         return self.title
 
+    def count_board_cards(self):
+        return self.cards.count()
+
 
 class GMessageModel(BaseModel, SoftDeleteModel):
     from_user = models.ForeignKey(User,
@@ -388,6 +394,9 @@ class WSMembershipModel(BaseModel):
 
     def __str__(self):
         return f'{self.to_user} - {self.workspace}'
+
+    def count_workspace_members(self):
+        return WSMembershipModel.objects.filter(workspace=self).count()
 
 
 class RelationAddMemeber(BaseModel):

@@ -98,7 +98,7 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
     def delete_from_card(self):
         ...
 
-    def get_absolut_url(self):
+    def get_absolute_url(self):
         kwargs = {
             'user_id': self.pk
         }
@@ -106,6 +106,9 @@ class User(AbstractBaseUser, BaseModel, SoftDeleteModel):
 
     def __str__(self):
         return self.email
+
+    def count_dependent_cards(self):
+        return self.prerequisite_cards.count()
 
 
 class MessageModel(BaseModel, SoftDeleteModel):
