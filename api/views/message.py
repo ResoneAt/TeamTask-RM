@@ -4,10 +4,12 @@ from accounts.models import MessageModel , User
 from rest_framework import status
 from api.serializers.message import MessagesSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated 
 
 
 class MessagesListAPIView(APIView):
     serializer_class = MessagesSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         """
@@ -35,6 +37,7 @@ class MessagesListAPIView(APIView):
 
 class SendMessageAPIView(APIView):
     serializer_class = MessagesSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, message_id):
         """
