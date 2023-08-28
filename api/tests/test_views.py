@@ -41,3 +41,9 @@ class UserViewSetTest(APITestCase):
         query_param = {'search': 'test'}
         response = self.client.get(url, data=query_param, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_without_query_param(self):
+        url = reverse('api:user-list')
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
