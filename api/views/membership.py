@@ -50,6 +50,7 @@ class UpdateMembershipFromWorkspaceAPIView(APIView):
 
 
 class RemoveMemberFromWorkspaceAPIView(APIView):
+    serializer_class = WorkspaceMembershipSerializer
     lookup_field = 'pk'
 
     def delete(self, request: Request, membership_id):
@@ -101,6 +102,7 @@ class UpdateMembershipFromBoardAPIView(APIView):
 
 
 class RemoveMemberFromBoardAPIView(APIView):
+    serializer_class = WorkspaceMembershipSerializer
     lookup_field = 'pk'
 
     def delete(self, request: Request, membership_id):
@@ -136,6 +138,7 @@ class AddMemberToCardAPIView(APIView):
 
 
 class RemoveMemberFromCardAPIView(APIView):
+    serializer_class = WorkspaceMembershipSerializer
     lookup_field = 'pk'
 
     def delete(self, request: Request, membership_id):
