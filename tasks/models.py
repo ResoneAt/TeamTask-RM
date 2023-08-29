@@ -82,6 +82,10 @@ class CardModel(BaseModel, SoftDeleteModel):
     background_img = models.ImageField(upload_to='tasks',
                                        null=True, blank=True)
 
+    prerequisites = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='dependent_cards')
+    dependencies = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='prerequisite_cards')
+    is_independent = models.BooleanField(default=True)
+
     class Meta:
         verbose_name, verbose_name_plural = _('Card'), _('Cards')
         db_table = 'Card'
@@ -89,22 +93,22 @@ class CardModel(BaseModel, SoftDeleteModel):
     def __str__(self) -> str:
         return f'{self.title}'
 
-    def get_absolut_url(self):
+    def get_absolute_url(self):
         return reverse('tasks:card_detail', args=[self.pk])
 
     def get_comments(self):
         return CardCommentModel.objects.filter(card=self)
-    
+
     @staticmethod
     def get_completed_cards(user):
         return CardModel.objects.filter(status='done',
                                         user=user)
-    
+
     @staticmethod
     def get_incomplete_cards(user):
         return CardModel.objects.filter(Q(status='doing', user=user) |
                                         Q(status='todo', user=user))
-    
+
     def move_card_to_new_list(self, new_list_id):
         try:
             new_list = ListModel.objects.get(id=new_list_id)
@@ -113,6 +117,39 @@ class CardModel(BaseModel, SoftDeleteModel):
         self.list.cards.remove(self) 
         self.list = new_list  
         self.save() 
+
+    def completion_percentage(self):
+        total_cards = self.list.cards.count()
+        completed_cards = self.list.cards.filter(status='done').count()
+        if total_cards > 0:
+            return (completed_cards / total_cards) * 100
+        else:
+            return 0
+
+    def all_cards_completion_percentage():
+        total_cards = CardModel.objects.all()
+        completed_cards = CardModel.objects.filter(status='done').count()
+        if total_cards > 0:
+            return (completed_cards / total_cards) * 100
+        else:
+            return 0
+
+    def add_prerequisite(self, prerequisite_card):
+        self.prerequisites.add(prerequisite_card)
+
+    def add_dependency(self, dependent_card):
+        self.dependencies.add(dependent_card)
+
+    def mark_as_independent(self):
+        self.is_independent = True
+        self.save()
+
+    def mark_as_not_independent(self):
+        self.is_independent = False
+        self.save()
+
+    def count_dependent_cards(self):
+        return self.dependencies.count()
 
 
 class SubTaskModel(models.Model):
@@ -287,6 +324,9 @@ class BoardModel(BaseModel, SoftDeleteModel):
     def __str__(self):
         return self.title
 
+    def count_board_cards(self):
+        return self.cards.count()
+
 
 class GMessageModel(BaseModel, SoftDeleteModel):
     from_user = models.ForeignKey(User,
@@ -377,6 +417,9 @@ class WSMembershipModel(BaseModel):
 
     def __str__(self):
         return f'{self.to_user} - {self.workspace}'
+
+    def count_workspace_members(self):
+        return WSMembershipModel.objects.filter(workspace=self).count()
 
 
 class RelationAddMemeber(BaseModel):
