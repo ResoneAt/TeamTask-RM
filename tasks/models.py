@@ -10,10 +10,13 @@ from django.db.models import Q
 class ListModel(BaseModel, SoftDeleteModel):
     title = models.CharField(verbose_name=_("Title"),
                              max_length=100,
-                             help_text=_("Enter List title"))
+                             help_text=_("Enter List title"),
+                             db_index=True)
     board = models.ForeignKey('BoardModel', on_delete=models.DO_NOTHING,
-                              related_name='lists')
-    
+                              related_name='lists',
+                              db_index=True)
+
+    # we can write  instead'red' into '1' and max_lenght=1
     COLOR_CHOICES = [
         ('red',    'Red'),
         ('blue',   'Blue'),
@@ -43,7 +46,8 @@ class ListModel(BaseModel, SoftDeleteModel):
 class CardModel(BaseModel, SoftDeleteModel):
     title = models.CharField(verbose_name=_("Title"),
                              max_length=150,
-                             help_text=_("Enter Card title"))
+                             help_text=_("Enter Card title"),
+                             db_index=True)
     description = models.TextField(verbose_name=_("Description"),
                                    help_text=_("Enter card's description"),
                                    null=True, blank=True)
@@ -61,7 +65,8 @@ class CardModel(BaseModel, SoftDeleteModel):
     
     list = models.ForeignKey(ListModel,
                              on_delete=models.DO_NOTHING,
-                             related_name='cards')
+                             related_name='cards',
+                             db_index=True)
 
     STATUS_CHOICES = [
      ('todo', 'Todo'),
@@ -71,10 +76,15 @@ class CardModel(BaseModel, SoftDeleteModel):
     ]
     status = models.CharField(max_length=20,
                               choices=STATUS_CHOICES,
-                              default='todo')
+                              default='todo',
+                              db_index=True)
     
     background_img = models.ImageField(upload_to='tasks',
                                        null=True, blank=True)
+
+    prerequisites = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='dependent_cards')
+    dependencies = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='prerequisite_cards')
+    is_independent = models.BooleanField(default=True)
 
     class Meta:
         verbose_name, verbose_name_plural = _('Card'), _('Cards')
@@ -83,22 +93,22 @@ class CardModel(BaseModel, SoftDeleteModel):
     def __str__(self) -> str:
         return f'{self.title}'
 
-    def get_absolut_url(self):
+    def get_absolute_url(self):
         return reverse('tasks:card_detail', args=[self.pk])
 
     def get_comments(self):
         return CardCommentModel.objects.filter(card=self)
-    
+
     @staticmethod
     def get_completed_cards(user):
         return CardModel.objects.filter(status='done',
                                         user=user)
-    
+
     @staticmethod
     def get_incomplete_cards(user):
         return CardModel.objects.filter(Q(status='doing', user=user) |
                                         Q(status='todo', user=user))
-    
+
     def move_card_to_new_list(self, new_list_id):
         try:
             new_list = ListModel.objects.get(id=new_list_id)
@@ -108,13 +118,48 @@ class CardModel(BaseModel, SoftDeleteModel):
         self.list = new_list  
         self.save() 
 
+    def completion_percentage(self):
+        total_cards = self.list.cards.count()
+        completed_cards = self.list.cards.filter(status='done').count()
+        if total_cards > 0:
+            return (completed_cards / total_cards) * 100
+        else:
+            return 0
+
+    def all_cards_completion_percentage():
+        total_cards = CardModel.objects.all()
+        completed_cards = CardModel.objects.filter(status='done').count()
+        if total_cards > 0:
+            return (completed_cards / total_cards) * 100
+        else:
+            return 0
+
+    def add_prerequisite(self, prerequisite_card):
+        self.prerequisites.add(prerequisite_card)
+
+    def add_dependency(self, dependent_card):
+        self.dependencies.add(dependent_card)
+
+    def mark_as_independent(self):
+        self.is_independent = True
+        self.save()
+
+    def mark_as_not_independent(self):
+        self.is_independent = False
+        self.save()
+
+    def count_dependent_cards(self):
+        return self.dependencies.count()
+
 
 class SubTaskModel(models.Model):
     title = models.CharField(verbose_name=_('Title'),
                              max_length=250,
-                             help_text=_('Please enter your sub task title'))
+                             help_text=_('Please enter your sub task title'),
+                             db_index=True)
     card = models.ForeignKey(CardModel,
-                             on_delete=models.DO_NOTHING)
+                             on_delete=models.DO_NOTHING,
+                             db_index=True)
     status = models.BooleanField(verbose_name=_('Status'),
                                  default=False,
                                  help_text=_('Sub Task status'))
@@ -128,7 +173,8 @@ class CardCommentModel(BaseModel):
     body = models.TextField(verbose_name=_('Body'),
                             help_text=_('comment on card'))
     card = models.ForeignKey(CardModel, on_delete=models.DO_NOTHING)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING,
+                             db_index=True)
     
     class Meta:
         verbose_name, verbose_name_plural = _('Comment'), _('Comments')
@@ -150,7 +196,8 @@ class CardCommentModel(BaseModel):
 class LabelModel(models.Model):
     title = models.CharField(verbose_name=_("Title"),
                              max_length=50,
-                             help_text=_("Enter Label title"))
+                             help_text=_("Enter Label title"),
+                             db_index=True)
     COLOR_CHOICES = [
         ('red',    'Red'),
         ('blue',   'Blue'),
@@ -164,7 +211,8 @@ class LabelModel(models.Model):
                                         null=True, blank=True)
     card = models.ForeignKey(CardModel,
                              on_delete=models.DO_NOTHING,
-                             related_name='labels')
+                             related_name='labels',
+                             db_index=True)
     
     class Meta:
         verbose_name, verbose_name_plural = _('Label'), _('Labels')
@@ -192,7 +240,8 @@ class LabelModel(models.Model):
 
 class WorkSpaceModel(BaseModel, SoftDeleteModel):
     owner = models.ForeignKey(User,
-                              on_delete=models.DO_NOTHING)
+                              on_delete=models.DO_NOTHING,
+                              db_index=True)
     title = models.CharField(verbose_name=_("Title"),
                              max_length=100,
                              help_text=_("Enter WorkSpace title"))
@@ -227,13 +276,15 @@ class WorkSpaceModel(BaseModel, SoftDeleteModel):
 
 class BoardModel(BaseModel, SoftDeleteModel):
     owner = models.ForeignKey(User,
-                              on_delete=models.DO_NOTHING)
+                              on_delete=models.DO_NOTHING,
+                              db_index=True)
     workspace = models.ForeignKey(WorkSpaceModel,
                                   on_delete=models.DO_NOTHING,
                                   related_name='boards')
     title = models.CharField(verbose_name=_("Title"),
                              max_length=100,
-                             help_text=_("Enter Board title"))
+                             help_text=_("Enter Board title"),
+                             db_index=True)
     
     category = models.CharField(max_length=50,
                                 blank=True, null=True)
@@ -273,6 +324,9 @@ class BoardModel(BaseModel, SoftDeleteModel):
     def __str__(self):
         return self.title
 
+    def count_board_cards(self):
+        return self.cards.count()
+
 
 class GMessageModel(BaseModel, SoftDeleteModel):
     from_user = models.ForeignKey(User,
@@ -280,7 +334,8 @@ class GMessageModel(BaseModel, SoftDeleteModel):
                                   related_name='g_sender')
     text = models.TextField(help_text='Please Write Your Message')
     board = models.ForeignKey(BoardModel,
-                              on_delete=models.DO_NOTHING)
+                              on_delete=models.DO_NOTHING,
+                              db_index=True)
 
     class Meta:
         verbose_name, verbose_name_plural = _("GMessage"), _("GMessages")
@@ -297,10 +352,17 @@ class GMessageModel(BaseModel, SoftDeleteModel):
 
 
 class CMembershipModel(BaseModel):
-    user = models.ForeignKey(User,
-                             on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING,
+                                  related_name='card_admin',
+                                  db_index=True)
+    to_user = models.ForeignKey(User,
+                                on_delete=models.DO_NOTHING,
+                                related_name='card_user',
+                                db_index=True)
     card = models.ForeignKey(CardModel,
-                             on_delete=models.DO_NOTHING)
+                             on_delete=models.DO_NOTHING,
+                             db_index=True)
 
     class Meta:
         verbose_name = 'Membership in Card'
@@ -308,15 +370,22 @@ class CMembershipModel(BaseModel):
         db_table = 'CardMembership'
 
     def __str__(self):
-        return f'{self.user} - {self.card}'
+        return f'{self.to_user} - {self.card}'
     
 
 class BMembershipModel(BaseModel):
-    user = models.ForeignKey(User,
-                             on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING,
+                                  related_name='board_admin',
+                                  db_index=True)
+    to_user = models.ForeignKey(User,
+                                on_delete=models.DO_NOTHING,
+                                related_name='board_user',
+                                db_index=True)
     board = models.ForeignKey(BoardModel,
-                              on_delete=models.DO_NOTHING)
-    permission = models.CharField(max_length=255)
+                              on_delete=models.DO_NOTHING,
+                              db_index=True)
+    permission = models.CharField(max_length=255, default='public')
 
     class Meta:
         verbose_name = 'Membership in Board'
@@ -324,15 +393,22 @@ class BMembershipModel(BaseModel):
         db_table = 'BoardMembership'
 
     def __str__(self):
-        return f'{self.user} - {self.board}'
+        return f'{self.to_user} - {self.board}'
     
 
 class WSMembershipModel(BaseModel):
-    user = models.ForeignKey(User,
-                             on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.DO_NOTHING,
+                                  related_name='workspace_admin',
+                                  db_index=True)
+    to_user = models.ForeignKey(User,
+                                on_delete=models.DO_NOTHING,
+                                related_name='workspace_user',
+                                db_index=True)
     workspace = models.ForeignKey(WorkSpaceModel,
-                                  on_delete=models.DO_NOTHING)
-    permission = models.CharField(max_length=255)
+                                  on_delete=models.DO_NOTHING,
+                                  db_index=True)
+    permission = models.CharField(max_length=255, default='public')
 
     class Meta:
         verbose_name = 'Membership in Workspace'
@@ -340,5 +416,26 @@ class WSMembershipModel(BaseModel):
         db_table = 'WorkspaceMembership'
 
     def __str__(self):
-        return f'{self.user} - {self.workspace}'
-    
+        return f'{self.to_user} - {self.workspace}'
+
+    def count_workspace_members(self):
+        return WSMembershipModel.objects.filter(workspace=self).count()
+
+
+class RelationAddMemeber(BaseModel):
+    from_user = models.ForeignKey(User,
+                                  on_delete=models.CASCADE,
+                                  related_name='admin',
+                                  db_index=True)
+    to_add_user = models.ForeignKey(User,
+                                    on_delete=models.CASCADE,
+                                    related_name='add',
+                                    db_index=True)
+
+    def __str__(self):
+        return f'{self.from_user} - {self.to_add_user}'
+
+    class Meta:
+        verbose_name = 'relation-add-member'
+        verbose_name_plural = 'relation-add-members'
+        db_table = 'relation-add-member-model'

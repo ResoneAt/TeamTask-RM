@@ -31,6 +31,10 @@ class CardCreateEditForm(forms.ModelForm):
         }
 
 
+class UsernameSearch(forms.Form):
+    search = forms.CharField(label='search user', widget=forms.TextInput)
+
+
 class ListCreateEditForm(forms.ModelForm):
     class Meta:
         model = ListModel
@@ -38,6 +42,7 @@ class ListCreateEditForm(forms.ModelForm):
         labels = {
             'title':'Title',
         }
+
 class LabelCreateEditForm(forms.ModelForm):
     class Meta:
         model = LabelModel

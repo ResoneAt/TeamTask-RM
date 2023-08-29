@@ -23,6 +23,13 @@ class UserRegistrationForm(forms.Form):
             raise ValidationError('this Email already exists')
         return email
 
+    # we can witre clean emailthis way
+    # def clean(self):
+    #     cd = super().clean()
+    #     email = cd.get('email')
+    #     if email:
+    #         raise ValidationError('this Email already exists')
+
     def clean(self):
         cd = super().clean()
         p1 = cd.get('password1')
@@ -33,10 +40,9 @@ class UserRegistrationForm(forms.Form):
 
 
 class UserLoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder': 'username'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder': 'your password'}))
-
-
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control',
+                                                                 'placeholder': 'your password'}))
 
 
 class UserCreationForm(forms.ModelForm):

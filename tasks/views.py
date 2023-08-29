@@ -3,15 +3,17 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .models import CardModel, WorkSpaceModel, BoardModel, ListModel, LabelModel, SubTaskModel
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import CardCreateEditForm, LabelCreateEditForm, SubCardCreateEditForm,\
+from accounts.models import User
+from .models import RelationAddMemeber
+from .forms import CardCreateEditForm, LabelCreateEditForm, SubCardCreateEditForm, \
     WorkSpaceForm, BoardForm, ListCreateEditForm
 
 
 class MyCardsView(LoginRequiredMixin, View):
     template_name = 'tasks/my_cards.html'
-    
+
     def get(self, request):
-        
+
         complete_cards = CardModel.get_completed_cards(request.user)
         incomplete_cards = CardModel.get_incomplete_cards(request.user)
         context = {
@@ -62,7 +64,7 @@ class WorkSpaceCreateView(LoginRequiredMixin, View):
     def get(self, request):
         form = self.form_class()
         return render(request, self.template_name, {'form': form})
-    
+
     def post(self, request):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
@@ -135,14 +137,14 @@ class BoardCreateView(LoginRequiredMixin, View):
 class WorkSpaceDeleteView(LoginRequiredMixin, View):
     template_name = 'tasks/delete_workspace.html'
 
-    def setup( self, request, *args, **kwargs):
+    def setup(self, request, *args, **kwargs):
         self.workspace_instance = get_object_or_404(WorkSpaceModel,
                                                     pk=kwargs['workspace_id'])
         return super().setup(request, *args, **kwargs)
 
-    def get(self,request):
+    def get(self, request):
         workspace = self.workspace_instance
-        return render(request, self.template_name, {'workspace':workspace}) 
+        return render(request, self.template_name, {'workspace': workspace})
 
     def post(self, request):
         workspace = self.workspace_instance
@@ -157,7 +159,7 @@ class WorkspaceMembersView(LoginRequiredMixin, View):
     def get(self, request, workspace_id):
         workspace = get_object_or_404(WorkSpaceModel, pk=workspace_id)
         members = workspace.members.all()
-        return render(request, self.template_name, {'workspace':workspace, 'members':members})
+        return render(request, self.template_name, {'workspace': workspace, 'members': members})
 
 
 class BoardEditView(LoginRequiredMixin, View):
@@ -172,7 +174,7 @@ class BoardEditView(LoginRequiredMixin, View):
     def get(self, request):
         board = self.board_instance
         form = self.form_class(request.POST, request.FILES, instance=board)
-        return render(request, self.template_name, {'form':form, 'board.py':board})
+        return render(request, self.template_name, {'form': form, 'board.py': board})
 
     def post(self, request):
         board = self.board_instance
@@ -180,9 +182,9 @@ class BoardEditView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(request, 'Board edited successfully', 'success')
-            return redirect('board.py',board_id=board.id)
+            return redirect('board.py', board_id=board.id)
 
-        return render(request, self.template_name, {'form':form, 'board.py':board})
+        return render(request, self.template_name, {'form': form, 'board.py': board})
 
 
 class BoardDeleteView(LoginRequiredMixin, View):
@@ -195,8 +197,8 @@ class BoardDeleteView(LoginRequiredMixin, View):
 
     def get(self, request):
         board = self.board_instance
-        return render(request, self.template_name, {'board.py':board})
-    
+        return render(request, self.template_name, {'board.py': board})
+
     def post(self, request):
         board = self.board_instance
         board.delete()
@@ -210,7 +212,7 @@ class BoardMembersView(LoginRequiredMixin, View):
     def get(self, request, board_id):
         board = get_object_or_404(BoardModel, pk=board_id)
         members = board.members.all()
-        return render(request, self.template_name, {'board.py':board,'members':members})
+        return render(request, self.template_name, {'board.py': board, 'members': members})
 
 
 class ListCreateView(LoginRequiredMixin, View):
@@ -219,7 +221,7 @@ class ListCreateView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = self.form_class()
-        return render(request, self.template_name, {'form':form})
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -228,7 +230,7 @@ class ListCreateView(LoginRequiredMixin, View):
             new_list.save()
             return redirect('board.py')
 
-        return render(request, self.template_name, {'form':form})
+        return render(request, self.template_name, {'form': form})
 
 
 class ListEditView(LoginRequiredMixin, View):
@@ -243,7 +245,7 @@ class ListEditView(LoginRequiredMixin, View):
     def get(self, request):
         list_obj = self.list_instance
         form = self.form_class(instance=list_obj)
-        return render(request, self.template_name, {'form':form, 'list_obj':list_obj})
+        return render(request, self.template_name, {'form': form, 'list_obj': list_obj})
 
     def post(self, request):
         list_obj = self.list_instance
@@ -253,7 +255,7 @@ class ListEditView(LoginRequiredMixin, View):
             messages.success(request, 'List edited successfully', 'success')
             return redirect('board.py')
 
-        return render(request, self.template_name, {'form':form, 'list_obj':list_obj})
+        return render(request, self.template_name, {'form': form, 'list_obj': list_obj})
 
 
 class ListDeleteView(LoginRequiredMixin, View):
@@ -266,7 +268,7 @@ class ListDeleteView(LoginRequiredMixin, View):
 
     def get(self, request):
         list_obj = self.list_instance
-        return render(request, self.template_name, {'list_obj':list_obj})
+        return render(request, self.template_name, {'list_obj': list_obj})
 
     def post(self, request):
         list_obj = self.list_instance
@@ -282,12 +284,12 @@ class CardCreateView(LoginRequiredMixin, View):
 
     def setup(self, request, *args, **kwargs):
         self.list_instance = get_object_or_404(ListModel,
-                                                pk=kwargs['list_id'])
+                                               pk=kwargs['list_id'])
         return super().setup(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = self.form_class
-        return render(request, self.template_name, {'form':form})
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)
@@ -301,15 +303,15 @@ class CardCreateView(LoginRequiredMixin, View):
 
 
 class CardDeleteView(LoginRequiredMixin, View):
-    
-    def setup( self, request, *args, **kwargs):
+
+    def setup(self, request, *args, **kwargs):
         self.card_instance = get_object_or_404(CardModel,
-                                                pk=kwargs['card_id'])
+                                               pk=kwargs['card_id'])
         return super().setup(request, *args, **kwargs)
-    
+
     def post(self, request):
         card = self.card_instance
-        # if 
+        # if
         card.delete()
         messages.success(request, 'card deleted successfully', 'success')
         # else:
@@ -324,12 +326,12 @@ class LabelCreateView(LoginRequiredMixin, View):
 
     def setup(self, request, *args, **kwargs):
         self.card_instance = get_object_or_404(CardModel,
-                                                pk=kwargs['card_id'])
+                                               pk=kwargs['card_id'])
         return super().setup(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = self.form_class
-        return render(request, self.template_name, {'form':form})
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -340,7 +342,7 @@ class LabelCreateView(LoginRequiredMixin, View):
             messages.success(request, 'you created a new label', 'success')
             return redirect(new_label.get_absolute_url())
         return render(request, self.template_name, {'form': form})
-    
+
 
 class LabelEditView(LoginRequiredMixin, View):
     label_instance: object
@@ -363,26 +365,26 @@ class LabelEditView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(request, 'label edited successfully', 'success')
-            return redirect('board_detail',label.card.list.board.id)
+            return redirect('board_detail', label.card.list.board.id)
 
         return render(request, self.template_name, {'form': form, 'label': label})
 
 
 class LabelDeleteView(LoginRequiredMixin, View):
 
-    def setup( self, request, *args, **kwargs):
+    def setup(self, request, *args, **kwargs):
         self.label_instance = get_object_or_404(LabelModel,
                                                 pk=kwargs['label_id'])
         return super().setup(request, *args, **kwargs)
-    
+
     def post(self, request):
         label = self.label_instance
-        # if 
+        # if
         label.delete()
         messages.success(request, 'label deleted successfully', 'success')
         # else:
         #     messages.error(request, 'you cant delete this label', 'danger')
-        return redirect('board_detail',label.card.list.board.id)
+        return redirect('board_detail', label.card.list.board.id)
 
 
 class SubCardCreateView(LoginRequiredMixin, View):
@@ -392,12 +394,12 @@ class SubCardCreateView(LoginRequiredMixin, View):
 
     def setup(self, request, *args, **kwargs):
         self.card_instance = get_object_or_404(CardModel,
-                                                pk=kwargs['card_id'])
+                                               pk=kwargs['card_id'])
         return super().setup(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = self.form_class
-        return render(request, self.template_name, {'form':form})
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -431,34 +433,59 @@ class SubCardEditView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             messages.success(request, 'subcard edited successfully', 'success')
-            return redirect('board_detail',subcard.card.list.board.id)
+            return redirect('board_detail', subcard.card.list.board.id)
 
         return render(request, self.template_name, {'form': form, 'subcard': subcard})
 
 
 class SubCardDeleteView(LoginRequiredMixin, View):
-    
-    def setup( self, request, *args, **kwargs):
+
+    def setup(self, request, *args, **kwargs):
         self.subcard_instance = get_object_or_404(SubTaskModel,
                                                 pk=kwargs['subcard_id'])
         return super().setup(request, *args, **kwargs)
-    
+
     def post(self, request):
         subcard = self.subcard_instance
-        # if 
+        # if
         subcard.delete()
         messages.success(request, 'subcard deleted successfully', 'success')
         # else:
         #     messages.error(request, 'you cant delete this subcard', 'danger')
-        return redirect('board_detail',subcard.card.list.board.id)
+        return redirect('board_detail', subcard.card.list.board.id)
 
 
+# mohammad
 class AddMemberToWorkspaceView(LoginRequiredMixin, View):
-    template_name = 'tasks/add_member.html'
+    template_name = 'tasks/add_member_workspace.html'
+
+    def get(self, request):
+        users = User.objects.all()
+        if request.GET.get('search'):
+            users = users.filter(username=request.GET['search'])
+
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            messages.error(request, 'you already user in weorkspace', 'warning')
+        else:
+            RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
+            messages.success(request, 'you success add user in workspace', 'success')
+        context = {
+            'users': users
+        }
+        return self.render_to_response(context)
 
 
 class RemoveMemberFromWorkspaceView(LoginRequiredMixin, View):
-    ...
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            add_memeber.delete()
+            messages.success(request, 'you sucess remove member in workspace', 'success')
+        else:
+            return None
 
 
 class ChangeWorkspaceMembershipPermissionView(LoginRequiredMixin, View):
@@ -467,10 +494,37 @@ class ChangeWorkspaceMembershipPermissionView(LoginRequiredMixin, View):
 
 class AddMemberToBoardView(LoginRequiredMixin, View):
     template_name = 'tasks/add_member.html'
+	# template_name = 'tasks/add_member_workspace.html'
+
+    def get(self, request):
+        user = User.object.all()
+        if request.GET.get('search'):
+            user = user.filter(username=request.GET['search'])
+            context = {
+                'user' : user
+                }
+            user = User.objects.get(pk=user_id)
+            add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+            if add_memeber.exists():
+                messages.error(request, 'you already user in board', 'warning')
+            else:
+                RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
+                messages.success(request, 'you success add user in board', 'success')
+            context = {
+                'users': users
+            }
+            return self.render_to_response(context)
 
 
 class RemoveMemberFromBoardView(LoginRequiredMixin, View):
-    ...
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            add_memeber.delete()
+            messages.success(request, 'you sucess remove member in board', 'success')
+        else:
+            return None
 
 
 class ChangeBoardMembershipPermissionView(LoginRequiredMixin, View):
@@ -479,10 +533,38 @@ class ChangeBoardMembershipPermissionView(LoginRequiredMixin, View):
 
 class AddMemberToCardView(LoginRequiredMixin, View):
     template_name = 'tasks/add_member.html'
+	# template_name = 'tasks/add_member_workspace.html'
+
+    def get(self, request):
+        user = User.object.all()
+        if request.GET.get('search'):
+            user = user.filter(username=request.GET['search'])
+            context = {
+                'user' : user
+                }
+            user = User.objects.get(pk=user_id)
+            add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+            if add_memeber.exists():
+                messages.error(request, 'you already user in card', 'warning')
+            else:
+                RelationAddMemeber.objects.create(from_user=request.user, to_add_user=user)
+                messages.success(request, 'you success add user in card', 'success')
+            context = {
+                'users': users
+            }
+            return self.render_to_response(context)
 
 
 class RemoveMemberFromCardView(LoginRequiredMixin, View):
-    ...
+    templated_name = ''
 
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        add_memeber = RelationAddMemeber.objects.filter(from_user=request.user, to_add_user=user)
+        if add_memeber.exists():
+            add_memeber.delete()
+            messages.success(request, 'you sucess remove member in card', 'success')
+        else:
+            return None
 
-
+# end mohammad

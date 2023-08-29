@@ -1,1 +1,2 @@
 -r base_requirements.txt
+gunicorn==21.2.0
