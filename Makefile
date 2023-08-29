@@ -6,9 +6,3 @@ super:
 
 shell:
 	python manage.py shell
-
-super:
-	python manage.py createsuperuser
-
-shell:
-	python manage.py shell

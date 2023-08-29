@@ -29,7 +29,7 @@ class TestUrlsCards(TestCase):
     def test_CardDeleteAPIView(self):
         url = reverse('api:delete-card', args=('1',))
         self.assertEqual(resolve(url).func.view_class, CardDeleteAPIView)
-    
+
     def test_CardsAPIView(self):
         url = reverse('api:board-cards-list', args=('1',))
         self.assertEqual(resolve(url).func.view_class, CardsAPIView)
@@ -54,7 +54,7 @@ class TestUrlsMembership(TestCase):
     def test_AddMemberToBoardAPIView(self):
         url = reverse('api:add_member_to_board', args=('1','1'))
         self.assertEqual(resolve(url).func.view_class, AddMemberToBoardAPIView)
-    
+
     def test_UpdateMembershipFromBoardAPIView(self):
         url = reverse('api:update_membership_from_board', args=('1',))
         self.assertEqual(resolve(url).func.view_class, UpdateMembershipFromBoardAPIView)
@@ -66,11 +66,11 @@ class TestUrlsMembership(TestCase):
     def test_BoardMembersListAPIView(self):
         url = reverse('api:board_members_list', args=('1',))
         self.assertEqual(resolve(url).func.view_class, BoardMembersListAPIView)
-    
+
     def test_AddMemberToCardAPIView(self):
         url = reverse('api:add_member_to_card', args=('1','1'))
         self.assertEqual(resolve(url).func.view_class, AddMemberToCardAPIView)
-    
+
     def test_RemoveMemberFromCardAPIView(self):
         url = reverse('api:remove_member_from_card', args=('1',))
         self.assertEqual(resolve(url).func.view_class, RemoveMemberFromCardAPIView)
@@ -78,4 +78,3 @@ class TestUrlsMembership(TestCase):
     def test_CardMembersListAPIView(self):
         url = reverse('api:card_members_list', args=('1',))
         self.assertEqual(resolve(url).func.view_class, CardMembersListAPIView)
-    
