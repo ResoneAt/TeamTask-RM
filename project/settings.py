@@ -148,7 +148,7 @@ DATABASES = {
         'USER': os.environ.get('DATABASE-USER', 'postgres'),
         'PASSWORD': os.environ.get('DATABASE-PASSWORD', 'postgres'),
         'PORT': os.environ.get('DATABASE-POST', 5432),
-        'HOST': os.environ.get('DATABASE-HOST', 'postgres'),
+        'HOST': os.environ.get('DATABASE-HOST', 'database'),
     }
 }
 

@@ -27,10 +27,7 @@ class SignUpAPIView(APIView):
 
 class UserViewSet(ViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = cache.get('users')
-    if not queryset:
-        queryset = User.objects.all()
-        cache.set('users', queryset)
+    queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'pk'
 
@@ -70,10 +67,7 @@ class NotificationViewSet(ViewSet):
     lookup_field = 'pk'
 
     def list(self, request: Request):
-        notifications = cache.get('notifications')
-        if not notifications:
-            notifications = NotificationModel.objects.filter(user=request.user)
-            cache.set('notifications', notifications)
+        notifications = NotificationModel.objects.filter(user=request.user)
         srz_data = NotificationSerializer(instance=notifications, many=True)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 
