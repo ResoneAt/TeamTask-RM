@@ -18,7 +18,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['teamtask-rm.ir', '127.0.0.1', 'localhost', '10.0', '*']
+ALLOWED_HOSTS = ['teamtask-rm.ir','*']
 
 SECURE_HSTS_SECONDS = 31536000
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -26,8 +26,8 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-# SECURE_SSL_REDIRECT = True
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -212,3 +212,35 @@ EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = 'nuunjchpvygkuosc'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'TeamTask Group'
+
+
+
+
+ADMINS = [('Ramin', 'eslamiramin85@gmail.com.com')]
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'debug.log',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'mail_admins'],
+            'propagate': True,
+        },
+    }
+}
