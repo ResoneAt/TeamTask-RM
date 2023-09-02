@@ -19,9 +19,7 @@ services:
     build:
       context: .
     container_name: app
-    command: sh -c "python manage.py migrate &&
-      python manage.py collectstatic --no-input --clear &&
-      gunicorn project.wsgi -b 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py collectstatic --no-input --clear && gunicorn project.wsgi -b 0.0.0.0:8000"
     volumes:
       - static:/source/static
       - media:/source/media

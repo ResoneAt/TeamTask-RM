@@ -1,4 +1,4 @@
-from django.core.cache import cache
+# from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.viewsets import ViewSet
@@ -67,7 +67,10 @@ class NotificationViewSet(ViewSet):
     lookup_field = 'pk'
 
     def list(self, request: Request):
-        notifications = NotificationModel.objects.filter(user=request.user)
+        notifications = cache.get('notifications')
+        if not notifications:
+            notifications = NotificationModel.objects.filter(user=request.user)
+            cache.set('notifications', notifications)
         srz_data = NotificationSerializer(instance=notifications, many=True)
         return Response(data=srz_data.data, status=status.HTTP_200_OK)
 

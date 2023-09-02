@@ -14,4 +14,4 @@ RUN pip install --upgrade pip && pip install -r production.txt
 
 COPY . /source/
 
-CMD ["gunicorn", "project.wsgi", ":8000"]
+#CMD ["gunicorn", "project.wsgi", ":8000"]
