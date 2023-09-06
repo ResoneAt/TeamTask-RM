@@ -17,7 +17,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 
 DEBUG = False
-
+os.environ['HTTPS'] = "on"
 ALLOWED_HOSTS = ["37.32.26.160", "teamtask-rm.ir"]
 
 SECURE_HSTS_SECONDS = 31536000
