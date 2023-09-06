@@ -12,7 +12,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
 
-class HomePageView(LoginRequiredMixin, View):
+class HomePageView(View):
 
     def get(self, request):
         return render(request, 'accounts/home.html')
