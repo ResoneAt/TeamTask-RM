@@ -2,9 +2,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import (SpectacularAPIView,
+                                   SpectacularRedocView,
+                                   SpectacularSwaggerView)
+from accounts.views import HomePageView
 
 urlpatterns = [
+    path('', HomePageView.as_view(), name='home'),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('tasks/', include('tasks.urls', namespace='tasks')),
