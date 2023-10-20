@@ -74,4 +74,6 @@ We would like to thank the following individuals and organizations for their con
     GitHub
     SepehrBazyar
     mongard
-    
+
+
+![Alt](https://repobeats.axiom.co/api/embed/a8905cd4ad81ef88262a7395e98510a904f30552.svg "Repobeats analytics image")
