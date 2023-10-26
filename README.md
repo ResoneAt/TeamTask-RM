@@ -1,5 +1,7 @@
 # TeemTask-RM
 
+  <img src="teamtask-banner.png" alt="teamtask-banner">
+
 TeamTask is a web-based planning application built with Django framework and django rest framework. It provides users with the ability to create workspaces and boards where they can organize tasks in a Kanban-style manner. Users can create, update, and assign tasks to specific users. One of the key features of this application is the ability for users to engage in group or private chats within each board, facilitating collaboration and communication.
 
 ## Table of Contents
